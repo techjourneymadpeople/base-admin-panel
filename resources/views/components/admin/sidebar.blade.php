@@ -68,132 +68,72 @@
         </div>
     </div>
 
-    <!-- Navigation Menu List (Custom Scrollable) -->
+    @php
+        // Fetch active top-level menus with active children
+        try {
+            $sidebarMenus = \App\Models\Menu::with('children')->topLevel()->active()->get();
+        } catch (\Throwable $e) {
+            $sidebarMenus = collect();
+        }
+    @endphp
+
+    <!-- Dynamic Navigation Menu List (Database Driven) -->
     <nav class="flex-1 overflow-y-auto px-1 py-2 space-y-1 scrollbar-thin scrollbar-thumb-[#428e75]/40">
         <ul class="space-y-0.5">
-            <!-- SECTION: GENERAL -->
-            <x-admin.sidebar-heading title="General" />
+            @forelse($sidebarMenus as $menu)
+                @if($menu->isVisibleForUser(auth()->user()))
+                    @if($menu->type === 'header')
+                        <!-- Section Heading -->
+                        <x-admin.sidebar-heading :title="$menu->title" />
 
-            <x-admin.sidebar-link 
-                :href="route('admin.dashboard')" 
-                :active="request()->routeIs('admin.dashboard')" 
-                icon="layout-dashboard" 
-                badge="Utama"
-                badgeColor="emerald"
-            >
-                Dashboard
-            </x-admin.sidebar-link>
+                    @elseif($menu->type === 'dropdown' || ($menu->children && $menu->children->isNotEmpty()))
+                        <!-- Dropdown Menu Item -->
+                        <x-admin.sidebar-dropdown 
+                            :title="$menu->title" 
+                            :icon="$menu->icon" 
+                            :active="$menu->isActive()"
+                            :badge="$menu->badge"
+                            :badgeColor="$menu->badge_color"
+                        >
+                            @foreach($menu->children as $child)
+                                @if($child->isVisibleForUser(auth()->user()))
+                                    <x-admin.sidebar-dropdown-link 
+                                        :href="$child->getUrl()" 
+                                        :active="$child->isActive()"
+                                        :badge="$child->badge"
+                                    >
+                                        {{ $child->title }}
+                                    </x-admin.sidebar-dropdown-link>
+                                @endif
+                            @endforeach
+                        </x-admin.sidebar-dropdown>
 
-            <x-admin.sidebar-link 
-                href="#" 
-                :active="false" 
-                icon="bar-chart-3"
-            >
-                Analitik & Metrik
-            </x-admin.sidebar-link>
-
-            <x-admin.sidebar-link 
-                href="#" 
-                :active="false" 
-                icon="layers"
-            >
-                Widgets & Komponen
-            </x-admin.sidebar-link>
-
-            <!-- SECTION: MANAJEMEN PENGGUNA -->
-            <x-admin.sidebar-heading title="Pengguna & Akses" />
-
-            <x-admin.sidebar-dropdown 
-                title="Pengguna" 
-                icon="users" 
-                :active="request()->routeIs('admin.users.*')"
-                badge="6 Role"
-                badgeColor="amber"
-            >
-                <x-admin.sidebar-dropdown-link href="#" :active="false">
-                    Semua Pengguna
-                </x-admin.sidebar-dropdown-link>
-                <x-admin.sidebar-dropdown-link href="#" :active="false">
-                    Tambah Pengguna
-                </x-admin.sidebar-dropdown-link>
-                <x-admin.sidebar-dropdown-link href="#" :active="false">
-                    Aktivitas User
-                </x-admin.sidebar-dropdown-link>
-            </x-admin.sidebar-dropdown>
-
-            <x-admin.sidebar-dropdown 
-                title="Roles & Hak Akses" 
-                icon="shield-check" 
-                :active="request()->routeIs('admin.roles.*')"
-            >
-                <x-admin.sidebar-dropdown-link href="#" :active="false">
-                    Daftar Roles (5 Level)
-                </x-admin.sidebar-dropdown-link>
-                <x-admin.sidebar-dropdown-link href="#" :active="false">
-                    Kelola Permissions
-                </x-admin.sidebar-dropdown-link>
-            </x-admin.sidebar-dropdown>
-
-            <!-- SECTION: APLIKASI & KONTEN -->
-            <x-admin.sidebar-heading title="Aplikasi & Konten" />
-
-            <x-admin.sidebar-dropdown 
-                title="Konten & Berita" 
-                icon="file-text" 
-                :active="false"
-            >
-                <x-admin.sidebar-dropdown-link href="#" :active="false">
-                    Daftar Artikel
-                </x-admin.sidebar-dropdown-link>
-                <x-admin.sidebar-dropdown-link href="#" :active="false">
-                    Kategori & Tag
-                </x-admin.sidebar-dropdown-link>
-            </x-admin.sidebar-dropdown>
-
-            <x-admin.sidebar-link 
-                href="#" 
-                :active="false" 
-                icon="folder-kanban"
-            >
-                File Manager
-            </x-admin.sidebar-link>
-
-            <x-admin.sidebar-link 
-                href="#" 
-                :active="false" 
-                icon="message-square-text" 
-                badge="3 Baru" 
-                badgeColor="rose"
-            >
-                Tiket Dukungan
-            </x-admin.sidebar-link>
-
-            <!-- SECTION: SISTEM & PENGATURAN -->
-            <x-admin.sidebar-heading title="Sistem" />
-
-            <x-admin.sidebar-link 
-                href="#" 
-                :active="false" 
-                icon="activity"
-            >
-                Log Aktivitas
-            </x-admin.sidebar-link>
-
-            <x-admin.sidebar-link 
-                href="#" 
-                :active="false" 
-                icon="database"
-            >
-                Backup & Database
-            </x-admin.sidebar-link>
-
-            <x-admin.sidebar-link 
-                href="#" 
-                :active="false" 
-                icon="settings"
-            >
-                Pengaturan Umum
-            </x-admin.sidebar-link>
+                    @else
+                        <!-- Direct Single Link Item -->
+                        <x-admin.sidebar-link 
+                            :href="$menu->getUrl()" 
+                            :active="$menu->isActive()" 
+                            :icon="$menu->icon" 
+                            :badge="$menu->badge"
+                            :badgeColor="$menu->badge_color"
+                        >
+                            {{ $menu->title }}
+                        </x-admin.sidebar-link>
+                    @endif
+                @endif
+            @empty
+                <!-- Fallback Dashboard link if database not yet migrated/seeded -->
+                <x-admin.sidebar-heading title="General" />
+                <x-admin.sidebar-link 
+                    :href="route('admin.dashboard')" 
+                    :active="request()->routeIs('admin.dashboard')" 
+                    icon="layout-dashboard" 
+                    badge="Utama"
+                    badgeColor="emerald"
+                >
+                    Dashboard
+                </x-admin.sidebar-link>
+            @endforelse
         </ul>
     </nav>
 
