@@ -1,4 +1,4 @@
-<x-layouts.auth title="Dashboard Utama">
+<x-layouts.auth title="Dashboard Admin">
     <div class="w-full max-w-4xl mx-auto">
         <div class="glass-panel rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden">
             <!-- Decorative Bar -->
@@ -15,8 +15,8 @@
                                 Halo, {{ auth()->user()->name ?? 'Pengelola' }}!
                             </h1>
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#e2f0ea] text-[#295c4d] border border-[#99cab7]/60">
-                                <i data-lucide="check-circle" class="w-3 h-3 text-[#31725e]"></i>
-                                Aktif
+                                <i data-lucide="shield" class="w-3 h-3 text-[#31725e]"></i>
+                                {{ auth()->user()->roles->pluck('name')->first() ?? 'Admin' }}
                             </span>
                         </div>
                         <p class="text-xs text-[#623c2c]/80 mt-0.5">
@@ -64,7 +64,7 @@
             <div class="p-4 rounded-2xl bg-[#e2f0ea]/70 border border-[#99cab7]/50 text-xs sm:text-sm text-[#295c4d] flex items-center justify-between">
                 <span class="flex items-center gap-2">
                     <i data-lucide="leaf" class="w-4 h-4 text-[#31725e]"></i>
-                    Sistem autentikasi Laravel Fortify telah siap digunakan sepenuhnya.
+                    Admin Dashboard &bull; /admin/dashboard
                 </span>
                 <span class="text-xs font-semibold text-[#784732]">v1.0 Relaxed Edition</span>
             </div>
