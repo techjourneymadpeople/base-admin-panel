@@ -69,60 +69,95 @@
     </div>
 
     @php
-        // Fetch active top-level menus with active children
+        $currentUser = auth()->user();
+        $displayMenus = [];
+
         try {
-            $sidebarMenus = \App\Models\Menu::with('children')->topLevel()->active()->get();
+            $rawMenus = \App\Models\Menu::with(['children.permissions', 'permissions'])->topLevel()->active()->get();
+            
+            $currentHeader = null;
+            $itemsForHeader = [];
+
+            foreach ($rawMenus as $m) {
+                if ($m->type === 'header') {
+                    // Flush previous header if it had permitted items
+                    if ($currentHeader && count($itemsForHeader) > 0) {
+                        $displayMenus[] = ['type' => 'header', 'menu' => $currentHeader];
+                        foreach ($itemsForHeader as $item) {
+                            $displayMenus[] = ['type' => 'item', 'menu' => $item];
+                        }
+                    }
+                    $currentHeader = $m;
+                    $itemsForHeader = [];
+                } else {
+                    if ($m->isVisibleForUser($currentUser)) {
+                        if ($currentHeader) {
+                            $itemsForHeader[] = $m;
+                        } else {
+                            $displayMenus[] = ['type' => 'item', 'menu' => $m];
+                        }
+                    }
+                }
+            }
+
+            // Flush the last header if it has permitted items
+            if ($currentHeader && count($itemsForHeader) > 0) {
+                $displayMenus[] = ['type' => 'header', 'menu' => $currentHeader];
+                foreach ($itemsForHeader as $item) {
+                    $displayMenus[] = ['type' => 'item', 'menu' => $item];
+                }
+            }
         } catch (\Throwable $e) {
-            $sidebarMenus = collect();
+            $displayMenus = [];
         }
     @endphp
 
-    <!-- Dynamic Navigation Menu List (Database Driven) -->
+    <!-- Dynamic Navigation Menu List (Database & Permission Driven) -->
     <nav class="flex-1 overflow-y-auto px-1 py-2 space-y-1 scrollbar-thin scrollbar-thumb-[#428e75]/40">
         <ul class="space-y-0.5">
-            @forelse($sidebarMenus as $menu)
-                @if($menu->isVisibleForUser(auth()->user()))
-                    @if($menu->type === 'header')
-                        <!-- Section Heading -->
-                        <x-admin.sidebar-heading :title="$menu->title" />
+            @forelse($displayMenus as $entry)
+                @php $menu = $entry['menu']; @endphp
 
-                    @elseif($menu->type === 'dropdown' || ($menu->children && $menu->children->isNotEmpty()))
-                        <!-- Dropdown Menu Item -->
-                        <x-admin.sidebar-dropdown 
-                            :title="$menu->title" 
-                            :icon="$menu->icon" 
-                            :active="$menu->isActive()"
-                            :badge="$menu->badge"
-                            :badgeColor="$menu->badge_color"
-                        >
-                            @foreach($menu->children as $child)
-                                @if($child->isVisibleForUser(auth()->user()))
-                                    <x-admin.sidebar-dropdown-link 
-                                        :href="$child->getUrl()" 
-                                        :active="$child->isActive()"
-                                        :badge="$child->badge"
-                                    >
-                                        {{ $child->title }}
-                                    </x-admin.sidebar-dropdown-link>
-                                @endif
-                            @endforeach
-                        </x-admin.sidebar-dropdown>
+                @if($entry['type'] === 'header')
+                    <!-- Section Heading (Only rendered if it has accessible items) -->
+                    <x-admin.sidebar-heading :title="$menu->title" />
 
-                    @else
-                        <!-- Direct Single Link Item -->
-                        <x-admin.sidebar-link 
-                            :href="$menu->getUrl()" 
-                            :active="$menu->isActive()" 
-                            :icon="$menu->icon" 
-                            :badge="$menu->badge"
-                            :badgeColor="$menu->badge_color"
-                        >
-                            {{ $menu->title }}
-                        </x-admin.sidebar-link>
-                    @endif
+                @elseif($menu->type === 'dropdown' || ($menu->children && $menu->children->isNotEmpty()))
+                    <!-- Dropdown Menu Item -->
+                    <x-admin.sidebar-dropdown 
+                        :title="$menu->title" 
+                        :icon="$menu->icon" 
+                        :active="$menu->isActive()"
+                        :badge="$menu->badge"
+                        :badgeColor="$menu->badge_color"
+                    >
+                        @foreach($menu->children as $child)
+                            @if($child->isVisibleForUser($currentUser))
+                                <x-admin.sidebar-dropdown-link 
+                                    :href="$child->getUrl()" 
+                                    :active="$child->isActive()"
+                                    :badge="$child->badge"
+                                >
+                                    {{ $child->title }}
+                                </x-admin.sidebar-dropdown-link>
+                            @endif
+                        @endforeach
+                    </x-admin.sidebar-dropdown>
+
+                @else
+                    <!-- Direct Single Link Item -->
+                    <x-admin.sidebar-link 
+                        :href="$menu->getUrl()" 
+                        :active="$menu->isActive()" 
+                        :icon="$menu->icon" 
+                        :badge="$menu->badge"
+                        :badgeColor="$menu->badge_color"
+                    >
+                        {{ $menu->title }}
+                    </x-admin.sidebar-link>
                 @endif
             @empty
-                <!-- Fallback Dashboard link if database not yet migrated/seeded -->
+                <!-- Fallback Dashboard link if database not yet populated -->
                 <x-admin.sidebar-heading title="General" />
                 <x-admin.sidebar-link 
                     :href="route('admin.dashboard')" 

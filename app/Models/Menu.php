@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
 
 class Menu extends Model
 {
@@ -44,6 +46,14 @@ class Menu extends Model
     ];
 
     /**
+     * Many-to-Many relationship with Spatie Permissions.
+     */
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'menu_has_permissions', 'menu_id', 'permission_id');
+    }
+
+    /**
      * Parent menu relationship.
      */
     public function parent(): BelongsTo
@@ -75,6 +85,48 @@ class Menu extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Assign permissions to this menu item.
+     */
+    public function assignPermissions(...$permissions): self
+    {
+        $permissionIds = collect($permissions)->flatten()->map(function ($permission) {
+            if ($permission instanceof Permission) {
+                return $permission->id;
+            }
+            if (is_numeric($permission)) {
+                return (int) $permission;
+            }
+            $perm = Permission::where('name', $permission)->first();
+            return $perm ? $perm->id : null;
+        })->filter()->all();
+
+        $this->permissions()->syncWithoutDetaching($permissionIds);
+
+        return $this;
+    }
+
+    /**
+     * Sync permissions for this menu item.
+     */
+    public function syncPermissions($permissions): self
+    {
+        $permissionIds = collect($permissions)->flatten()->map(function ($permission) {
+            if ($permission instanceof Permission) {
+                return $permission->id;
+            }
+            if (is_numeric($permission)) {
+                return (int) $permission;
+            }
+            $perm = Permission::where('name', $permission)->first();
+            return $perm ? $perm->id : null;
+        })->filter()->all();
+
+        $this->permissions()->sync($permissionIds);
+
+        return $this;
     }
 
     /**
@@ -134,11 +186,32 @@ class Menu extends Model
             return true;
         }
 
-        // If no permission specified, available to all authenticated users
-        if (empty($this->permission)) {
-            return true;
+        // 1. Check Many-to-Many permissions relation
+        if ($this->relationLoaded('permissions') ? $this->permissions->isNotEmpty() : $this->permissions()->exists()) {
+            $permissionNames = $this->relationLoaded('permissions') 
+                ? $this->permissions->pluck('name') 
+                : $this->permissions()->pluck('name');
+
+            if ($user->hasAnyPermission($permissionNames)) {
+                return true;
+            }
+            return false;
         }
 
-        return $user->can($this->permission);
+        // 2. Check direct string permission column
+        if (!empty($this->permission)) {
+            return $user->can($this->permission);
+        }
+
+        // 3. Dropdown Menu visibility: visible if at least one child is visible
+        if ($this->type === 'dropdown') {
+            if ($this->children && $this->children->isNotEmpty()) {
+                return $this->children->some(fn($child) => $child->isVisibleForUser($user));
+            }
+            return false;
+        }
+
+        // 4. Default: open to all authenticated users if no permissions assigned
+        return true;
     }
 }

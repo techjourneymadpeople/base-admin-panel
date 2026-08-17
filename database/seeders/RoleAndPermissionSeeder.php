@@ -19,6 +19,9 @@ class RoleAndPermissionSeeder extends Seeder
 
         // 1. Define all permissions
         $permissions = [
+            // General / Dashboard
+            'view-dashboard',
+
             // User Management
             'view-users',
             'create-users',
@@ -74,6 +77,7 @@ class RoleAndPermissionSeeder extends Seeder
         // Role 2: Owner (Executive ownership & business management)
         $ownerRole = Role::firstOrCreate(['name' => 'Owner', 'guard_name' => 'web']);
         $ownerRole->syncPermissions([
+            'view-dashboard',
             'view-users',
             'create-users',
             'edit-users',
@@ -97,6 +101,7 @@ class RoleAndPermissionSeeder extends Seeder
         // Role 3: Admin (Daily operational and system management)
         $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
         $adminRole->syncPermissions([
+            'view-dashboard',
             'view-users',
             'create-users',
             'edit-users',
@@ -121,6 +126,7 @@ class RoleAndPermissionSeeder extends Seeder
         // Role 4: Support (Customer service & user assistance)
         $supportRole = Role::firstOrCreate(['name' => 'Support', 'guard_name' => 'web']);
         $supportRole->syncPermissions([
+            'view-dashboard',
             'view-users',
             'view-support',
             'reply-support',
@@ -131,6 +137,7 @@ class RoleAndPermissionSeeder extends Seeder
         // Role 5: Editor (Content production and publishing)
         $editorRole = Role::firstOrCreate(['name' => 'Editor', 'guard_name' => 'web']);
         $editorRole->syncPermissions([
+            'view-dashboard',
             'view-content',
             'create-content',
             'edit-content',
@@ -144,6 +151,7 @@ class RoleAndPermissionSeeder extends Seeder
         // Role 6: User (Standard registered user)
         $userRole = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
         $userRole->syncPermissions([
+            'view-dashboard',
             'view-content',
         ]);
     }
