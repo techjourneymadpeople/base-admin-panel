@@ -10,7 +10,7 @@
 ])
 
 @php
-    $hasError = $errors->has($name);
+    $hasError = isset($errors) && $errors->has($name);
 @endphp
 
 <div class="space-y-1.5" x-data="{ show: false }">

@@ -12,7 +12,7 @@
 ])
 
 @php
-    $hasError = $errors->has($name);
+    $hasError = isset($errors) && $errors->has($name);
     $inputValue = old($name, $value ?? '');
 @endphp
 

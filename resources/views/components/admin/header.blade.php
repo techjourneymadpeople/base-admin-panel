@@ -140,19 +140,14 @@
                 </div>
 
                 <div class="py-1">
-                    <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-stone-700 hover:bg-[#f2f8f5] hover:text-[#1d3e35] rounded-xl transition-colors">
+                    <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-stone-700 hover:bg-[#f2f8f5] hover:text-[#1d3e35] rounded-xl transition-colors">
                         <i data-lucide="user" class="w-4 h-4 text-[#428e75]"></i>
                         Profil Saya
                     </a>
 
-                    <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-stone-700 hover:bg-[#f2f8f5] hover:text-[#1d3e35] rounded-xl transition-colors">
-                        <i data-lucide="settings" class="w-4 h-4 text-[#428e75]"></i>
-                        Pengaturan Akun
-                    </a>
-
-                    <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-stone-700 hover:bg-[#f2f8f5] hover:text-[#1d3e35] rounded-xl transition-colors">
-                        <i data-lucide="shield" class="w-4 h-4 text-[#428e75]"></i>
-                        Keamanan & 2FA
+                    <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-stone-700 hover:bg-[#f2f8f5] hover:text-[#1d3e35] rounded-xl transition-colors">
+                        <i data-lucide="lock" class="w-4 h-4 text-[#428e75]"></i>
+                        Keamanan & Kata Sandi
                     </a>
                 </div>
 

@@ -14,7 +14,7 @@
 
 @php
     $id = $attributes->get('id', $name . '_' . uniqid());
-    $hasError = $errors->has($name);
+    $hasError = isset($errors) && $errors->has($name);
     $currentValue = old($name, $selected);
 
     // Normalize array for multiple selection

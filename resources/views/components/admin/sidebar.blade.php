@@ -42,12 +42,14 @@
     </div>
 
     <!-- Mini User Profile Card (Viho Style) -->
-    <div 
-        class="px-4 py-3 mx-2 my-3 rounded-2xl bg-white/10 border border-white/10 backdrop-blur-md transition-all duration-200 shrink-0"
+    <a 
+        href="{{ route('admin.profile.edit') }}"
+        class="px-4 py-3 mx-2 my-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 backdrop-blur-md transition-all duration-200 shrink-0 block group cursor-pointer"
         :class="$store.sidebar.collapsed ? 'p-2 mx-1' : 'p-3 mx-2'"
+        title="Klik untuk membuka Profil Saya"
     >
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#428e75] to-[#cca06e] flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#428e75] to-[#cca06e] flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0 group-hover:scale-105 transition-transform">
                 {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
             </div>
 
@@ -55,7 +57,7 @@
                 class="flex-1 min-w-0 transition-all duration-200"
                 :class="$store.sidebar.collapsed ? 'hidden' : 'block'"
             >
-                <h4 class="text-xs font-bold text-white truncate">
+                <h4 class="text-xs font-bold text-white truncate group-hover:text-[#cca06e] transition-colors">
                     {{ auth()->user()->name ?? 'Administrator' }}
                 </h4>
                 <div class="flex items-center gap-1.5 mt-0.5">
@@ -66,7 +68,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </a>
 
     @php
         $currentUser = auth()->user();
