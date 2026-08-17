@@ -55,11 +55,39 @@ class MenuSeeder extends Seeder
             'route' => 'admin.users.index',
             'icon' => 'users',
             'permission' => 'view-users',
-            'badge' => '6 Role',
-            'badge_color' => 'amber',
+            'badge' => null,
+            'badge_color' => 'emerald',
             'order' => 4,
             'is_active' => true,
         ]);
         $userMenu->assignPermissions('view-users');
+
+        // 5. Role Management Menu Item with 'view-roles' permission
+        $roleMenu = Menu::create([
+            'title' => 'Kelola Role',
+            'type' => 'link',
+            'route' => 'admin.roles.index',
+            'icon' => 'shield',
+            'permission' => 'view-roles',
+            'badge' => '6 Level',
+            'badge_color' => 'amber',
+            'order' => 5,
+            'is_active' => true,
+        ]);
+        $roleMenu->assignPermissions('view-roles');
+
+        // 6. Permission Management Menu Item with 'view-permissions' permission
+        $permissionMenu = Menu::create([
+            'title' => 'Kelola Permission',
+            'type' => 'link',
+            'route' => 'admin.permissions.index',
+            'icon' => 'key',
+            'permission' => 'view-permissions',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 6,
+            'is_active' => true,
+        ]);
+        $permissionMenu->assignPermissions('view-permissions');
     }
 }

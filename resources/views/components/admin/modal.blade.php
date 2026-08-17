@@ -1,10 +1,12 @@
 @props([
-    'name',
+    'name' => null,
+    'id' => null,
     'title' => null,
     'maxWidth' => 'md',
 ])
 
 @php
+    $modalName = $name ?? $id ?? $attributes->get('id', 'modal_' . uniqid());
     $maxWidthClass = [
         'sm' => 'max-w-sm',
         'md' => 'max-w-md',
@@ -16,8 +18,8 @@
 
 <div 
     x-data="{ show: false, data: {} }"
-    x-on:open-modal-{{ $name }}.window="show = true; data = $event.detail || {}"
-    x-on:close-modal-{{ $name }}.window="show = false"
+    x-on:open-modal-{{ $modalName }}.window="show = true; data = $event.detail || {}"
+    x-on:close-modal-{{ $modalName }}.window="show = false"
     x-on:keydown.escape.window="show = false"
     x-show="show"
     class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0 flex items-center justify-center"

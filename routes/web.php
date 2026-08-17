@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -24,4 +26,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // 3. User CRUD Resource (No Delete)
     Route::resource('users', UserController::class, ['except' => ['destroy']]);
+
+    // 4. Role Routes (with Dedicated Assign Permissions)
+    Route::get('/roles/{role}/permissions', [RoleController::class, 'permissions'])->name('roles.permissions')->middleware('can:assign-permissions');
+    Route::put('/roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update')->middleware('can:assign-permissions');
+    Route::resource('roles', RoleController::class);
+
+    // 5. Permission Routes
+    Route::resource('permissions', PermissionController::class);
 });
