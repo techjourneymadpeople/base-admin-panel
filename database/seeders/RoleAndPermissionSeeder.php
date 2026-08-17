@@ -140,5 +140,11 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-media',
             'export-reports',
         ]);
+
+        // Role 6: User (Standard registered user)
+        $userRole = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
+        $userRole->syncPermissions([
+            'view-content',
+        ]);
     }
 }
