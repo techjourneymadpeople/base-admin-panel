@@ -4,7 +4,7 @@
             badge="Portal Administrasi"
             icon="shield-check"
             title="Selamat Datang"
-            subtitle="Masuk ke akun Anda untuk mengelola ekosistem pasar dengan nyaman dan teratur."
+            subtitle="Masuk ke akun Anda untuk mengelola workspace dengan nyaman dan teratur."
         >
             <!-- Status / Error Notification -->
             @if (session('status'))
@@ -21,7 +21,7 @@
                     type="email"
                     label="Alamat Email"
                     icon="mail"
-                    placeholder="nama@lenterapasar.id"
+                    placeholder="nama@email.com"
                     required
                     autofocus
                     autocomplete="username"
@@ -65,7 +65,7 @@
             @if (Route::has('register'))
                 <x-slot:footer>
                     <p class="text-xs sm:text-sm">
-                        Belum terdaftar sebagai pengelola? 
+                        Belum memiliki akun pengelola? 
                         <a href="{{ route('register') }}" class="font-bold text-[#31725e] hover:text-[#1d3e35] hover:underline transition-colors ml-1">
                             Daftar Akun Baru
                         </a>

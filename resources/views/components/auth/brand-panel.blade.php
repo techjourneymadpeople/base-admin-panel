@@ -9,15 +9,15 @@
         <div>
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-medium text-[#e2f0ea] mb-6">
                 <i data-lucide="trees" class="w-3.5 h-3.5 text-[#99cab7]"></i>
-                <span>Harmoni &bull; Ketertiban &bull; Keberlanjutan</span>
+                <span>Harmoni &bull; Produktivitas &bull; Keandalan</span>
             </div>
 
             <h2 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
-                Kelola Ekosistem Pasar dengan Tenang & Berkelanjutan
+                Kelola Workspace Anda dengan Tenang & Efisien
             </h2>
 
             <p class="mt-3 text-sm text-[#e2f0ea]/85 leading-relaxed font-normal">
-                Platform administrasi terpadu untuk monitoring pasar rakyat, perizinan, tata ruang lapak, dan retribusi digital secara transparan.
+                Platform administrasi terpadu untuk monitoring operasional, manajemen data, dan pengelolaan hak akses secara terpusat dan aman.
             </p>
         </div>
 
@@ -48,9 +48,9 @@
         <div class="pt-4 border-t border-white/15 flex items-center justify-between text-xs text-[#e2f0ea]/70">
             <span class="flex items-center gap-1.5">
                 <i data-lucide="coffee" class="w-4 h-4 text-[#cca06e]"></i>
-                Kerja cerdas, suasana teduh
+                Kerja fokus, suasana teduh
             </span>
-            <span class="font-medium text-[#c5e1d5]">Lentera Pasar v1.0</span>
+            <span class="font-medium text-[#c5e1d5]">{{ config('app.name', 'Admin Panel') }}</span>
         </div>
     </div>
 </div>

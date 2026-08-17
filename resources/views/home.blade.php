@@ -20,7 +20,7 @@
                             </span>
                         </div>
                         <p class="text-xs text-[#623c2c]/80 mt-0.5">
-                            {{ auth()->user()->email ?? 'admin@lenterapasar.id' }} &bull; Sesi Pengelola Terverifikasi
+                            {{ auth()->user()->email ?? 'admin@example.com' }} &bull; Sesi Terverifikasi
                         </p>
                     </div>
                 </div>
@@ -38,26 +38,26 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 my-8">
                 <div class="p-5 rounded-2xl bg-white/60 border border-[#99cab7]/40 shadow-sm backdrop-blur-md">
                     <div class="w-10 h-10 rounded-xl bg-[#e2f0ea] text-[#31725e] flex items-center justify-center mb-3">
-                        <i data-lucide="store" class="w-5 h-5"></i>
+                        <i data-lucide="users" class="w-5 h-5"></i>
                     </div>
-                    <div class="text-2xl font-bold text-[#1d3e35]">24 Unit</div>
-                    <div class="text-xs text-[#623c2c]/75 mt-0.5">Pasar Rakyat Terpantau</div>
+                    <div class="text-2xl font-bold text-[#1d3e35]">1.250+</div>
+                    <div class="text-xs text-[#623c2c]/75 mt-0.5">Total Pengguna Terdaftar</div>
                 </div>
 
                 <div class="p-5 rounded-2xl bg-white/60 border border-[#99cab7]/40 shadow-sm backdrop-blur-md">
                     <div class="w-10 h-10 rounded-xl bg-[#ead7be] text-[#945838] flex items-center justify-center mb-3">
-                        <i data-lucide="users" class="w-5 h-5"></i>
+                        <i data-lucide="activity" class="w-5 h-5"></i>
                     </div>
-                    <div class="text-2xl font-bold text-[#1d3e35]">1.420</div>
-                    <div class="text-xs text-[#623c2c]/75 mt-0.5">Pedagang & Pedagang Kaki Lima</div>
+                    <div class="text-2xl font-bold text-[#1d3e35]">99.9%</div>
+                    <div class="text-xs text-[#623c2c]/75 mt-0.5">Keandalan Sistem & Uptime</div>
                 </div>
 
                 <div class="p-5 rounded-2xl bg-white/60 border border-[#99cab7]/40 shadow-sm backdrop-blur-md">
                     <div class="w-10 h-10 rounded-xl bg-[#e2f0ea] text-[#428e75] flex items-center justify-center mb-3">
                         <i data-lucide="shield-check" class="w-5 h-5"></i>
                     </div>
-                    <div class="text-2xl font-bold text-[#1d3e35]">99.8%</div>
-                    <div class="text-xs text-[#623c2c]/75 mt-0.5">Keandalan Sistem & Retribusi</div>
+                    <div class="text-2xl font-bold text-[#1d3e35]">Aktif</div>
+                    <div class="text-xs text-[#623c2c]/75 mt-0.5">Status Keamanan 2FA</div>
                 </div>
             </div>
 

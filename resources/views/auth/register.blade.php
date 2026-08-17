@@ -4,7 +4,7 @@
             badge="Pendaftaran Pengelola"
             icon="user-plus"
             title="Daftar Akun Baru"
-            subtitle="Bergabunglah untuk membangun pasar tradisional yang modern, bersih, dan berdaya saing."
+            subtitle="Lengkapi informasi di bawah ini untuk memulai akses ke workspace Anda."
         >
             <!-- Register Form -->
             <form method="POST" action="{{ route('register') }}" class="space-y-4">
@@ -28,7 +28,7 @@
                     type="email"
                     label="Alamat Email"
                     icon="mail"
-                    placeholder="nama@lenterapasar.id"
+                    placeholder="nama@email.com"
                     required
                     autocomplete="username"
                 />

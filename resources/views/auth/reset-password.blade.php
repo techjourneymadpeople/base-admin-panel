@@ -4,7 +4,7 @@
             badge="Pembaruan Kredensial"
             icon="lock-keyhole"
             title="Atur Ulang Kata Sandi"
-            subtitle="Silakan tentukan kata sandi baru yang kuat untuk mengamankan akun Lentera Pasar Anda."
+            subtitle="Silakan tentukan kata sandi baru yang kuat untuk mengamankan akun Anda."
         >
             <!-- Reset Password Form -->
             <form method="POST" action="{{ route('password.update') }}" class="space-y-4">

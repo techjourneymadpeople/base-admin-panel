@@ -21,7 +21,7 @@
                     type="email"
                     label="Alamat Email Terdaftar"
                     icon="mail"
-                    placeholder="nama@lenterapasar.id"
+                    placeholder="nama@email.com"
                     required
                     autofocus
                     autocomplete="username"

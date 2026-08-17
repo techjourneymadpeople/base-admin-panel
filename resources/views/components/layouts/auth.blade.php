@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ? $title . ' - ' . config('app.name', 'Lentera Pasar') : config('app.name', 'Lentera Pasar') }}</title>
+    <title>{{ $title ? $title . ' - ' . config('app.name', 'Admin Panel') : config('app.name', 'Admin Panel') }}</title>
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,12 +47,12 @@
             <a href="{{ url('/') }}" class="group flex items-center gap-3 transition-transform duration-300 hover:scale-[1.02]">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1d3e35] via-[#31725e] to-[#cca06e] p-0.5 shadow-lg shadow-[#1d3e35]/15 flex items-center justify-center">
                     <div class="w-full h-full bg-[#1d3e35]/90 rounded-[14px] flex items-center justify-center backdrop-blur-sm">
-                        <i data-lucide="sprout" class="w-5 h-5 text-[#c5e1d5] group-hover:rotate-12 transition-transform duration-300"></i>
+                        <i data-lucide="shield-check" class="w-5 h-5 text-[#c5e1d5] group-hover:rotate-12 transition-transform duration-300"></i>
                     </div>
                 </div>
                 <div class="flex flex-col">
                     <span class="text-lg font-bold tracking-tight text-[#1d3e35] group-hover:text-[#31725e] transition-colors">
-                        Lentera Pasar
+                        {{ config('app.name', 'Admin Panel') }}
                     </span>
                     <span class="text-[11px] font-medium text-[#784732] -mt-1 tracking-wider uppercase">
                         Admin Workspace
@@ -65,7 +65,7 @@
                 <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#295c4d] bg-white/60 border border-[#c5e1d5]/60 shadow-sm backdrop-blur-md">
                     <span class="w-2 h-2 rounded-full bg-[#428e75] animate-ping"></span>
                     <span class="w-2 h-2 rounded-full bg-[#428e75] -ml-3.5"></span>
-                    <span>Sistem Aman & Santai</span>
+                    <span>Sistem Aman & Aktif</span>
                 </div>
             </div>
         </header>
@@ -78,11 +78,11 @@
         <!-- Relaxed Earthy Footer -->
         <footer class="w-full max-w-7xl mx-auto text-center py-4">
             <p class="text-xs text-[#623c2c]/75 flex items-center justify-center gap-1.5">
-                <span>&copy; {{ date('Y') }} {{ config('app.name', 'Lentera Pasar') }}</span>
+                <span>&copy; {{ date('Y') }} {{ config('app.name', 'Admin Panel') }}</span>
                 <span>&bull;</span>
                 <span class="inline-flex items-center gap-1 text-[#295c4d]">
-                    <i data-lucide="leaf" class="w-3.5 h-3.5"></i>
-                    Menumbuhkan Ekosistem Pasar Terpercaya
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                    Platform Administrasi Modern & Terpercaya
                 </span>
             </p>
         </footer>
