@@ -7,6 +7,69 @@
 @source "../**/*.vue";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    
+    /* Mountain Green Tones */
+    --color-mountain-50: #f2f8f5;
+    --color-mountain-100: #e2f0ea;
+    --color-mountain-200: #c5e1d5;
+    --color-mountain-300: #99cab7;
+    --color-mountain-400: #68ad94;
+    --color-mountain-500: #428e75;
+    --color-mountain-600: #31725e;
+    --color-mountain-700: #295c4d;
+    --color-mountain-800: #234b3f;
+    --color-mountain-900: #1d3e35;
+    --color-mountain-950: #0f241f;
+
+    /* Earth Brown / Warm Clay Tones */
+    --color-earth-50: #faf6f0;
+    --color-earth-100: #f4ebdE;
+    --color-earth-200: #ead7be;
+    --color-earth-300: #dcbe97;
+    --color-earth-400: #cca06e;
+    --color-earth-500: #bf854f;
+    --color-earth-600: #b17042;
+    --color-earth-700: #945838;
+    --color-earth-800: #784732;
+    --color-earth-900: #623c2c;
+    --color-earth-950: #351d15;
+}
+
+@layer utilities {
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 20px 40px -15px rgba(29, 62, 53, 0.08), 0 0 0 1px rgba(66, 142, 117, 0.06);
+    }
+
+    .dark .glass-panel {
+        background: rgba(15, 36, 31, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(66, 142, 117, 0.15);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .glass-input {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(66, 142, 117, 0.2);
+    }
+
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: #31725e;
+        box-shadow: 0 0 0 4px rgba(66, 142, 117, 0.15);
+    }
+
+    .glass-badge {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
 }
