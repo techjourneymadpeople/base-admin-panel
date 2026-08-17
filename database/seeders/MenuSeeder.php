@@ -103,5 +103,27 @@ class MenuSeeder extends Seeder
             'is_active' => true,
         ]);
         $menuManagement->assignPermissions('view-menus');
+
+        // 8. Heading: Pengaturan
+        $settingsHeader = Menu::create([
+            'title' => 'Pengaturan',
+            'type' => 'header',
+            'order' => 8,
+            'is_active' => true,
+        ]);
+
+        // 9. Web Configuration Menu Item with 'view-settings' permission
+        $webConfigMenu = Menu::create([
+            'title' => 'Web Konfigurasi',
+            'type' => 'link',
+            'route' => 'admin.settings.edit',
+            'icon' => 'settings',
+            'permission' => 'view-settings',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 9,
+            'is_active' => true,
+        ]);
+        $webConfigMenu->assignPermissions('view-settings');
     }
 }
