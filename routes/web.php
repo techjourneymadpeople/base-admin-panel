@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -27,27 +28,33 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/settings', [WebConfigurationController::class, 'edit'])->name('settings.edit')->middleware('can:view-settings');
     Route::put('/settings', [WebConfigurationController::class, 'update'])->name('settings.update')->middleware('can:edit-settings');
 
-    // 3. User Export & Import (Excel)
+    // 3. Media Library (Gudang Gambar, Cropper & WebP Compressor)
+    Route::get('/media', [MediaLibraryController::class, 'index'])->name('media.index')->middleware('can:view-content');
+    Route::post('/media', [MediaLibraryController::class, 'store'])->name('media.store')->middleware('can:upload-media');
+    Route::post('/media/{media}/crop', [MediaLibraryController::class, 'crop'])->name('media.crop')->middleware('can:upload-media');
+    Route::delete('/media/{media}', [MediaLibraryController::class, 'destroy'])->name('media.destroy')->middleware('can:delete-media');
+
+    // 4. User Export & Import (Excel)
     Route::get('/users/export/excel', [UserController::class, 'export'])->name('users.export')->middleware('can:view-users');
     Route::post('/users/import/excel', [UserController::class, 'import'])->name('users.import')->middleware('can:create-users');
     Route::get('/users/import/template', [UserController::class, 'downloadTemplate'])->name('users.import.template')->middleware('can:create-users');
 
-    // 4. Dedicated Assign Role Routes
+    // 5. Dedicated Assign Role Routes
     Route::get('/users/{user}/roles', [UserRoleController::class, 'edit'])->name('users.roles.edit')->middleware('can:assign-roles');
     Route::put('/users/{user}/roles', [UserRoleController::class, 'update'])->name('users.roles.update')->middleware('can:assign-roles');
 
-    // 5. User CRUD Resource (No Delete)
+    // 6. User CRUD Resource (No Delete)
     Route::resource('users', UserController::class, ['except' => ['destroy']]);
 
-    // 6. Role Routes (with Dedicated Assign Permissions)
+    // 7. Role Routes (with Dedicated Assign Permissions)
     Route::get('/roles/{role}/permissions', [RoleController::class, 'permissions'])->name('roles.permissions')->middleware('can:assign-permissions');
     Route::put('/roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update')->middleware('can:assign-permissions');
     Route::resource('roles', RoleController::class);
 
-    // 7. Permission Routes
+    // 8. Permission Routes
     Route::resource('permissions', PermissionController::class);
 
-    // 8. Dynamic Menu Routes (with View-only Assign Permissions)
+    // 9. Dynamic Menu Routes (with View-only Assign Permissions)
     Route::get('/menus/{menu}/permissions', [MenuController::class, 'permissions'])->name('menus.permissions')->middleware('can:assign-menu-permissions');
     Route::put('/menus/{menu}/permissions', [MenuController::class, 'updatePermissions'])->name('menus.permissions.update')->middleware('can:assign-menu-permissions');
     Route::resource('menus', MenuController::class);
