@@ -5,12 +5,15 @@ import Alpine from 'alpinejs';
 import { createIcons, icons } from 'lucide';
 import Chart from 'chart.js/auto';
 
+import TomSelect from 'tom-select';
+
 // Attach DataTables to jQuery and window
 if (DataTable.use) {
     DataTable.use($);
 }
 window.$ = window.jQuery = $;
 window.DataTable = DataTable;
+window.TomSelect = TomSelect;
 window.Alpine = Alpine;
 window.Chart = Chart;
 

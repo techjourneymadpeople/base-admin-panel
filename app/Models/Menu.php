@@ -150,17 +150,31 @@ class Menu extends Model
      */
     public function isActive(): bool
     {
-        if ($this->route && request()->routeIs($this->route . '*')) {
-            return true;
+        if ($this->route) {
+            if (request()->routeIs($this->route, $this->route . '.*')) {
+                return true;
+            }
+
+            // If route ends in .index (e.g. admin.users.index), match admin.users.* (create, edit, show, roles, etc.)
+            if (str_ends_with($this->route, '.index')) {
+                $baseRoute = substr($this->route, 0, -6);
+                if (request()->routeIs($baseRoute . '.*')) {
+                    return true;
+                }
+            }
         }
 
-        if ($this->url && request()->is(trim($this->url, '/') . '*')) {
-            return true;
+        if ($this->url && $this->url !== '#') {
+            $path = trim(parse_url($this->getUrl(), PHP_URL_PATH) ?? $this->url, '/');
+            if (!empty($path) && (request()->is($path) || request()->is($path . '/*'))) {
+                return true;
+            }
         }
 
         // Check if any child is active
-        if ($this->children && $this->children->isNotEmpty()) {
-            foreach ($this->children as $child) {
+        if ($this->relationLoaded('children') ? $this->children->isNotEmpty() : $this->children()->exists()) {
+            $children = $this->relationLoaded('children') ? $this->children : $this->children;
+            foreach ($children as $child) {
                 if ($child->isActive()) {
                     return true;
                 }

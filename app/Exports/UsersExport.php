@@ -3,13 +3,13 @@
 namespace App\Exports;
 
 use App\Models\User;
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -18,9 +18,9 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
     protected int $rowNumber = 0;
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Enumerable
      */
-    public function collection()
+    public function collection(): Enumerable
     {
         $currentUser = auth()->user();
         $query = User::with('roles')->orderBy('name', 'asc');
@@ -56,10 +56,10 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
     /**
      * Map each user row.
      *
-     * @param  User  $user
+     * @param  mixed  $row
      * @return array
      */
-    public function map($user): array
+    public function map(mixed $row): array
     {
         $this->rowNumber++;
 
@@ -72,13 +72,13 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
 
         return [
             $this->rowNumber,
-            $user->id,
-            $user->name,
-            $user->email,
-            $user->roles->pluck('name')->implode(', ') ?: 'User',
-            $statusLabels[$user->status] ?? ucfirst($user->status),
-            $user->email_verified_at ? 'Terverifikasi (' . $user->email_verified_at->format('d/m/Y H:i') . ')' : 'Belum Diverifikasi',
-            $user->created_at ? $user->created_at->format('d/m/Y H:i') : '-',
+            $row->id,
+            $row->name,
+            $row->email,
+            $row->roles->pluck('name')->implode(', ') ?: 'User',
+            $statusLabels[$row->status] ?? ucfirst($row->status ?? 'active'),
+            $row->email_verified_at ? 'Terverifikasi (' . $row->email_verified_at->format('d/m/Y H:i') . ')' : 'Belum Diverifikasi',
+            $row->created_at ? $row->created_at->format('d/m/Y H:i') : '-',
         ];
     }
 
@@ -86,9 +86,9 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
      * Apply styles to worksheet.
      *
      * @param  Worksheet  $sheet
-     * @return array
+     * @return array|null
      */
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): ?array
     {
         return [
             1 => [

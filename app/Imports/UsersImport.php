@@ -24,9 +24,9 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
     /**
      * @param array $row
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return \Illuminate\Database\Eloquent\Model|array|null
      */
-    public function model(array $row)
+    public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
     {
         $rawPassword = !empty($row['password']) ? (string) $row['password'] : 'password';
 
