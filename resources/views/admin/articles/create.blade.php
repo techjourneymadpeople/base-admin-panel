@@ -1,0 +1,399 @@
+<x-layouts.admin title="Tulis Artikel Baru">
+    <x-admin.breadcrumb 
+        title="Tulis Artikel Baru" 
+        :items="[
+            'Article SEO' => '',
+            'Article' => route('admin.articles.index'),
+            'Tulis Artikel' => ''
+        ]" 
+    />
+
+    <div class="space-y-6" x-data="articleFormHandler()">
+        <form action="{{ route('admin.articles.store') }}" method="POST" class="space-y-6">
+            @csrf
+
+            <!-- Hidden Inputs for Thumbnail from Media Library -->
+            <input type="hidden" name="thumbnail_media_id" :value="thumbnailMediaId" />
+            <input type="hidden" name="thumbnail_url" :value="thumbnailUrl" />
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column (2 Cols): Title, Excerpt, Content, SEO Meta -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Main Content Card -->
+                    <x-admin.card 
+                        title="Konten Utama Artikel" 
+                        subtitle="Tulis judul dan isi konten artikel. Slug URL SEO akan dibuat otomatis oleh sistem."
+                    >
+                        <div class="space-y-5">
+                            <!-- Judul Artikel (Auto generates slug behind the scenes) -->
+                            <div class="space-y-1.5">
+                                <label for="title" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Judul Artikel <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="title"
+                                    id="title"
+                                    x-model="title"
+                                    @input="updateSeoDefaults()"
+                                    placeholder="Masukkan judul artikel yang menarik dan SEO friendly..."
+                                    value="{{ old('title') }}"
+                                    class="w-full rounded-2xl p-3.5 text-base font-bold text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                    required
+                                />
+                                @error('title')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Excerpt / Ringkasan Singkat -->
+                            <div class="space-y-1.5">
+                                <label for="excerpt" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Ringkasan / Excerpt (Opsional)
+                                </label>
+                                <textarea
+                                    name="excerpt"
+                                    id="excerpt"
+                                    x-model="excerpt"
+                                    @input="updateSeoDescDefault()"
+                                    rows="3"
+                                    placeholder="Ringkasan singkat isi artikel untuk pengantar & lead paragraph..."
+                                    class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                >{{ old('excerpt') }}</textarea>
+                                @error('excerpt')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Isi Konten Artikel -->
+                            <div class="space-y-1.5">
+                                <label for="content" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Isi Artikel Lengkap
+                                </label>
+                                <textarea
+                                    name="content"
+                                    id="content"
+                                    rows="14"
+                                    placeholder="Tulis artikel lengkap di sini..."
+                                    class="w-full rounded-2xl p-4 text-sm leading-relaxed text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none font-sans"
+                                >{{ old('content') }}</textarea>
+                                @error('content')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </x-admin.card>
+
+                    <!-- SEO Meta Configuration & Google SERP Preview Card -->
+                    <x-admin.card 
+                        title="Optimasi SEO & Meta Tags" 
+                        subtitle="Atur meta title, meta description, dan kata kunci agar artikel terindeks optimal di Google & Search Engine."
+                    >
+                        <div class="space-y-5">
+                            <!-- Live Google SERP Snippet Preview -->
+                            <div class="p-4 rounded-2xl bg-white border border-stone-200 shadow-2xs space-y-1.5">
+                                <div class="flex items-center gap-2 text-stone-400 text-[11px] font-semibold">
+                                    <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-500"></i>
+                                    <span>Pratinjau Hasil Pencarian Google</span>
+                                </div>
+                                <div class="space-y-1 pt-1">
+                                    <div class="text-xs text-stone-500 font-mono truncate">
+                                        {{ url('/articles') }}/<span x-text="computedSlug || 'judul-artikel-anda'"></span>
+                                    </div>
+                                    <h4 class="text-base font-medium text-[#1a0dab] hover:underline cursor-pointer truncate" x-text="metaTitle || title || 'Judul Artikel Anda - ' + '{{ config('app.name') }}'"></h4>
+                                    <p class="text-xs text-stone-600 line-clamp-2 leading-relaxed" x-text="metaDescription || excerpt || 'Deskripsi meta artikel akan muncul di sini sebagai cuplikan ringkas pencarian search engine Google...'"></p>
+                                </div>
+                            </div>
+
+                            <!-- Meta Title -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <label for="meta_title" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                        Meta Title (Judul SEO)
+                                    </label>
+                                    <span class="text-[11px] text-stone-400 font-mono" x-text="(metaTitle ? metaTitle.length : 0) + ' / 60 Karakter'"></span>
+                                </div>
+                                <input
+                                    type="text"
+                                    name="meta_title"
+                                    id="meta_title"
+                                    x-model="metaTitle"
+                                    placeholder="Biarkan kosong untuk menggunakan Judul Artikel utama..."
+                                    value="{{ old('meta_title') }}"
+                                    class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                />
+                                @error('meta_title')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Meta Description -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <label for="meta_description" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                        Meta Description
+                                    </label>
+                                    <span class="text-[11px] text-stone-400 font-mono" x-text="(metaDescription ? metaDescription.length : 0) + ' / 160 Karakter'"></span>
+                                </div>
+                                <textarea
+                                    name="meta_description"
+                                    id="meta_description"
+                                    x-model="metaDescription"
+                                    rows="3"
+                                    placeholder="Deskripsi ringkas yang muncul pada snippet hasil pencarian Google (120-160 karakter disarankan)..."
+                                    class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                >{{ old('meta_description') }}</textarea>
+                                @error('meta_description')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Meta Keywords & Canonical URL Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <x-form.input
+                                    name="meta_keywords"
+                                    label="Meta Keywords"
+                                    placeholder="kata kunci 1, kata kunci 2, topik..."
+                                    :value="old('meta_keywords')"
+                                />
+
+                                <x-form.input
+                                    type="url"
+                                    name="canonical_url"
+                                    label="Canonical URL (Opsional)"
+                                    placeholder="https://domain.com/canonical-url"
+                                    :value="old('canonical_url')"
+                                />
+                            </div>
+                        </div>
+                    </x-admin.card>
+                </div>
+
+                <!-- Right Column (1 Col): Thumbnail dari Media Library, Kategori, Tags, Status Publikasi -->
+                <div class="space-y-6">
+                    <!-- Thumbnail Media Library Card -->
+                    <x-admin.card 
+                        title="Gambar Thumbnail" 
+                        subtitle="Pilih thumbnail artikel dari Media Library."
+                    >
+                        <div class="space-y-4">
+                            <!-- Preview Box -->
+                            <div class="relative w-full aspect-video rounded-2xl bg-[#f2f8f5]/80 border-2 border-dashed border-[#99cab7]/60 overflow-hidden flex flex-col items-center justify-center p-2 group shadow-2xs">
+                                <template x-if="thumbnailUrl">
+                                    <div class="relative w-full h-full">
+                                        <img :src="thumbnailUrl" alt="Thumbnail Preview" class="w-full h-full object-cover rounded-xl" />
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 rounded-xl">
+                                            <button 
+                                                type="button" 
+                                                @click="openMediaPicker()"
+                                                class="p-2 rounded-xl bg-white text-stone-800 hover:bg-[#e2f0ea] transition-colors shadow-md"
+                                                title="Ganti Gambar"
+                                            >
+                                                <i data-lucide="refresh-cw" class="w-4 h-4 text-[#31725e]"></i>
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                @click="removeThumbnail()"
+                                                class="p-2 rounded-xl bg-white text-red-600 hover:bg-red-50 transition-colors shadow-md"
+                                                title="Hapus Thumbnail"
+                                            >
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template x-if="!thumbnailUrl">
+                                    <div class="text-center p-4">
+                                        <div class="w-12 h-12 rounded-2xl bg-[#31725e]/10 text-[#31725e] flex items-center justify-center mx-auto mb-2">
+                                            <i data-lucide="image" class="w-6 h-6"></i>
+                                        </div>
+                                        <p class="text-xs font-bold text-[#1d3e35]">Belum ada thumbnail dipilih</p>
+                                        <p class="text-[11px] text-stone-400 mt-0.5">Ambil dari Gudang Media Library</p>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Button Trigger Media Library Modal -->
+                            <button 
+                                type="button" 
+                                @click="openMediaPicker()"
+                                class="w-full py-2.5 px-4 rounded-2xl bg-white border border-[#99cab7]/60 hover:bg-[#e2f0ea] text-[#1d3e35] font-bold text-xs inline-flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
+                            >
+                                <i data-lucide="folder-search" class="w-4 h-4 text-[#31725e]"></i>
+                                <span x-text="thumbnailUrl ? 'Ganti dari Media Library' : 'Pilih dari Media Library'"></span>
+                            </button>
+                        </div>
+                    </x-admin.card>
+
+                    <!-- Kategori & Tags Card -->
+                    <x-admin.card 
+                        title="Kategori & Tag" 
+                        subtitle="Klasifikasi artikel untuk struktur menu & sitemap."
+                    >
+                        <div class="space-y-5">
+                            <!-- Kategori Selector -->
+                            <div class="space-y-1.5">
+                                <label for="category_id" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Kategori Artikel
+                                </label>
+                                <select 
+                                    name="category_id" 
+                                    id="category_id"
+                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                >
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach($categories as $cat)
+                                        <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                                            {{ $cat->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Tag Multi-select -->
+                            <div class="space-y-1.5">
+                                <label for="tags_select" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Tag Artikel
+                                </label>
+                                <select 
+                                    name="tags[]" 
+                                    id="tags_select" 
+                                    multiple 
+                                    placeholder="Pilih atau ketik tag baru..."
+                                    class="w-full"
+                                >
+                                    @foreach($tags as $tag)
+                                        <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>
+                                            {{ $tag->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <p class="text-[10px] text-stone-400">Tekan Enter untuk membuat label tag baru.</p>
+                            </div>
+                        </div>
+                    </x-admin.card>
+
+                    <!-- Status Publikasi & Tombol Simpan -->
+                    <x-admin.card 
+                        title="Publikasi" 
+                        subtitle="Atur status penerbitan artikel."
+                    >
+                        <div class="space-y-5">
+                            <!-- Status -->
+                            <div class="space-y-1.5">
+                                <label for="status" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Status
+                                </label>
+                                <select 
+                                    name="status" 
+                                    id="status"
+                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none font-semibold"
+                                >
+                                    <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>Terbitkan Langsung (Published)</option>
+                                    <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Simpan sebagai Draft</option>
+                                    <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Arsipkan</option>
+                                </select>
+                            </div>
+
+                            <!-- Tanggal Publikasi -->
+                            <x-form.input
+                                type="datetime-local"
+                                name="published_at"
+                                label="Jadwal / Waktu Terbit"
+                                :value="old('published_at', now()->format('Y-m-d\TH:i'))"
+                            />
+
+                            <!-- Submit Action Buttons -->
+                            <div class="pt-4 border-t border-stone-100 flex flex-col gap-2">
+                                <button 
+                                    type="submit" 
+                                    class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white hover:opacity-95 font-bold text-xs inline-flex items-center justify-center gap-2 shadow-md shadow-[#1d3e35]/20 transition-all cursor-pointer"
+                                >
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-[#cca06e]"></i>
+                                    <span>Simpan & Buat Sitemap.xml</span>
+                                </button>
+
+                                <a 
+                                    href="{{ route('admin.articles.index') }}" 
+                                    class="w-full py-2.5 px-4 rounded-2xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 font-bold text-xs text-center transition-colors"
+                                >
+                                    Batal
+                                </a>
+                            </div>
+                        </div>
+                    </x-admin.card>
+                </div>
+            </div>
+        </form>
+
+        <!-- Media Picker Modal Component -->
+        <x-admin.media-picker-modal />
+    </div>
+
+    <!-- TomSelect Initialization Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.TomSelect) {
+                new window.TomSelect('#tags_select', {
+                    create: true,
+                    persist: false,
+                    plugins: ['remove_button'],
+                    placeholder: 'Pilih atau ketik tag baru...',
+                });
+            }
+        });
+
+        function articleFormHandler() {
+            return {
+                title: "{{ old('title', '') }}",
+                excerpt: "{{ old('excerpt', '') }}",
+                metaTitle: "{{ old('meta_title', '') }}",
+                metaDescription: "{{ old('meta_description', '') }}",
+                thumbnailMediaId: "{{ old('thumbnail_media_id', '') }}",
+                thumbnailUrl: "{{ old('thumbnail_url', '') }}",
+
+                get computedSlug() {
+                    if (!this.title) return '';
+                    return this.title
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/[\s_-]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                },
+
+                updateSeoDefaults() {
+                    // Update slug calculation for preview
+                },
+
+                updateSeoDescDefault() {
+                    // Reactive preview
+                },
+
+                openMediaPicker() {
+                    window.dispatchEvent(new CustomEvent('open-media-picker', {
+                        detail: { targetField: 'article_thumbnail' }
+                    }));
+                },
+
+                removeThumbnail() {
+                    this.thumbnailMediaId = '';
+                    this.thumbnailUrl = '';
+                },
+
+                init() {
+                    window.addEventListener('media-selected', (event) => {
+                        if (event.detail && event.detail.media) {
+                            this.thumbnailMediaId = event.detail.media.id;
+                            this.thumbnailUrl = event.detail.media.url;
+                        }
+                    });
+                }
+            };
+        }
+    </script>
+</x-layouts.admin>

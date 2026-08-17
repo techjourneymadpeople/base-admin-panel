@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\ArticleCategoryController;
+use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\ArticleTagController;
 use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -30,6 +33,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // 3. Media Library (Gudang Gambar, Cropper & WebP Compressor)
     Route::get('/media', [MediaLibraryController::class, 'index'])->name('media.index')->middleware('can:view-content');
+    Route::get('/media/api/list', [MediaLibraryController::class, 'apiList'])->name('media.api.list')->middleware('can:view-content');
     Route::post('/media', [MediaLibraryController::class, 'store'])->name('media.store')->middleware('can:upload-media');
     Route::post('/media/{media}/crop', [MediaLibraryController::class, 'crop'])->name('media.crop')->middleware('can:upload-media');
     Route::delete('/media/{media}', [MediaLibraryController::class, 'destroy'])->name('media.destroy')->middleware('can:delete-media');
@@ -58,4 +62,21 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/menus/{menu}/permissions', [MenuController::class, 'permissions'])->name('menus.permissions')->middleware('can:assign-menu-permissions');
     Route::put('/menus/{menu}/permissions', [MenuController::class, 'updatePermissions'])->name('menus.permissions.update')->middleware('can:assign-menu-permissions');
     Route::resource('menus', MenuController::class);
+
+    // 10. Article SEO Routes
+    // Sitemap manual regenerate
+    Route::post('/articles/regenerate-sitemap', [ArticleController::class, 'regenerateSitemap'])->name('articles.regenerate-sitemap')->middleware('can:edit-articles');
+    
+    // Article Categories CRUD
+    Route::resource('article-categories', ArticleCategoryController::class, [
+        'names' => 'article-categories',
+    ]);
+
+    // Article Tags CRUD
+    Route::resource('article-tags', ArticleTagController::class, [
+        'names' => 'article-tags',
+    ]);
+
+    // Articles CRUD
+    Route::resource('articles', ArticleController::class);
 });

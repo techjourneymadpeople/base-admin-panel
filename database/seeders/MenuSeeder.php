@@ -118,15 +118,65 @@ class MenuSeeder extends Seeder
         ]);
         $mediaMenu->assignPermissions('view-content');
 
-        // 9. Heading: Pengaturan
-        $settingsHeader = Menu::create([
-            'title' => 'Pengaturan',
-            'type' => 'header',
+        // 9. Article SEO Dropdown Parent Menu
+        $articleSeoMenu = Menu::create([
+            'title' => 'Article SEO',
+            'type' => 'dropdown',
+            'icon' => 'newspaper',
+            'badge' => 'SEO',
+            'badge_color' => 'emerald',
             'order' => 9,
             'is_active' => true,
         ]);
 
-        // 10. Web Configuration Menu Item with 'view-settings' permission
+        // 9.1 Child: Article Category
+        $articleCategoryMenu = Menu::create([
+            'parent_id' => $articleSeoMenu->id,
+            'title' => 'Article Category',
+            'type' => 'link',
+            'route' => 'admin.article-categories.index',
+            'icon' => 'folder',
+            'permission' => 'view-article-categories',
+            'order' => 1,
+            'is_active' => true,
+        ]);
+        $articleCategoryMenu->assignPermissions('view-article-categories');
+
+        // 9.2 Child: Article Tag
+        $articleTagMenu = Menu::create([
+            'parent_id' => $articleSeoMenu->id,
+            'title' => 'Article Tag',
+            'type' => 'link',
+            'route' => 'admin.article-tags.index',
+            'icon' => 'tag',
+            'permission' => 'view-article-tags',
+            'order' => 2,
+            'is_active' => true,
+        ]);
+        $articleTagMenu->assignPermissions('view-article-tags');
+
+        // 9.3 Child: Article
+        $articleMenu = Menu::create([
+            'parent_id' => $articleSeoMenu->id,
+            'title' => 'Article',
+            'type' => 'link',
+            'route' => 'admin.articles.index',
+            'icon' => 'file-text',
+            'permission' => 'view-articles',
+            'order' => 3,
+            'is_active' => true,
+        ]);
+        $articleMenu->assignPermissions('view-articles');
+
+        // 10. Heading: Pengaturan
+        $settingsHeader = Menu::create([
+            'title' => 'Pengaturan',
+            'type' => 'header',
+            'order' => 10,
+            'is_active' => true,
+        ]);
+
+        // 11. Web Configuration Menu Item with 'view-settings' permission
         $webConfigMenu = Menu::create([
             'title' => 'Web Konfigurasi',
             'type' => 'link',
@@ -135,7 +185,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-settings',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 10,
+            'order' => 11,
             'is_active' => true,
         ]);
         $webConfigMenu->assignPermissions('view-settings');

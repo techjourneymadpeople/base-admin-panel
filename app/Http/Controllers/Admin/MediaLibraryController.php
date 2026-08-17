@@ -397,4 +397,59 @@ class MediaLibraryController extends Controller
         }
         return $bytes . ' B';
     }
+
+    /**
+     * Get JSON list of media items for Media Picker modal.
+     */
+    public function apiList(Request $request): JsonResponse
+    {
+        $warehouse = MediaWarehouse::getInstance();
+
+        $query = Media::where('model_type', MediaWarehouse::class)
+            ->where('model_id', $warehouse->id);
+
+        if ($request->filled('search')) {
+            $search = trim($request->input('search'));
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('file_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('format') && $request->input('format') !== 'all') {
+            $format = strtolower($request->input('format'));
+            if ($format === 'jpg' || $format === 'jpeg') {
+                $query->whereIn('mime_type', ['image/jpeg', 'image/jpg']);
+            } elseif ($format === 'png') {
+                $query->where('mime_type', 'image/png');
+            } elseif ($format === 'webp') {
+                $query->where('mime_type', 'image/webp');
+            } elseif ($format === 'svg') {
+                $query->whereIn('mime_type', ['image/svg+xml', 'image/svg']);
+            }
+        }
+
+        $items = $query->orderBy('created_at', 'desc')->paginate(18);
+
+        $formatted = $items->getCollection()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'file_name' => $item->file_name,
+                'url' => $item->getUrl(),
+                'size_formatted' => $this->formatBytes($item->size),
+                'mime_type' => $item->mime_type,
+                'created_at_human' => $item->created_at->diffForHumans(),
+            ];
+        });
+
+        return response()->json([
+            'data' => $formatted,
+            'current_page' => $items->currentPage(),
+            'last_page' => $items->lastPage(),
+            'total' => $items->total(),
+            'has_more' => $items->hasMorePages(),
+        ]);
+    }
 }
+
