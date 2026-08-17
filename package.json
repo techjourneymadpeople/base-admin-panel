@@ -19,11 +19,13 @@
         "alpinejs": "^3.16.1",
         "chart.js": "^4.5.1",
         "cropperjs": "^2.1.1",
+        "datatables.net-dt": "^3.0.1",
         "filepond": "^4.32.12",
         "filepond-plugin-file-validate-size": "^2.2.8",
         "filepond-plugin-file-validate-type": "^1.2.9",
         "filepond-plugin-image-preview": "^4.6.12",
         "flatpickr": "^4.6.13",
+        "jquery": "^4.0.0",
         "lucide": "^1.31.0"
     }
 }

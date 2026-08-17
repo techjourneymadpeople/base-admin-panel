@@ -1,8 +1,16 @@
 import './bootstrap';
+import $ from 'jquery';
+import DataTable from 'datatables.net-dt';
 import Alpine from 'alpinejs';
 import { createIcons, icons } from 'lucide';
 import Chart from 'chart.js/auto';
 
+// Attach DataTables to jQuery and window
+if (DataTable.use) {
+    DataTable.use($);
+}
+window.$ = window.jQuery = $;
+window.DataTable = DataTable;
 window.Alpine = Alpine;
 window.Chart = Chart;
 

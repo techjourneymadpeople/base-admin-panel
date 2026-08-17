@@ -6,11 +6,14 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 
@@ -34,6 +37,35 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
+
+        // Custom Authentication with Status Validation
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+
+            if ($user && Hash::check($request->password, $user->password)) {
+                if ($user->status === 'nonactive') {
+                    throw ValidationException::withMessages([
+                        Fortify::username() => ['Akun Anda sedang Non-Aktif. Silakan hubungi Administrator untuk mengaktifkan kembali akun Anda.'],
+                    ]);
+                }
+
+                if ($user->status === 'suspended') {
+                    throw ValidationException::withMessages([
+                        Fortify::username() => ['Akun Anda ditangguhkan (Suspended) sementara karena pelanggaran kebijakan. Silakan hubungi pihak Administrator.'],
+                    ]);
+                }
+
+                if ($user->status === 'banned') {
+                    throw ValidationException::withMessages([
+                        Fortify::username() => ['Akun Anda telah diblokir secara permanen (Banned) oleh Administrator.'],
+                    ]);
+                }
+
+                return $user;
+            }
+
+            return null;
+        });
 
         // Register Fortify Authentication Views
         Fortify::loginView(function () {

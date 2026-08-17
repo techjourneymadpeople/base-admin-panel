@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'status',
     ];
 
     /**
@@ -47,5 +48,28 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Status Helpers
+     */
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isNonactive(): bool
+    {
+        return $this->status === 'nonactive';
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === 'suspended';
+    }
+
+    public function isBanned(): bool
+    {
+        return $this->status === 'banned';
     }
 }

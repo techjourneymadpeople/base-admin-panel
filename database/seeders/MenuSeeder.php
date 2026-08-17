@@ -38,8 +38,28 @@ class MenuSeeder extends Seeder
             'order' => 2,
             'is_active' => true,
         ]);
-
-        // Assign Spatie permission to menu
         $dashboardMenu->assignPermissions('view-dashboard');
+
+        // 3. Heading: Pengguna & Akses
+        $userHeader = Menu::create([
+            'title' => 'Pengguna & Akses',
+            'type' => 'header',
+            'order' => 3,
+            'is_active' => true,
+        ]);
+
+        // 4. User List Menu Item with 'view-users' permission
+        $userMenu = Menu::create([
+            'title' => 'Daftar Pengguna',
+            'type' => 'link',
+            'route' => 'admin.users.index',
+            'icon' => 'users',
+            'permission' => 'view-users',
+            'badge' => '6 Role',
+            'badge_color' => 'amber',
+            'order' => 4,
+            'is_active' => true,
+        ]);
+        $userMenu->assignPermissions('view-users');
     }
 }
