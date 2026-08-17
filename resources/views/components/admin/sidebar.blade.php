@@ -73,38 +73,75 @@
         $displayMenus = [];
 
         try {
-            $rawMenus = \App\Models\Menu::with(['children.permissions', 'permissions'])->topLevel()->active()->get();
-            
-            $currentHeader = null;
-            $itemsForHeader = [];
+            // Load all active menus sorted primarily by order, then by creation date
+            $allMenus = \App\Models\Menu::with(['permissions', 'children.permissions', 'parent'])
+                ->where('is_active', true)
+                ->orderBy('order', 'asc')
+                ->orderBy('created_at', 'asc')
+                ->get();
 
-            foreach ($rawMenus as $m) {
-                if ($m->type === 'header') {
-                    // Flush previous header if it had permitted items
-                    if ($currentHeader && count($itemsForHeader) > 0) {
-                        $displayMenus[] = ['type' => 'header', 'menu' => $currentHeader];
-                        foreach ($itemsForHeader as $item) {
-                            $displayMenus[] = ['type' => 'item', 'menu' => $item];
-                        }
-                    }
-                    $currentHeader = $m;
-                    $itemsForHeader = [];
-                } else {
-                    if ($m->isVisibleForUser($currentUser)) {
-                        if ($currentHeader) {
-                            $itemsForHeader[] = $m;
-                        } else {
-                            $displayMenus[] = ['type' => 'item', 'menu' => $m];
-                        }
-                    }
+            $sections = [];
+            $currentHeader = null;
+            $currentItems = collect();
+
+            // Map of explicit header children (items that explicitly set parent_id = header_id)
+            $explicitHeaderChildren = [];
+            foreach ($allMenus as $item) {
+                if ($item->parent_id && $item->parent && $item->parent->type === 'header') {
+                    $explicitHeaderChildren[$item->parent_id][] = $item;
                 }
             }
 
-            // Flush the last header if it has permitted items
-            if ($currentHeader && count($itemsForHeader) > 0) {
-                $displayMenus[] = ['type' => 'header', 'menu' => $currentHeader];
-                foreach ($itemsForHeader as $item) {
-                    $displayMenus[] = ['type' => 'item', 'menu' => $item];
+            // Iterate sequentially through all menus to build header sections
+            foreach ($allMenus as $m) {
+                // Skip dropdown children (rendered inside dropdown component)
+                if ($m->parent_id && $m->parent && $m->parent->type === 'dropdown') {
+                    continue;
+                }
+
+                // Skip items whose parent is an explicit header (appended directly to that header group)
+                if ($m->parent_id && $m->parent && $m->parent->type === 'header') {
+                    continue;
+                }
+
+                if ($m->type === 'header') {
+                    // Flush previous section
+                    if ($currentHeader || $currentItems->isNotEmpty()) {
+                        $sections[] = [
+                            'header' => $currentHeader,
+                            'items' => $currentItems,
+                        ];
+                    }
+                    $currentHeader = $m;
+                    // Start current items with any explicit children assigned to this header
+                    $currentItems = collect($explicitHeaderChildren[$m->id] ?? []);
+                } else {
+                    $currentItems->push($m);
+                }
+            }
+
+            // Flush the last section
+            if ($currentHeader || $currentItems->isNotEmpty()) {
+                $sections[] = [
+                    'header' => $currentHeader,
+                    'items' => $currentItems,
+                ];
+            }
+
+            // Step 2: Filter by user visibility & sort items within each header section
+            foreach ($sections as $section) {
+                $visibleItems = $section['items']->filter(function($item) use ($currentUser) {
+                    return $item->isVisibleForUser($currentUser);
+                })->sortBy('order')->values();
+
+                // Only render header if there are visible items under it
+                if ($visibleItems->isNotEmpty()) {
+                    if ($section['header']) {
+                        $displayMenus[] = ['type' => 'header', 'menu' => $section['header']];
+                    }
+                    foreach ($visibleItems as $vItem) {
+                        $displayMenus[] = ['type' => 'item', 'menu' => $vItem];
+                    }
                 }
             }
         } catch (\Throwable $e) {

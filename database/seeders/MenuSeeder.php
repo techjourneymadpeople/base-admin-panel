@@ -89,5 +89,19 @@ class MenuSeeder extends Seeder
             'is_active' => true,
         ]);
         $permissionMenu->assignPermissions('view-permissions');
+
+        // 7. Dynamic Menu Management Menu Item with 'view-menus' permission
+        $menuManagement = Menu::create([
+            'title' => 'Kelola Menu',
+            'type' => 'link',
+            'route' => 'admin.menus.index',
+            'icon' => 'menu',
+            'permission' => 'view-menus',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 7,
+            'is_active' => true,
+        ]);
+        $menuManagement->assignPermissions('view-menus');
     }
 }

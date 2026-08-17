@@ -40,6 +40,13 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-permissions',
             'assign-permissions',
 
+            // Dynamic Menu Management
+            'view-menus',
+            'create-menus',
+            'edit-menus',
+            'delete-menus',
+            'assign-menu-permissions',
+
             // Content & Media Management
             'view-content',
             'create-content',
@@ -95,6 +102,11 @@ class RoleAndPermissionSeeder extends Seeder
             'create-permissions',
             'edit-permissions',
             'assign-permissions',
+            'view-menus',
+            'create-menus',
+            'edit-menus',
+            'delete-menus',
+            'assign-menu-permissions',
             'view-content',
             'publish-content',
             'view-support',
@@ -124,6 +136,11 @@ class RoleAndPermissionSeeder extends Seeder
             'create-permissions',
             'edit-permissions',
             'assign-permissions',
+            'view-menus',
+            'create-menus',
+            'edit-menus',
+            'delete-menus',
+            'assign-menu-permissions',
             'view-content',
             'create-content',
             'edit-content',

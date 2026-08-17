@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -34,4 +35,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // 5. Permission Routes
     Route::resource('permissions', PermissionController::class);
+
+    // 6. Dynamic Menu Routes (with View-only Assign Permissions)
+    Route::get('/menus/{menu}/permissions', [MenuController::class, 'permissions'])->name('menus.permissions')->middleware('can:assign-menu-permissions');
+    Route::put('/menus/{menu}/permissions', [MenuController::class, 'updatePermissions'])->name('menus.permissions.update')->middleware('can:assign-menu-permissions');
+    Route::resource('menus', MenuController::class);
 });
