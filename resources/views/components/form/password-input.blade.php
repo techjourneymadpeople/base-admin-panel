@@ -55,17 +55,28 @@
         <!-- Password Visibility Toggle Button -->
         <button 
             type="button" 
-            @click="show = !show; $nextTick(() => window.refreshIcons && window.refreshIcons())" 
-            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#68ad94] hover:text-[#1d3e35] transition-colors focus:outline-none"
+            @click="show = !show" 
+            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#68ad94] hover:text-[#1d3e35] transition-colors focus:outline-none cursor-pointer"
             tabindex="-1"
             aria-label="Tampilkan / Sembunyikan Kata Sandi"
         >
-            <template x-if="!show">
-                <i data-lucide="eye" class="w-4 h-4"></i>
-            </template>
-            <template x-if="show">
-                <i data-lucide="eye-off" class="w-4 h-4 text-[#b17042]"></i>
-            </template>
+            <!-- Eye Open Icon (When hidden) -->
+            <span x-show="!show" class="inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </span>
+
+            <!-- Eye Off Icon (When shown) -->
+            <span x-show="show" x-cloak class="inline-flex items-center text-[#b17042]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                    <line x1="2" x2="22" y1="2" y2="22"/>
+                </svg>
+            </span>
         </button>
     </div>
 

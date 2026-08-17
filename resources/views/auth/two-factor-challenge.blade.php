@@ -49,7 +49,7 @@
                 <x-slot:footer>
                     <button 
                         type="button" 
-                        @click="recovery = !recovery; $nextTick(() => window.refreshIcons && window.refreshIcons())"
+                        @click="recovery = !recovery"
                         class="inline-flex items-center gap-1.5 font-bold text-[#b17042] hover:text-[#784732] hover:underline transition-colors text-xs sm:text-sm cursor-pointer"
                     >
                         <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
