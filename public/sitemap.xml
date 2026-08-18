@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
     <loc>http://localhost:8000</loc>
-    <lastmod>2026-08-17T23:36:13+00:00</lastmod>
+    <lastmod>2026-08-17T23:56:52+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
             </url>
@@ -39,6 +39,12 @@
     <url>
     <loc>http://localhost:8000/articles/category/tips-edukasi-pasar</loc>
     <lastmod>2026-08-17T23:29:50+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/articles/category/software-architecture</loc>
+    <lastmod>2026-08-17T23:55:30+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
             </url>
