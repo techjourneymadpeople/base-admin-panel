@@ -89,6 +89,12 @@ class RoleAndPermissionSeeder extends Seeder
             'edit-testimonials',
             'delete-testimonials',
 
+            // Feedback / Saran & Masukan
+            'view-feedbacks',
+            'create-feedbacks',
+            'edit-feedbacks',
+            'delete-feedbacks',
+
             // Profile Business Identity
             'view-business-identity',
             'edit-business-identity',
@@ -162,6 +168,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-testimonials',
             'edit-testimonials',
             'delete-testimonials',
+            'view-feedbacks',
+            'create-feedbacks',
+            'edit-feedbacks',
+            'delete-feedbacks',
             'view-business-identity',
             'edit-business-identity',
             'view-settings',
@@ -219,6 +229,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-testimonials',
             'edit-testimonials',
             'delete-testimonials',
+            'view-feedbacks',
+            'create-feedbacks',
+            'edit-feedbacks',
+            'delete-feedbacks',
             'view-business-identity',
             'edit-business-identity',
             'view-settings',
@@ -232,6 +246,8 @@ class RoleAndPermissionSeeder extends Seeder
             'view-faqs',
             'view-partners',
             'view-testimonials',
+            'view-feedbacks',
+            'edit-feedbacks',
             'view-business-identity',
         ]);
 
@@ -270,6 +286,9 @@ class RoleAndPermissionSeeder extends Seeder
             'create-testimonials',
             'edit-testimonials',
             'delete-testimonials',
+            'view-feedbacks',
+            'create-feedbacks',
+            'edit-feedbacks',
             'view-business-identity',
             'edit-business-identity',
         ]);

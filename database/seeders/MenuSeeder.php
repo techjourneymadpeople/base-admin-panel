@@ -238,13 +238,27 @@ class MenuSeeder extends Seeder
         ]);
         $testimonialMenu->assignPermissions('view-testimonials');
 
+        // 3.6 Saran & Masukan
+        $feedbackMenu = Menu::create([
+            'title' => 'Saran & Masukan',
+            'type' => 'link',
+            'route' => 'admin.feedbacks.index',
+            'icon' => 'message-square',
+            'permission' => 'view-feedbacks',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 15,
+            'is_active' => true,
+        ]);
+        $feedbackMenu->assignPermissions('view-feedbacks');
+
         // ==========================================
         // 4. SECTION: Pengaturan
         // ==========================================
         $settingsHeader = Menu::create([
             'title' => 'Pengaturan',
             'type' => 'header',
-            'order' => 15,
+            'order' => 16,
             'is_active' => true,
         ]);
 
@@ -257,7 +271,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-business-identity',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 16,
+            'order' => 17,
             'is_active' => true,
         ]);
         $businessIdentityMenu->assignPermissions('view-business-identity');
@@ -271,7 +285,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-settings',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 17,
+            'order' => 18,
             'is_active' => true,
         ]);
         $webConfigMenu->assignPermissions('view-settings');
