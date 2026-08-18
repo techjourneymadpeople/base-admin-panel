@@ -92,4 +92,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // 13. Brand / Partner Routes
     Route::post('partners/{partner}/toggle-status', [\App\Http\Controllers\Admin\PartnerController::class, 'toggleStatus'])->name('partners.toggle-status')->middleware('can:edit-partners');
     Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
+
+    // 14. Testimonial Routes
+    Route::post('testimonials/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status')->middleware('can:edit-testimonials');
+    Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class);
 });

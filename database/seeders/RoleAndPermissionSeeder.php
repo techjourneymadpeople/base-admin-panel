@@ -83,6 +83,12 @@ class RoleAndPermissionSeeder extends Seeder
             'edit-partners',
             'delete-partners',
 
+            // Testimonial Management
+            'view-testimonials',
+            'create-testimonials',
+            'edit-testimonials',
+            'delete-testimonials',
+
             // Web Configuration & Settings
             'view-settings',
             'edit-settings',
@@ -148,6 +154,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-partners',
             'edit-partners',
             'delete-partners',
+            'view-testimonials',
+            'create-testimonials',
+            'edit-testimonials',
+            'delete-testimonials',
             'view-settings',
             'edit-settings',
         ]);
@@ -199,6 +209,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-partners',
             'edit-partners',
             'delete-partners',
+            'view-testimonials',
+            'create-testimonials',
+            'edit-testimonials',
+            'delete-testimonials',
             'view-settings',
         ]);
 
@@ -209,6 +223,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view-users',
             'view-faqs',
             'view-partners',
+            'view-testimonials',
         ]);
 
         // Role 5: Editor (Content production and publishing)
@@ -242,6 +257,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-partners',
             'edit-partners',
             'delete-partners',
+            'view-testimonials',
+            'create-testimonials',
+            'edit-testimonials',
+            'delete-testimonials',
         ]);
 
         // Role 6: User (Standard registered user)

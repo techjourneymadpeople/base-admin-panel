@@ -209,15 +209,29 @@ class MenuSeeder extends Seeder
         ]);
         $partnerMenu->assignPermissions('view-partners');
 
-        // 12. Heading: Pengaturan
-        $settingsHeader = Menu::create([
-            'title' => 'Pengaturan',
-            'type' => 'header',
+        // 12. Testimonial Menu Item with 'view-testimonials' permission
+        $testimonialMenu = Menu::create([
+            'title' => 'Testimonial',
+            'type' => 'link',
+            'route' => 'admin.testimonials.index',
+            'icon' => 'quote',
+            'permission' => 'view-testimonials',
+            'badge' => null,
+            'badge_color' => 'emerald',
             'order' => 12,
             'is_active' => true,
         ]);
+        $testimonialMenu->assignPermissions('view-testimonials');
 
-        // 13. Web Configuration Menu Item with 'view-settings' permission
+        // 13. Heading: Pengaturan
+        $settingsHeader = Menu::create([
+            'title' => 'Pengaturan',
+            'type' => 'header',
+            'order' => 13,
+            'is_active' => true,
+        ]);
+
+        // 14. Web Configuration Menu Item with 'view-settings' permission
         $webConfigMenu = Menu::create([
             'title' => 'Web Konfigurasi',
             'type' => 'link',
@@ -226,7 +240,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-settings',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 13,
+            'order' => 14,
             'is_active' => true,
         ]);
         $webConfigMenu->assignPermissions('view-settings');
