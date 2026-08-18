@@ -16,17 +16,18 @@
             <input type="hidden" name="thumbnail_media_id" :value="thumbnailMediaId" />
             <input type="hidden" name="thumbnail_url" :value="thumbnailUrl" />
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column (2 Cols): Title, Excerpt, Content, SEO Meta -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Main Content Card -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
+                <!-- ==================================================== -->
+                <!-- LEFT COLUMN: PURE ARTICLE CONTENT (Dominant / Wide)  -->
+                <!-- ==================================================== -->
+                <div class="md:col-span-8 space-y-6">
                     <x-admin.card 
-                        title="Konten Utama Artikel" 
-                        subtitle="Tulis judul dan isi konten artikel. Slug URL SEO akan dibuat otomatis oleh sistem."
+                        title="Tulis Artikel" 
+                        subtitle="Fokus menulis judul, ringkasan, dan isi lengkap artikel. Slug URL akan dibuat secara otomatis di sistem."
                     >
-                        <div class="space-y-5">
-                            <!-- Judul Artikel (Auto generates slug behind the scenes) -->
-                            <div class="space-y-1.5">
+                        <div class="space-y-6">
+                            <!-- Judul Artikel -->
+                            <div class="space-y-2">
                                 <label for="title" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
                                     Judul Artikel <span class="text-red-500">*</span>
                                 </label>
@@ -35,11 +36,11 @@
                                     name="title"
                                     id="title"
                                     x-model="title"
-                                    @input="updateSeoDefaults()"
-                                    placeholder="Masukkan judul artikel yang menarik dan SEO friendly..."
+                                    placeholder="Masukkan judul artikel yang menarik dan informatif..."
                                     value="{{ old('title') }}"
-                                    class="w-full rounded-2xl p-3.5 text-base font-bold text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                    class="w-full rounded-2xl p-4 text-lg font-extrabold text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none shadow-2xs"
                                     required
+                                    autofocus
                                 />
                                 @error('title')
                                     <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
@@ -47,7 +48,7 @@
                             </div>
 
                             <!-- Excerpt / Ringkasan Singkat -->
-                            <div class="space-y-1.5">
+                            <div class="space-y-2">
                                 <label for="excerpt" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
                                     Ringkasan / Excerpt (Opsional)
                                 </label>
@@ -55,27 +56,29 @@
                                     name="excerpt"
                                     id="excerpt"
                                     x-model="excerpt"
-                                    @input="updateSeoDescDefault()"
                                     rows="3"
                                     placeholder="Ringkasan singkat isi artikel untuk pengantar & lead paragraph..."
-                                    class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                    class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
                                 >{{ old('excerpt') }}</textarea>
                                 @error('excerpt')
                                     <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Isi Konten Artikel -->
-                            <div class="space-y-1.5">
-                                <label for="content" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                                    Isi Artikel Lengkap
-                                </label>
+                            <!-- Isi Konten Artikel Lengkap -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label for="content" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                        Isi Artikel Lengkap
+                                    </label>
+                                    <span class="text-[11px] text-stone-400 font-medium">Mendukung format paragraf & baris baru</span>
+                                </div>
                                 <textarea
                                     name="content"
                                     id="content"
-                                    rows="14"
-                                    placeholder="Tulis artikel lengkap di sini..."
-                                    class="w-full rounded-2xl p-4 text-sm leading-relaxed text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none font-sans"
+                                    rows="20"
+                                    placeholder="Mulai menulis isi konten artikel lengkap di sini..."
+                                    class="w-full rounded-2xl p-4 text-sm leading-relaxed text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-sans"
                                 >{{ old('content') }}</textarea>
                                 @error('content')
                                     <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
@@ -83,95 +86,63 @@
                             </div>
                         </div>
                     </x-admin.card>
+                </div>
 
-                    <!-- SEO Meta Configuration & Google SERP Preview Card -->
+                <!-- ======================================================== -->
+                <!-- RIGHT COLUMN: SIDEBAR (Compact & Structured)             -->
+                <!-- ======================================================== -->
+                <div class="md:col-span-4 space-y-6">
+                    <!-- 1. Card Status Publikasi & Tombol Aksi -->
                     <x-admin.card 
-                        title="Optimasi SEO & Meta Tags" 
-                        subtitle="Atur meta title, meta description, dan kata kunci agar artikel terindeks optimal di Google & Search Engine."
+                        title="Publikasi" 
+                        subtitle="Atur status penerbitan artikel."
                     >
                         <div class="space-y-5">
-                            <!-- Live Google SERP Snippet Preview -->
-                            <div class="p-4 rounded-2xl bg-white border border-stone-200 shadow-2xs space-y-1.5">
-                                <div class="flex items-center gap-2 text-stone-400 text-[11px] font-semibold">
-                                    <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-500"></i>
-                                    <span>Pratinjau Hasil Pencarian Google</span>
-                                </div>
-                                <div class="space-y-1 pt-1">
-                                    <div class="text-xs text-stone-500 font-mono truncate">
-                                        {{ url('/articles') }}/<span x-text="computedSlug || 'judul-artikel-anda'"></span>
-                                    </div>
-                                    <h4 class="text-base font-medium text-[#1a0dab] hover:underline cursor-pointer truncate" x-text="metaTitle || title || 'Judul Artikel Anda - ' + '{{ config('app.name') }}'"></h4>
-                                    <p class="text-xs text-stone-600 line-clamp-2 leading-relaxed" x-text="metaDescription || excerpt || 'Deskripsi meta artikel akan muncul di sini sebagai cuplikan ringkas pencarian search engine Google...'"></p>
-                                </div>
-                            </div>
-
-                            <!-- Meta Title -->
+                            <!-- Status -->
                             <div class="space-y-1.5">
-                                <div class="flex items-center justify-between">
-                                    <label for="meta_title" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                                        Meta Title (Judul SEO)
-                                    </label>
-                                    <span class="text-[11px] text-stone-400 font-mono" x-text="(metaTitle ? metaTitle.length : 0) + ' / 60 Karakter'"></span>
-                                </div>
-                                <input
-                                    type="text"
-                                    name="meta_title"
-                                    id="meta_title"
-                                    x-model="metaTitle"
-                                    placeholder="Biarkan kosong untuk menggunakan Judul Artikel utama..."
-                                    value="{{ old('meta_title') }}"
-                                    class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
-                                />
-                                @error('meta_title')
-                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
-                                @enderror
+                                <label for="status" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Status Publikasi
+                                </label>
+                                <select 
+                                    name="status" 
+                                    id="status"
+                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-semibold"
+                                >
+                                    <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>Terbitkan Langsung (Published)</option>
+                                    <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Simpan sebagai Draft</option>
+                                    <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Arsipkan</option>
+                                </select>
                             </div>
 
-                            <!-- Meta Description -->
-                            <div class="space-y-1.5">
-                                <div class="flex items-center justify-between">
-                                    <label for="meta_description" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                                        Meta Description
-                                    </label>
-                                    <span class="text-[11px] text-stone-400 font-mono" x-text="(metaDescription ? metaDescription.length : 0) + ' / 160 Karakter'"></span>
-                                </div>
-                                <textarea
-                                    name="meta_description"
-                                    id="meta_description"
-                                    x-model="metaDescription"
-                                    rows="3"
-                                    placeholder="Deskripsi ringkas yang muncul pada snippet hasil pencarian Google (120-160 karakter disarankan)..."
-                                    class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
-                                >{{ old('meta_description') }}</textarea>
-                                @error('meta_description')
-                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
-                                @enderror
-                            </div>
+                            <!-- Tanggal Publikasi -->
+                            <x-form.input
+                                type="datetime-local"
+                                name="published_at"
+                                label="Jadwal / Waktu Terbit"
+                                :value="old('published_at', now()->format('Y-m-d\TH:i'))"
+                            />
 
-                            <!-- Meta Keywords & Canonical URL Grid -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <x-form.input
-                                    name="meta_keywords"
-                                    label="Meta Keywords"
-                                    placeholder="kata kunci 1, kata kunci 2, topik..."
-                                    :value="old('meta_keywords')"
-                                />
+                            <!-- Submit Action Buttons -->
+                            <div class="pt-4 border-t border-stone-100 flex flex-col gap-2">
+                                <button 
+                                    type="submit" 
+                                    class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white hover:opacity-95 font-bold text-xs inline-flex items-center justify-center gap-2 shadow-md shadow-[#1d3e35]/20 transition-all cursor-pointer"
+                                >
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-[#cca06e]"></i>
+                                    <span>Simpan & Buat Sitemap.xml</span>
+                                </button>
 
-                                <x-form.input
-                                    type="url"
-                                    name="canonical_url"
-                                    label="Canonical URL (Opsional)"
-                                    placeholder="https://domain.com/canonical-url"
-                                    :value="old('canonical_url')"
-                                />
+                                <a 
+                                    href="{{ route('admin.articles.index') }}" 
+                                    class="w-full py-2.5 px-4 rounded-2xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 font-bold text-xs text-center transition-colors"
+                                >
+                                    Batal
+                                </a>
                             </div>
                         </div>
                     </x-admin.card>
-                </div>
 
-                <!-- Right Column (1 Col): Thumbnail dari Media Library, Kategori, Tags, Status Publikasi -->
-                <div class="space-y-6">
-                    <!-- Thumbnail Media Library Card -->
+                    <!-- 2. Card Gambar Thumbnail (Media Library) -->
                     <x-admin.card 
                         title="Gambar Thumbnail" 
                         subtitle="Pilih thumbnail artikel dari Media Library."
@@ -226,10 +197,10 @@
                         </div>
                     </x-admin.card>
 
-                    <!-- Kategori & Tags Card -->
+                    <!-- 3. Card Kategori & Tag -->
                     <x-admin.card 
                         title="Kategori & Tag" 
-                        subtitle="Klasifikasi artikel untuk struktur menu & sitemap."
+                        subtitle="Klasifikasi artikel untuk navigasi & struktur sitemap."
                     >
                         <div class="space-y-5">
                             <!-- Kategori Selector -->
@@ -240,7 +211,7 @@
                                 <select 
                                     name="category_id" 
                                     id="category_id"
-                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
                                 >
                                     <option value="">-- Pilih Kategori --</option>
                                     @foreach($categories as $cat)
@@ -277,52 +248,98 @@
                         </div>
                     </x-admin.card>
 
-                    <!-- Status Publikasi & Tombol Simpan -->
+                    <!-- 4. Card Optimasi SEO & SERP Snippet Preview -->
                     <x-admin.card 
-                        title="Publikasi" 
-                        subtitle="Atur status penerbitan artikel."
+                        title="Optimasi SEO & Meta Tags" 
+                        subtitle="Pengaturan meta tags untuk Search Engine Google."
                     >
                         <div class="space-y-5">
-                            <!-- Status -->
-                            <div class="space-y-1.5">
-                                <label for="status" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                                    Status
-                                </label>
-                                <select 
-                                    name="status" 
-                                    id="status"
-                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none font-semibold"
-                                >
-                                    <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>Terbitkan Langsung (Published)</option>
-                                    <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Simpan sebagai Draft</option>
-                                    <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Arsipkan</option>
-                                </select>
+                            <!-- Live Google SERP Snippet Preview -->
+                            <div class="p-3.5 rounded-2xl bg-white border border-stone-200 shadow-2xs space-y-1.5">
+                                <div class="flex items-center gap-1.5 text-stone-400 text-[10px] font-semibold">
+                                    <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-500"></i>
+                                    <span>Pratinjau Hasil Pencarian Google</span>
+                                </div>
+                                <div class="space-y-1 pt-1">
+                                    <div class="text-[11px] text-stone-500 font-mono truncate">
+                                        {{ url('/articles') }}/<span x-text="computedSlug || 'judul-artikel-anda'"></span>
+                                    </div>
+                                    <h4 class="text-sm font-semibold text-[#1a0dab] hover:underline cursor-pointer truncate" x-text="metaTitle || title || 'Judul Artikel Anda - ' + '{{ config('app.name') }}'"></h4>
+                                    <p class="text-[11px] text-stone-600 line-clamp-2 leading-relaxed" x-text="metaDescription || excerpt || 'Deskripsi meta artikel akan muncul di sini sebagai cuplikan ringkas pencarian search engine Google...'"></p>
+                                </div>
                             </div>
 
-                            <!-- Tanggal Publikasi -->
-                            <x-form.input
-                                type="datetime-local"
-                                name="published_at"
-                                label="Jadwal / Waktu Terbit"
-                                :value="old('published_at', now()->format('Y-m-d\TH:i'))"
-                            />
+                            <!-- Meta Title -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <label for="meta_title" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                        Meta Title
+                                    </label>
+                                    <span class="text-[10px] text-stone-400 font-mono" x-text="(metaTitle ? metaTitle.length : 0) + ' / 60 Karakter'"></span>
+                                </div>
+                                <input
+                                    type="text"
+                                    name="meta_title"
+                                    id="meta_title"
+                                    x-model="metaTitle"
+                                    placeholder="Gunakan default judul utama..."
+                                    value="{{ old('meta_title') }}"
+                                    class="w-full rounded-2xl p-3 text-xs text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                                @error('meta_title')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                            <!-- Submit Action Buttons -->
-                            <div class="pt-4 border-t border-stone-100 flex flex-col gap-2">
-                                <button 
-                                    type="submit" 
-                                    class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white hover:opacity-95 font-bold text-xs inline-flex items-center justify-center gap-2 shadow-md shadow-[#1d3e35]/20 transition-all cursor-pointer"
-                                >
-                                    <i data-lucide="check-circle" class="w-4 h-4 text-[#cca06e]"></i>
-                                    <span>Simpan & Buat Sitemap.xml</span>
-                                </button>
+                            <!-- Meta Description -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <label for="meta_description" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                        Meta Description
+                                    </label>
+                                    <span class="text-[10px] text-stone-400 font-mono" x-text="(metaDescription ? metaDescription.length : 0) + ' / 160 Karakter'"></span>
+                                </div>
+                                <textarea
+                                    name="meta_description"
+                                    id="meta_description"
+                                    x-model="metaDescription"
+                                    rows="3"
+                                    placeholder="Deskripsi ringkas yang muncul pada snippet hasil pencarian Google..."
+                                    class="w-full rounded-2xl p-3 text-xs text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                >{{ old('meta_description') }}</textarea>
+                                @error('meta_description')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                                <a 
-                                    href="{{ route('admin.articles.index') }}" 
-                                    class="w-full py-2.5 px-4 rounded-2xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 font-bold text-xs text-center transition-colors"
-                                >
-                                    Batal
-                                </a>
+                            <!-- Meta Keywords -->
+                            <div class="space-y-1.5">
+                                <label for="meta_keywords" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Meta Keywords
+                                </label>
+                                <input
+                                    type="text"
+                                    name="meta_keywords"
+                                    id="meta_keywords"
+                                    placeholder="keyword 1, keyword 2, topik..."
+                                    value="{{ old('meta_keywords') }}"
+                                    class="w-full rounded-2xl p-3 text-xs text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+
+                            <!-- Canonical URL -->
+                            <div class="space-y-1.5">
+                                <label for="canonical_url" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Canonical URL (Opsional)
+                                </label>
+                                <input
+                                    type="url"
+                                    name="canonical_url"
+                                    id="canonical_url"
+                                    placeholder="https://domain.com/canonical-url"
+                                    value="{{ old('canonical_url') }}"
+                                    class="w-full rounded-2xl p-3 text-xs text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-mono"
+                                />
                             </div>
                         </div>
                     </x-admin.card>
@@ -364,14 +381,6 @@
                         .replace(/[^\w\s-]/g, '')
                         .replace(/[\s_-]+/g, '-')
                         .replace(/^-+|-+$/g, '');
-                },
-
-                updateSeoDefaults() {
-                    // Update slug calculation for preview
-                },
-
-                updateSeoDescDefault() {
-                    // Reactive preview
                 },
 
                 openMediaPicker() {
