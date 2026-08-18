@@ -71,6 +71,12 @@ class RoleAndPermissionSeeder extends Seeder
             'edit-gallery-activities',
             'delete-gallery-activities',
 
+            // FAQ Management
+            'view-faqs',
+            'create-faqs',
+            'edit-faqs',
+            'delete-faqs',
+
             // Web Configuration & Settings
             'view-settings',
             'edit-settings',
@@ -128,6 +134,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-gallery-activities',
             'edit-gallery-activities',
             'delete-gallery-activities',
+            'view-faqs',
+            'create-faqs',
+            'edit-faqs',
+            'delete-faqs',
             'view-settings',
             'edit-settings',
         ]);
@@ -171,6 +181,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-gallery-activities',
             'edit-gallery-activities',
             'delete-gallery-activities',
+            'view-faqs',
+            'create-faqs',
+            'edit-faqs',
+            'delete-faqs',
             'view-settings',
         ]);
 
@@ -179,6 +193,7 @@ class RoleAndPermissionSeeder extends Seeder
         $supportRole->syncPermissions([
             'view-dashboard',
             'view-users',
+            'view-faqs',
         ]);
 
         // Role 5: Editor (Content production and publishing)
@@ -204,6 +219,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-gallery-activities',
             'edit-gallery-activities',
             'delete-gallery-activities',
+            'view-faqs',
+            'create-faqs',
+            'edit-faqs',
+            'delete-faqs',
         ]);
 
         // Role 6: User (Standard registered user)

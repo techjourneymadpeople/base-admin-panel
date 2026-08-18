@@ -181,15 +181,29 @@ class MenuSeeder extends Seeder
         ]);
         $galleryMenu->assignPermissions('view-gallery-activities');
 
-        // 10. Heading: Pengaturan
-        $settingsHeader = Menu::create([
-            'title' => 'Pengaturan',
-            'type' => 'header',
+        // 10. FAQ Menu Item with 'view-faqs' permission
+        $faqMenu = Menu::create([
+            'title' => 'FAQ',
+            'type' => 'link',
+            'route' => 'admin.faqs.index',
+            'icon' => 'help-circle',
+            'permission' => 'view-faqs',
+            'badge' => null,
+            'badge_color' => 'emerald',
             'order' => 10,
             'is_active' => true,
         ]);
+        $faqMenu->assignPermissions('view-faqs');
 
-        // 11. Web Configuration Menu Item with 'view-settings' permission
+        // 11. Heading: Pengaturan
+        $settingsHeader = Menu::create([
+            'title' => 'Pengaturan',
+            'type' => 'header',
+            'order' => 11,
+            'is_active' => true,
+        ]);
+
+        // 12. Web Configuration Menu Item with 'view-settings' permission
         $webConfigMenu = Menu::create([
             'title' => 'Web Konfigurasi',
             'type' => 'link',
@@ -198,7 +212,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-settings',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 11,
+            'order' => 12,
             'is_active' => true,
         ]);
         $webConfigMenu->assignPermissions('view-settings');

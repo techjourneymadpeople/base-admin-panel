@@ -84,4 +84,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('gallery-activities', \App\Http\Controllers\Admin\GalleryActivityController::class, [
         'names' => 'gallery-activities',
     ]);
+
+    // 12. FAQ Routes
+    Route::post('faqs/{faq}/toggle-status', [\App\Http\Controllers\Admin\FaqController::class, 'toggleStatus'])->name('faqs.toggle-status')->middleware('can:edit-faqs');
+    Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
 });
