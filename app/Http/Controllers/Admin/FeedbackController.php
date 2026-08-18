@@ -206,11 +206,12 @@ class FeedbackController extends Controller
             'type' => 'required|string|in:' . implode(',', array_keys(Feedback::TYPES)),
             'message' => 'required|string',
             'rating' => 'nullable|integer|min:1|max:5',
-            'status' => 'required|string|in:' . implode(',', array_keys(Feedback::STATUSES)),
+            'status' => 'nullable|string|in:' . implode(',', array_keys(Feedback::STATUSES)),
             'admin_notes' => 'nullable|string',
             'is_starred' => 'nullable|boolean',
         ]);
 
+        $validated['status'] = $validated['status'] ?? 'unread';
         $validated['is_starred'] = $request->boolean('is_starred');
 
         if ($validated['status'] === 'resolved' && empty($validated['replied_at'])) {
@@ -248,12 +249,13 @@ class FeedbackController extends Controller
             'type' => 'required|string|in:' . implode(',', array_keys(Feedback::TYPES)),
             'message' => 'required|string',
             'rating' => 'nullable|integer|min:1|max:5',
-            'status' => 'required|string|in:' . implode(',', array_keys(Feedback::STATUSES)),
+            'status' => 'nullable|string|in:' . implode(',', array_keys(Feedback::STATUSES)),
             'admin_notes' => 'nullable|string',
             'is_starred' => 'nullable|boolean',
         ]);
 
-        $validated['is_starred'] = $request->boolean('is_starred');
+        $validated['status'] = $validated['status'] ?? $feedback->status;
+        $validated['is_starred'] = $request->has('is_starred') ? $request->boolean('is_starred') : $feedback->is_starred;
 
         if ($validated['status'] === 'resolved' && !$feedback->replied_at) {
             $validated['replied_at'] = now();
