@@ -231,7 +231,21 @@ class MenuSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // 14. Web Configuration Menu Item with 'view-settings' permission
+        // 14. Profile Business Identity Menu Item with 'view-business-identity' permission
+        $businessIdentityMenu = Menu::create([
+            'title' => 'Profile Business Identity',
+            'type' => 'link',
+            'route' => 'admin.business-identity.edit',
+            'icon' => 'building-2',
+            'permission' => 'view-business-identity',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 14,
+            'is_active' => true,
+        ]);
+        $businessIdentityMenu->assignPermissions('view-business-identity');
+
+        // 15. Web Configuration Menu Item with 'view-settings' permission
         $webConfigMenu = Menu::create([
             'title' => 'Web Konfigurasi',
             'type' => 'link',
@@ -240,7 +254,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-settings',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 14,
+            'order' => 15,
             'is_active' => true,
         ]);
         $webConfigMenu->assignPermissions('view-settings');

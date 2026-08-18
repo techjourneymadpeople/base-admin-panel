@@ -96,4 +96,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // 14. Testimonial Routes
     Route::post('testimonials/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status')->middleware('can:edit-testimonials');
     Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class);
+
+    // 15. Profile Business Identity Routes
+    Route::get('/business-identity', [\App\Http\Controllers\Admin\BusinessIdentityController::class, 'edit'])->name('business-identity.edit')->middleware('can:view-business-identity');
+    Route::put('/business-identity', [\App\Http\Controllers\Admin\BusinessIdentityController::class, 'update'])->name('business-identity.update')->middleware('can:edit-business-identity');
 });
