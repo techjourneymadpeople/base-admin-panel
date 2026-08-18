@@ -22,7 +22,11 @@ class RedirectOldSlugs
         $path = '/' . ltrim($request->path(), '/');
 
         // Check if there is a registered redirect for this path
-        $redirect = SlugRedirect::where('source_path', $path)->first();
+        try {
+            $redirect = SlugRedirect::where('source_path', $path)->first();
+        } catch (\Throwable $e) {
+            return $next($request);
+        }
 
         if ($redirect) {
             // Increment hit count asynchronously or silently without updating updated_at

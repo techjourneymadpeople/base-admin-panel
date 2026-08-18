@@ -77,6 +77,12 @@ class RoleAndPermissionSeeder extends Seeder
             'edit-faqs',
             'delete-faqs',
 
+            // Brand & Partner Management
+            'view-partners',
+            'create-partners',
+            'edit-partners',
+            'delete-partners',
+
             // Web Configuration & Settings
             'view-settings',
             'edit-settings',
@@ -138,6 +144,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-faqs',
             'edit-faqs',
             'delete-faqs',
+            'view-partners',
+            'create-partners',
+            'edit-partners',
+            'delete-partners',
             'view-settings',
             'edit-settings',
         ]);
@@ -185,6 +195,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-faqs',
             'edit-faqs',
             'delete-faqs',
+            'view-partners',
+            'create-partners',
+            'edit-partners',
+            'delete-partners',
             'view-settings',
         ]);
 
@@ -194,6 +208,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view-dashboard',
             'view-users',
             'view-faqs',
+            'view-partners',
         ]);
 
         // Role 5: Editor (Content production and publishing)
@@ -223,6 +238,10 @@ class RoleAndPermissionSeeder extends Seeder
             'create-faqs',
             'edit-faqs',
             'delete-faqs',
+            'view-partners',
+            'create-partners',
+            'edit-partners',
+            'delete-partners',
         ]);
 
         // Role 6: User (Standard registered user)
