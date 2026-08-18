@@ -17,7 +17,7 @@ class RoleAndPermissionSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // 1. Define all permissions
+        // 1. Define only permissions that have active features and menus
         $permissions = [
             // General / Dashboard
             'view-dashboard',
@@ -26,7 +26,6 @@ class RoleAndPermissionSeeder extends Seeder
             'view-users',
             'create-users',
             'edit-users',
-            'delete-users',
 
             // Role & Permission Management
             'view-roles',
@@ -47,21 +46,12 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-menus',
             'assign-menu-permissions',
 
-            // Content & Media Management
+            // Media Library
             'view-content',
-            'create-content',
-            'edit-content',
-            'delete-content',
-            'publish-content',
             'upload-media',
             'delete-media',
 
             // Article SEO Management
-            'view-articles',
-            'create-articles',
-            'edit-articles',
-            'delete-articles',
-            'publish-articles',
             'view-article-categories',
             'create-article-categories',
             'edit-article-categories',
@@ -70,33 +60,24 @@ class RoleAndPermissionSeeder extends Seeder
             'create-article-tags',
             'edit-article-tags',
             'delete-article-tags',
+            'view-articles',
+            'create-articles',
+            'edit-articles',
+            'delete-articles',
 
             // Gallery Activity Management
             'view-gallery-activities',
             'create-gallery-activities',
             'edit-gallery-activities',
             'delete-gallery-activities',
-            'publish-gallery-activities',
 
-            // Support & Ticket Management
-            'view-support',
-            'reply-support',
-            'manage-support',
-
-            // Settings, Logs & System
+            // Web Configuration & Settings
             'view-settings',
             'edit-settings',
-            'view-activity-logs',
-            'view-telescope',
-            'view-backups',
-            'create-backups',
-
-            // Financial, Reports & Ownership
-            'view-analytics',
-            'export-reports',
-            'manage-billing',
-            'manage-ownership',
         ];
+
+        // Clean up any stale permissions not present in active feature list
+        Permission::whereNotIn('name', $permissions)->delete();
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
@@ -104,18 +85,17 @@ class RoleAndPermissionSeeder extends Seeder
 
         // 2. Define and assign permissions to Roles
 
-        // Role 1: Super Admin (Has all permissions)
+        // Role 1: Super Admin (Has all active permissions)
         $superAdminRole = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web']);
         $superAdminRole->syncPermissions(Permission::all());
 
-        // Role 2: Owner (Executive ownership & business management)
+        // Role 2: Owner (Executive ownership & management)
         $ownerRole = Role::firstOrCreate(['name' => 'Owner', 'guard_name' => 'web']);
         $ownerRole->syncPermissions([
             'view-dashboard',
             'view-users',
             'create-users',
             'edit-users',
-            'delete-users',
             'view-roles',
             'create-roles',
             'edit-roles',
@@ -130,12 +110,8 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-menus',
             'assign-menu-permissions',
             'view-content',
-            'publish-content',
-            'view-articles',
-            'create-articles',
-            'edit-articles',
-            'delete-articles',
-            'publish-articles',
+            'upload-media',
+            'delete-media',
             'view-article-categories',
             'create-article-categories',
             'edit-article-categories',
@@ -144,24 +120,19 @@ class RoleAndPermissionSeeder extends Seeder
             'create-article-tags',
             'edit-article-tags',
             'delete-article-tags',
+            'view-articles',
+            'create-articles',
+            'edit-articles',
+            'delete-articles',
             'view-gallery-activities',
             'create-gallery-activities',
             'edit-gallery-activities',
             'delete-gallery-activities',
-            'publish-gallery-activities',
-            'view-support',
             'view-settings',
             'edit-settings',
-            'view-activity-logs',
-            'view-backups',
-            'create-backups',
-            'view-analytics',
-            'export-reports',
-            'manage-billing',
-            'manage-ownership',
         ]);
 
-        // Role 3: Admin (Daily operational and system management)
+        // Role 3: Admin (Daily operational & content management)
         $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
         $adminRole->syncPermissions([
             'view-dashboard',
@@ -182,17 +153,8 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-menus',
             'assign-menu-permissions',
             'view-content',
-            'create-content',
-            'edit-content',
-            'delete-content',
-            'publish-content',
             'upload-media',
             'delete-media',
-            'view-articles',
-            'create-articles',
-            'edit-articles',
-            'delete-articles',
-            'publish-articles',
             'view-article-categories',
             'create-article-categories',
             'edit-article-categories',
@@ -201,18 +163,15 @@ class RoleAndPermissionSeeder extends Seeder
             'create-article-tags',
             'edit-article-tags',
             'delete-article-tags',
+            'view-articles',
+            'create-articles',
+            'edit-articles',
+            'delete-articles',
             'view-gallery-activities',
             'create-gallery-activities',
             'edit-gallery-activities',
             'delete-gallery-activities',
-            'publish-gallery-activities',
-            'view-support',
-            'reply-support',
-            'manage-support',
             'view-settings',
-            'view-activity-logs',
-            'view-analytics',
-            'export-reports',
         ]);
 
         // Role 4: Support (Customer service & user assistance)
@@ -220,10 +179,6 @@ class RoleAndPermissionSeeder extends Seeder
         $supportRole->syncPermissions([
             'view-dashboard',
             'view-users',
-            'view-support',
-            'reply-support',
-            'manage-support',
-            'view-activity-logs',
         ]);
 
         // Role 5: Editor (Content production and publishing)
@@ -231,17 +186,8 @@ class RoleAndPermissionSeeder extends Seeder
         $editorRole->syncPermissions([
             'view-dashboard',
             'view-content',
-            'create-content',
-            'edit-content',
-            'delete-content',
-            'publish-content',
             'upload-media',
             'delete-media',
-            'view-articles',
-            'create-articles',
-            'edit-articles',
-            'delete-articles',
-            'publish-articles',
             'view-article-categories',
             'create-article-categories',
             'edit-article-categories',
@@ -250,12 +196,14 @@ class RoleAndPermissionSeeder extends Seeder
             'create-article-tags',
             'edit-article-tags',
             'delete-article-tags',
+            'view-articles',
+            'create-articles',
+            'edit-articles',
+            'delete-articles',
             'view-gallery-activities',
             'create-gallery-activities',
             'edit-gallery-activities',
             'delete-gallery-activities',
-            'publish-gallery-activities',
-            'export-reports',
         ]);
 
         // Role 6: User (Standard registered user)
