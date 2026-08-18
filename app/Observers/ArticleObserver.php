@@ -3,8 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Article;
-use App\Models\ArticleCategory;
-use App\Models\ArticleTag;
+use App\Models\SlugRedirect;
 use App\Services\SitemapService;
 
 class ArticleObserver
@@ -15,6 +14,26 @@ class ArticleObserver
     public function created(Article $article): void
     {
         SitemapService::generate();
+    }
+
+    /**
+     * Handle the Article "updating" event.
+     */
+    public function updating(Article $article): void
+    {
+        if ($article->isDirty('slug')) {
+            $oldSlug = $article->getOriginal('slug');
+            $newSlug = $article->slug;
+
+            if (!empty($oldSlug) && !empty($newSlug) && $oldSlug !== $newSlug) {
+                SlugRedirect::createRedirect(
+                    model: $article,
+                    sourcePath: '/articles/' . $oldSlug,
+                    targetPath: '/articles/' . $newSlug,
+                    statusCode: 301
+                );
+            }
+        }
     }
 
     /**
@@ -46,6 +65,10 @@ class ArticleObserver
      */
     public function forceDeleted(Article $article): void
     {
+        SlugRedirect::where('redirectable_type', Article::class)
+            ->where('redirectable_id', (string) $article->id)
+            ->delete();
+
         SitemapService::generate();
     }
 }
