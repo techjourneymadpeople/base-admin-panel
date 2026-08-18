@@ -2,8 +2,11 @@ import './bootstrap';
 import $ from 'jquery';
 import DataTable from 'datatables.net-dt';
 import Alpine from 'alpinejs';
+import collapse from '@alpinejs/collapse';
 import { createIcons, icons } from 'lucide';
 import Chart from 'chart.js/auto';
+
+Alpine.plugin(collapse);
 
 import TomSelect from 'tom-select';
 

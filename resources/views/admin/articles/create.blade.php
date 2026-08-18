@@ -89,13 +89,16 @@
                 </div>
 
                 <!-- ======================================================== -->
-                <!-- RIGHT COLUMN: SIDEBAR (Compact & Structured)             -->
+                <!-- RIGHT COLUMN: SIDEBAR (Compact & Accordion Cards)         -->
                 <!-- ======================================================== -->
-                <div class="md:col-span-4 space-y-6">
+                <div class="md:col-span-4 space-y-4">
                     <!-- 1. Card Status Publikasi & Tombol Aksi -->
                     <x-admin.card 
                         title="Publikasi" 
                         subtitle="Atur status penerbitan artikel."
+                        icon="send"
+                        collapsible
+                        :open="true"
                     >
                         <div class="space-y-5">
                             <!-- Status -->
@@ -146,6 +149,9 @@
                     <x-admin.card 
                         title="Gambar Thumbnail" 
                         subtitle="Pilih thumbnail artikel dari Media Library."
+                        icon="image"
+                        collapsible
+                        :open="true"
                     >
                         <div class="space-y-4">
                             <!-- Preview Box -->
@@ -201,6 +207,9 @@
                     <x-admin.card 
                         title="Kategori & Tag" 
                         subtitle="Klasifikasi artikel untuk navigasi & struktur sitemap."
+                        icon="tags"
+                        collapsible
+                        :open="true"
                     >
                         <div class="space-y-5">
                             <!-- Kategori Selector -->
@@ -216,7 +225,7 @@
                                     <option value="">-- Pilih Kategori --</option>
                                     @foreach($categories as $cat)
                                         <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
-                                            {{ $cat->name }}
+                                             {{ $cat->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -252,6 +261,10 @@
                     <x-admin.card 
                         title="Optimasi SEO & Meta Tags" 
                         subtitle="Pengaturan meta tags untuk Search Engine Google."
+                        icon="globe"
+                        badge="Google SERP"
+                        collapsible
+                        :open="$errors->hasAny(['meta_title', 'meta_description', 'meta_keywords', 'canonical_url']) || old('meta_title') || old('meta_description') ? true : false"
                     >
                         <div class="space-y-5">
                             <!-- Live Google SERP Snippet Preview -->
