@@ -63,6 +63,18 @@ class SitemapService
                 );
             });
 
+            // 5. Add Published Gallery Activities
+            \App\Models\GalleryActivity::published()->get()->each(function (\App\Models\GalleryActivity $gallery) use ($sitemap) {
+                $galleryUrl = url('/galleries/' . $gallery->slug);
+
+                $sitemap->add(
+                    Url::create($galleryUrl)
+                        ->setLastModificationDate($gallery->updated_at ?? $gallery->published_at ?? now())
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                        ->setPriority(0.7)
+                );
+            });
+
             // Write to public/sitemap.xml
             $sitemap->writeToFile(public_path('sitemap.xml'));
 
