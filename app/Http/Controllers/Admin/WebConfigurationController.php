@@ -44,12 +44,22 @@ class WebConfigurationController extends Controller
             'social_twitter' => ['nullable', 'string', 'max:255'],
             'social_youtube' => ['nullable', 'string', 'max:255'],
             'social_linkedin' => ['nullable', 'string', 'max:255'],
+            'social_tiktok' => ['nullable', 'string', 'max:255'],
+            'social_threads' => ['nullable', 'string', 'max:255'],
+            'google_analytics_id' => ['nullable', 'string', 'max:100'],
+            'custom_head_scripts' => ['nullable', 'string'],
+            'custom_body_scripts' => ['nullable', 'string'],
+            'robots_indexing' => ['sometimes', 'boolean'],
+            'cookie_consent_enabled' => ['sometimes', 'boolean'],
+            'cookie_consent_text' => ['nullable', 'string', 'max:500'],
             'maintenance_mode' => ['sometimes', 'boolean'],
             'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:2048'],
             'favicon' => ['nullable', 'image', 'mimes:png,ico,svg,jpg,jpeg', 'max:1024'],
         ]);
 
         $validated['maintenance_mode'] = $request->boolean('maintenance_mode');
+        $validated['robots_indexing'] = $request->boolean('robots_indexing', true);
+        $validated['cookie_consent_enabled'] = $request->boolean('cookie_consent_enabled');
 
         // Handle Logo Upload
         if ($request->hasFile('logo')) {

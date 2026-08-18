@@ -41,6 +41,14 @@ class WebConfiguration extends Model
         'social_twitter',
         'social_youtube',
         'social_linkedin',
+        'social_tiktok',
+        'social_threads',
+        'google_analytics_id',
+        'custom_head_scripts',
+        'custom_body_scripts',
+        'robots_indexing',
+        'cookie_consent_enabled',
+        'cookie_consent_text',
         'maintenance_mode',
     ];
 
@@ -51,6 +59,8 @@ class WebConfiguration extends Model
      */
     protected $casts = [
         'maintenance_mode' => 'boolean',
+        'robots_indexing' => 'boolean',
+        'cookie_consent_enabled' => 'boolean',
     ];
 
     /**

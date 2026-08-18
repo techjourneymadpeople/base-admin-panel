@@ -7,410 +7,540 @@
         ]" 
     />
 
+    <!-- Flash Messages Notification -->
+    @if(session('success'))
+        <div 
+            x-data="{ show: true }" 
+            x-show="show" 
+            x-init="setTimeout(() => show = false, 5000)"
+            class="p-4 rounded-2xl bg-[#e2f0ea] border border-[#99cab7] text-[#1d3e35] flex items-center justify-between shadow-xs mb-6 transition-all duration-300"
+        >
+            <div class="flex items-center gap-3">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-[#31725e]"></i>
+                <span class="text-xs font-bold">{{ session('success') }}</span>
+            </div>
+            <button @click="show = false" class="text-stone-400 hover:text-stone-700">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    @endif
+
+    <!-- Cross-Link Info Alert to Profile Business Identity -->
+    <div class="p-4 rounded-3xl bg-amber-50/60 border border-amber-200/70 text-stone-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <i data-lucide="info" class="w-5 h-5"></i>
+            </div>
+            <div class="space-y-0.5">
+                <h4 class="text-xs font-extrabold text-amber-900">Mencari Pengaturan Identitas PT / Rekening Perusahaan?</h4>
+                <p class="text-[11px] text-amber-800">
+                    Data legalitas PT/CV, nomor rekening bank, visi-misi, sejarah, dan alamat kantor pusat kini dikelola secara terpusat di menu <strong class="underline font-bold">Profile Business Identity</strong>.
+                </p>
+            </div>
+        </div>
+        <a 
+            href="{{ route('admin.business-identity.edit') }}" 
+            class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-colors whitespace-nowrap self-start sm:self-auto shrink-0 shadow-2xs"
+        >
+            <span>Buka Profile Business Identity</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+    </div>
+
     <form 
         method="POST" 
         action="{{ route('admin.settings.update') }}" 
         enctype="multipart/form-data"
-        class="space-y-6 max-w-6xl"
+        class="space-y-6"
         x-data="{
-            activeTab: 'branding', // 'branding', 'contact', 'social', 'seo'
-            logoPreview: '{{ $config->logo_url }}',
-            faviconPreview: '{{ $config->favicon_url }}',
-            handleLogo(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    this.logoPreview = URL.createObjectURL(file);
-                }
-            },
-            handleFavicon(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    this.faviconPreview = URL.createObjectURL(file);
-                }
-            }
+            activeTab: 'system', // 'system', 'social', 'seo', 'scripts'
+            maintenanceMode: {{ $config->maintenance_mode ? 'true' : 'false' }},
+            cookieConsent: {{ $config->cookie_consent_enabled ? 'true' : 'false' }},
+            robotsIndexing: {{ $config->robots_indexing ?? true ? 'true' : 'false' }},
         }"
     >
         @csrf
         @method('PUT')
 
-        <!-- 1. Hero Header Card -->
-        <div class="rounded-3xl p-6 sm:p-8 bg-white border border-[#99cab7]/30 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#1d3e35] via-[#295c4d] to-[#cca06e] p-1 shadow-md shrink-0">
-                    <div class="w-full h-full bg-[#1d3e35] rounded-[14px] flex items-center justify-center text-white text-xl">
-                        <i data-lucide="settings" class="w-7 h-7 text-[#cca06e]"></i>
-                    </div>
+        <!-- Top Action Header Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-[#31725e]/10 text-[#31725e] flex items-center justify-center">
+                    <i data-lucide="settings-2" class="w-5 h-5"></i>
                 </div>
-
                 <div>
-                    <div class="flex items-center gap-3">
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-[#1d3e35]">Web Konfigurasi</h2>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            Pengaturan Terpusat
-                        </span>
-                    </div>
-                    <p class="text-xs text-stone-500 mt-1">
-                        Kelola identitas website, logo, nomor kontak, tautan sosial media, dan parameter SEO publik sistem.
-                    </p>
+                    <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Pengaturan Teknis & Sistem Web</span>
+                    <h3 class="text-base font-extrabold text-[#1d3e35]">Web Konfigurasi</h3>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 shrink-0">
-                <x-form.button 
+            <div class="flex items-center gap-2">
+                <button 
                     type="submit" 
-                    variant="primary" 
-                    :fullWidth="false" 
-                    icon="save"
+                    class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white hover:opacity-95 font-bold text-xs inline-flex items-center gap-2 shadow-md shadow-[#1d3e35]/20 transition-all cursor-pointer"
                 >
-                    Simpan Konfigurasi
-                </x-form.button>
+                    <i data-lucide="check-circle" class="w-4 h-4 text-[#cca06e]"></i>
+                    <span>Simpan Pengaturan Web</span>
+                </button>
             </div>
         </div>
 
-        <!-- 2. Navigation Tabs -->
-        <div class="p-1.5 rounded-2xl bg-stone-100/80 border border-stone-200/60 inline-flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto scrollbar-none">
+        <!-- Tab Navigation Bar -->
+        <div class="flex items-center gap-2 p-1.5 rounded-2xl bg-white/80 border border-[#99cab7]/30 shadow-2xs overflow-x-auto">
             <button 
                 type="button" 
-                @click="activeTab = 'branding'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
-                :class="activeTab === 'branding' ? 'bg-white text-[#1d3e35] shadow-2xs' : 'text-stone-500 hover:text-stone-800'"
+                @click="activeTab = 'system'"
+                :class="activeTab === 'system' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
-                <i data-lucide="globe" class="w-4 h-4 text-[#31725e]"></i>
-                <span>Identitas & Branding</span>
-            </button>
-
-            <button 
-                type="button" 
-                @click="activeTab = 'contact'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
-                :class="activeTab === 'contact' ? 'bg-white text-[#1d3e35] shadow-2xs' : 'text-stone-500 hover:text-stone-800'"
-            >
-                <i data-lucide="phone-call" class="w-4 h-4 text-[#cca06e]"></i>
-                <span>Kontak & Lokasi</span>
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+                <span>1. Sistem & Operasional</span>
             </button>
 
             <button 
                 type="button" 
                 @click="activeTab = 'social'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
-                :class="activeTab === 'social' ? 'bg-white text-[#1d3e35] shadow-2xs' : 'text-stone-500 hover:text-stone-800'"
+                :class="activeTab === 'social' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
-                <i data-lucide="share-2" class="w-4 h-4 text-[#428e75]"></i>
-                <span>Media Sosial</span>
+                <i data-lucide="share-2" class="w-4 h-4"></i>
+                <span>2. Sosial Media Resmi</span>
             </button>
 
             <button 
                 type="button" 
                 @click="activeTab = 'seo'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
-                :class="activeTab === 'seo' ? 'bg-white text-[#1d3e35] shadow-2xs' : 'text-stone-500 hover:text-stone-800'"
+                :class="activeTab === 'seo' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
-                <i data-lucide="search" class="w-4 h-4 text-[#784732]"></i>
-                <span>SEO & Sistem</span>
+                <i data-lucide="globe" class="w-4 h-4"></i>
+                <span>3. SEO & Mesin Pencari</span>
+            </button>
+
+            <button 
+                type="button" 
+                @click="activeTab = 'scripts'"
+                :class="activeTab === 'scripts' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
+            >
+                <i data-lucide="code-2" class="w-4 h-4"></i>
+                <span>4. Integrasi Skrip & Pelacak</span>
             </button>
         </div>
 
-        <!-- 3. Tab Contents -->
-
-        <!-- Tab 1: Identitas & Branding -->
-        <div x-show="activeTab === 'branding'" class="space-y-6">
+        <!-- ==================================================== -->
+        <!-- TAB 1: SISTEM & OPERASIONAL                          -->
+        <!-- ==================================================== -->
+        <div x-show="activeTab === 'system'" class="space-y-6">
             <x-admin.card 
-                title="Identitas & Branding Website" 
-                subtitle="Konfigurasi nama utama, slogan, deskripsi, dan aset grafis logo situs."
+                title="Status Sistem & Tampilan Footer" 
+                subtitle="Kontrol mode pemeliharaan, banner persetujuan cookie, dan copyright teks footer."
+                icon="shield-alert"
             >
-                <div class="space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <x-form.input
-                            name="site_name"
-                            label="Nama Website"
-                            icon="type"
-                            :required="true"
-                            :value="old('site_name', $config->site_name)"
-                            placeholder="Contoh: Lentera Pasar"
-                        />
+                <div class="space-y-6">
+                    <!-- Maintenance Mode Switch -->
+                    <div class="p-5 rounded-2xl border border-amber-200/80 bg-amber-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="tool" class="w-4 h-4 text-amber-600"></i>
+                                <h4 class="text-xs font-bold text-stone-800">Mode Pemeliharaan (Maintenance Mode)</h4>
+                            </div>
+                            <p class="text-[11px] text-stone-500 max-w-xl">
+                                Jika diaktifkan, pengunjung umum website publik akan melihat halaman pemeliharaan sementara, sedangkan administrator tetap dapat login dan mengakses admin panel.
+                            </p>
+                        </div>
 
-                        <x-form.input
-                            name="site_tagline"
-                            label="Slogan / Tagline"
-                            icon="sparkles"
-                            :value="old('site_tagline', $config->site_tagline)"
-                            placeholder="Contoh: Sistem Informasi Manajemen & Administrasi Terpadu"
-                        />
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input 
+                                type="checkbox" 
+                                name="maintenance_mode" 
+                                value="1" 
+                                x-model="maintenanceMode"
+                                class="sr-only peer"
+                            >
+                            <div class="w-12 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                        </label>
                     </div>
 
-                    <!-- Deskripsi Singkat -->
-                    <div class="space-y-1.5">
-                        <label for="site_description" class="block text-xs font-semibold uppercase tracking-wider text-[#295c4d]">
-                            Deskripsi Singkat Website
+                    <!-- Cookie Consent Banner -->
+                    <div class="p-5 rounded-2xl border border-[#99cab7]/40 bg-[#f2f8f5]/40 space-y-4">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="space-y-0.5">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="cookie" class="w-4 h-4 text-[#31725e]"></i>
+                                    <h4 class="text-xs font-bold text-[#1d3e35]">Banner Persetujuan Cookie (GDPR / Cookie Consent)</h4>
+                                </div>
+                                <p class="text-[11px] text-stone-500">
+                                    Tampilkan bar notifikasi persetujuan cookie privasi kepada pengunjung saat pertama kali membuka website.
+                                </p>
+                            </div>
+
+                            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                                <input 
+                                    type="checkbox" 
+                                    name="cookie_consent_enabled" 
+                                    value="1" 
+                                    x-model="cookieConsent"
+                                    class="sr-only peer"
+                                >
+                                <div class="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#31725e]"></div>
+                            </label>
+                        </div>
+
+                        <div x-show="cookieConsent" class="pt-3 border-t border-[#99cab7]/30 space-y-2">
+                            <label for="cookie_consent_text" class="block text-[11px] font-bold text-[#295c4d] uppercase">
+                                Teks Pesan Notifikasi Cookie
+                            </label>
+                            <input
+                                type="text"
+                                name="cookie_consent_text"
+                                id="cookie_consent_text"
+                                placeholder="Kami menggunakan cookie untuk meningkatkan pengalaman navigasi Anda di situs ini..."
+                                value="{{ old('cookie_consent_text', $config->cookie_consent_text) }}"
+                                class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Teks Copyright & Footer -->
+                    <div class="space-y-2">
+                        <label for="footer_text" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Teks Hak Cipta Footer (Copyright Notice)
+                        </label>
+                        <input
+                            type="text"
+                            name="footer_text"
+                            id="footer_text"
+                            placeholder="© 2026 Lentera Pasar. All Rights Reserved."
+                            value="{{ old('footer_text', $config->footer_text) }}"
+                            class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-medium"
+                        />
+                        @error('footer_text')
+                            <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </x-admin.card>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- TAB 2: SOSIAL MEDIA & KANAL KOMUNIKASI               -->
+        <!-- ==================================================== -->
+        <div x-show="activeTab === 'social'" class="space-y-6">
+            <x-admin.card 
+                title="Tautan Akun Sosial Media Resmi" 
+                subtitle="Daftarkan link channel sosial media resmi untuk ditampilkan pada ikon header & footer website."
+                icon="share-2"
+            >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Instagram -->
+                    <div class="space-y-2">
+                        <label for="social_instagram" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Instagram URL
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                <i data-lucide="instagram" class="w-4 h-4"></i>
+                            </span>
+                            <input
+                                type="url"
+                                name="social_instagram"
+                                id="social_instagram"
+                                placeholder="https://instagram.com/lenterapasar"
+                                value="{{ old('social_instagram', $config->social_instagram) }}"
+                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- TikTok -->
+                    <div class="space-y-2">
+                        <label for="social_tiktok" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            TikTok URL
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                <i data-lucide="video" class="w-4 h-4"></i>
+                            </span>
+                            <input
+                                type="url"
+                                name="social_tiktok"
+                                id="social_tiktok"
+                                placeholder="https://tiktok.com/@lenterapasar"
+                                value="{{ old('social_tiktok', $config->social_tiktok) }}"
+                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- YouTube -->
+                    <div class="space-y-2">
+                        <label for="social_youtube" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            YouTube Channel URL
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                <i data-lucide="youtube" class="w-4 h-4"></i>
+                            </span>
+                            <input
+                                type="url"
+                                name="social_youtube"
+                                id="social_youtube"
+                                placeholder="https://youtube.com/@lenterapasar"
+                                value="{{ old('social_youtube', $config->social_youtube) }}"
+                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn -->
+                    <div class="space-y-2">
+                        <label for="social_linkedin" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            LinkedIn Company URL
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                <i data-lucide="linkedin" class="w-4 h-4"></i>
+                            </span>
+                            <input
+                                type="url"
+                                name="social_linkedin"
+                                id="social_linkedin"
+                                placeholder="https://linkedin.com/company/lenterapasar"
+                                value="{{ old('social_linkedin', $config->social_linkedin) }}"
+                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div class="space-y-2">
+                        <label for="social_facebook" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Facebook Page URL
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                <i data-lucide="facebook" class="w-4 h-4"></i>
+                            </span>
+                            <input
+                                type="url"
+                                name="social_facebook"
+                                id="social_facebook"
+                                placeholder="https://facebook.com/lenterapasar"
+                                value="{{ old('social_facebook', $config->social_facebook) }}"
+                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Twitter / X -->
+                    <div class="space-y-2">
+                        <label for="social_twitter" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Twitter / X URL
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                <i data-lucide="twitter" class="w-4 h-4"></i>
+                            </span>
+                            <input
+                                type="url"
+                                name="social_twitter"
+                                id="social_twitter"
+                                placeholder="https://x.com/lenterapasar"
+                                value="{{ old('social_twitter', $config->social_twitter) }}"
+                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Threads -->
+                    <div class="space-y-2">
+                        <label for="social_threads" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Threads URL
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                <i data-lucide="at-sign" class="w-4 h-4"></i>
+                            </span>
+                            <input
+                                type="url"
+                                name="social_threads"
+                                id="social_threads"
+                                placeholder="https://threads.net/@lenterapasar"
+                                value="{{ old('social_threads', $config->social_threads) }}"
+                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </x-admin.card>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- TAB 3: SEO GLOBAL & MESIN PENCARI                    -->
+        <!-- ==================================================== -->
+        <div x-show="activeTab === 'seo'" class="space-y-6">
+            <x-admin.card 
+                title="SEO Meta Global & Indexing Mesin Pencari" 
+                subtitle="Optimasi meta tag default, kata kunci, dan izin pengindeksan Google/Bing."
+                icon="globe"
+            >
+                <div class="space-y-6">
+                    <!-- Robots Indexing Switch -->
+                    <div class="p-4 rounded-2xl bg-[#f2f8f5]/50 border border-[#99cab7]/40 flex items-center justify-between gap-4">
+                        <div class="space-y-0.5">
+                            <h4 class="text-xs font-bold text-[#1d3e35]">Izin Pengindeksan Mesin Pencari (Search Engine Indexing)</h4>
+                            <p class="text-[11px] text-stone-500">
+                                Mengizinkan Google, Bing, dan bot mesin pencari lainnya untuk mengindeks halaman website (`robots: index, follow`).
+                            </p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input 
+                                type="checkbox" 
+                                name="robots_indexing" 
+                                value="1" 
+                                x-model="robotsIndexing"
+                                class="sr-only peer"
+                            >
+                            <div class="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#31725e]"></div>
+                        </label>
+                    </div>
+
+                    <!-- Judul & Tagline Default Website -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="site_name" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Default Meta Title Website <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="site_name"
+                                id="site_name"
+                                placeholder="Lentera Pasar"
+                                value="{{ old('site_name', $config->site_name) }}"
+                                class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] font-bold transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="site_tagline" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Tagline / Subtitle Default
+                            </label>
+                            <input
+                                type="text"
+                                name="site_tagline"
+                                id="site_tagline"
+                                placeholder="Sistem Informasi Manajemen & Administrasi Terpadu"
+                                value="{{ old('site_tagline', $config->site_tagline) }}"
+                                class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Meta Description -->
+                    <div class="space-y-2">
+                        <label for="site_description" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Default Meta Description
                         </label>
                         <textarea
                             name="site_description"
                             id="site_description"
                             rows="3"
-                            placeholder="Deskripsi singkat mengenai platform atau perusahaan..."
-                            class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
+                            placeholder="Deskripsi singkat website yang tampil pada hasil pencarian Google (150-160 karakter disarankan)..."
+                            class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none leading-relaxed"
                         >{{ old('site_description', $config->site_description) }}</textarea>
                     </div>
 
-                    <!-- Upload Logo & Favicon Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-stone-100">
-                        <!-- Upload Logo -->
+                    <!-- Meta Keywords & Author -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-[#295c4d]">
-                                Logo Utama Website
+                            <label for="meta_keywords" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Meta Keywords (Dipisahkan Koma)
                             </label>
-                            <p class="text-[11px] text-stone-400">Format: PNG, JPG, WEBP, SVG (Maks. 2MB). Rekomendasi rasio horizontal.</p>
-
-                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-[#f2f8f5]/60 border border-[#99cab7]/40">
-                                <div class="w-20 h-20 rounded-2xl bg-white border border-[#99cab7]/30 flex items-center justify-center p-2 shrink-0 overflow-hidden shadow-2xs">
-                                    <template x-if="logoPreview">
-                                        <img :src="logoPreview" alt="Logo Preview" class="max-h-full max-w-full object-contain">
-                                    </template>
-                                    <template x-if="!logoPreview">
-                                        <div class="text-stone-300 flex flex-col items-center gap-1">
-                                            <i data-lucide="image" class="w-6 h-6"></i>
-                                            <span class="text-[9px]">Belum ada</span>
-                                        </div>
-                                    </template>
-                                </div>
-
-                                <div class="flex-1 space-y-1">
-                                    <input 
-                                        type="file" 
-                                        name="logo" 
-                                        id="logo_input"
-                                        accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                                        @change="handleLogo"
-                                        class="hidden"
-                                    />
-                                    <label 
-                                        for="logo_input" 
-                                        class="px-3.5 py-2 rounded-xl bg-white border border-[#99cab7]/60 hover:bg-[#e2f0ea] text-[#1d3e35] font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
-                                    >
-                                        <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-[#31725e]"></i>
-                                        <span>Pilih File Logo</span>
-                                    </label>
-                                </div>
-                            </div>
+                            <input
+                                type="text"
+                                name="meta_keywords"
+                                id="meta_keywords"
+                                placeholder="lentera pasar, admin panel, manajemen pasar, portal berita"
+                                value="{{ old('meta_keywords', $config->meta_keywords) }}"
+                                class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
                         </div>
 
-                        <!-- Upload Favicon -->
                         <div class="space-y-2">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-[#295c4d]">
-                                Favicon Browser
+                            <label for="meta_author" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Meta Author
                             </label>
-                            <p class="text-[11px] text-stone-400">Format: ICO, PNG, SVG (Maks. 1MB). Rekomendasi ukuran 32x32 atau 64x64 px.</p>
-
-                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-[#f2f8f5]/60 border border-[#99cab7]/40">
-                                <div class="w-14 h-14 rounded-2xl bg-white border border-[#99cab7]/30 flex items-center justify-center p-2 shrink-0 overflow-hidden shadow-2xs">
-                                    <template x-if="faviconPreview">
-                                        <img :src="faviconPreview" alt="Favicon Preview" class="w-8 h-8 object-contain">
-                                    </template>
-                                    <template x-if="!faviconPreview">
-                                        <div class="text-stone-300 flex flex-col items-center">
-                                            <i data-lucide="globe" class="w-5 h-5"></i>
-                                        </div>
-                                    </template>
-                                </div>
-
-                                <div class="flex-1 space-y-1">
-                                    <input 
-                                        type="file" 
-                                        name="favicon" 
-                                        id="favicon_input"
-                                        accept="image/x-icon,image/png,image/svg+xml,image/jpeg"
-                                        @change="handleFavicon"
-                                        class="hidden"
-                                    />
-                                    <label 
-                                        for="favicon_input" 
-                                        class="px-3.5 py-2 rounded-xl bg-white border border-[#99cab7]/60 hover:bg-[#e2f0ea] text-[#1d3e35] font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
-                                    >
-                                        <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-[#31725e]"></i>
-                                        <span>Pilih File Favicon</span>
-                                    </label>
-                                </div>
-                            </div>
+                            <input
+                                type="text"
+                                name="meta_author"
+                                id="meta_author"
+                                placeholder="Lentera Pasar Tech Team"
+                                value="{{ old('meta_author', $config->meta_author) }}"
+                                class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
                         </div>
                     </div>
                 </div>
             </x-admin.card>
         </div>
 
-        <!-- Tab 2: Kontak & Lokasi -->
-        <div x-show="activeTab === 'contact'" class="space-y-6" x-cloak>
+        <!-- ==================================================== -->
+        <!-- TAB 4: INTEGRASI SKRIP & PELACAK (CUSTOM SCRIPTS)    -->
+        <!-- ==================================================== -->
+        <div x-show="activeTab === 'scripts'" class="space-y-6">
             <x-admin.card 
-                title="Informasi Kontak & Lokasi Kantor" 
-                subtitle="Data kontak resmi yang ditampilkan pada halaman publik dan footer aplikasi."
+                title="Integrasi Skrip & Pelacak Analitik" 
+                subtitle="Pasang ID Google Analytics/GTM dan skrip pelacak eksternal (Facebook Pixel, Live Chat widget, dll)."
+                icon="code-2"
             >
-                <div class="space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                        <x-form.input
-                            type="email"
-                            name="contact_email"
-                            label="Email Resmi / Support"
-                            icon="mail"
-                            :value="old('contact_email', $config->contact_email)"
-                            placeholder="support@lenterapasar.id"
+                <div class="space-y-6">
+                    <!-- Google Analytics ID -->
+                    <div class="space-y-2">
+                        <label for="google_analytics_id" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Google Analytics Measurement ID / GTM ID
+                        </label>
+                        <input
+                            type="text"
+                            name="google_analytics_id"
+                            id="google_analytics_id"
+                            placeholder="Contoh: G-XXXXXXXXXX atau GTM-XXXXXX"
+                            value="{{ old('google_analytics_id', $config->google_analytics_id) }}"
+                            class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] font-mono font-bold transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
                         />
-
-                        <x-form.input
-                            name="contact_phone"
-                            label="Nomor Telepon Kantor"
-                            icon="phone"
-                            :value="old('contact_phone', $config->contact_phone)"
-                            placeholder="+62 812-3456-7890"
-                        />
-
-                        <x-form.input
-                            name="contact_whatsapp"
-                            label="Nomor WhatsApp Hotline"
-                            icon="message-square"
-                            :value="old('contact_whatsapp', $config->contact_whatsapp)"
-                            placeholder="+62 812-3456-7890"
-                        />
+                        <p class="text-[10px] text-stone-400">Masukkan ID Google Analytics 4 (GA4) atau Google Tag Manager.</p>
                     </div>
 
-                    <!-- Alamat Kantor -->
-                    <div class="space-y-1.5">
-                        <label for="contact_address" class="block text-xs font-semibold uppercase tracking-wider text-[#295c4d]">
-                            Alamat Kantor / Operasional
+                    <!-- Custom Header Scripts -->
+                    <div class="space-y-2">
+                        <label for="custom_head_scripts" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Custom Header Scripts (Disuntikkan ke dalam tag &lt;head&gt;)
                         </label>
                         <textarea
-                            name="contact_address"
-                            id="contact_address"
-                            rows="3"
-                            placeholder="Alamat lengkap gedung kantor atau pusat operasional..."
-                            class="w-full rounded-2xl p-3.5 text-sm text-[#1d3e35] placeholder:text-[#99cab7]/80 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/70 hover:bg-white/90 outline-none"
-                        >{{ old('contact_address', $config->contact_address) }}</textarea>
-                    </div>
-                </div>
-            </x-admin.card>
-        </div>
-
-        <!-- Tab 3: Media Sosial -->
-        <div x-show="activeTab === 'social'" class="space-y-6" x-cloak>
-            <x-admin.card 
-                title="Tautan Akun Media Sosial" 
-                subtitle="Masukkan URL tautan profil media sosial resmi untuk dihubungkan ke footer dan landing page."
-            >
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <x-form.input
-                        name="social_facebook"
-                        label="Facebook URL"
-                        icon="facebook"
-                        :value="old('social_facebook', $config->social_facebook)"
-                        placeholder="https://facebook.com/lenterapasar"
-                    />
-
-                    <x-form.input
-                        name="social_instagram"
-                        label="Instagram URL"
-                        icon="instagram"
-                        :value="old('social_instagram', $config->social_instagram)"
-                        placeholder="https://instagram.com/lenterapasar"
-                    />
-
-                    <x-form.input
-                        name="social_twitter"
-                        label="Twitter / X URL"
-                        icon="twitter"
-                        :value="old('social_twitter', $config->social_twitter)"
-                        placeholder="https://x.com/lenterapasar"
-                    />
-
-                    <x-form.input
-                        name="social_youtube"
-                        label="YouTube URL"
-                        icon="youtube"
-                        :value="old('social_youtube', $config->social_youtube)"
-                        placeholder="https://youtube.com/@lenterapasar"
-                    />
-
-                    <x-form.input
-                        name="social_linkedin"
-                        label="LinkedIn URL"
-                        icon="linkedin"
-                        :value="old('social_linkedin', $config->social_linkedin)"
-                        placeholder="https://linkedin.com/company/lenterapasar"
-                    />
-                </div>
-            </x-admin.card>
-        </div>
-
-        <!-- Tab 4: SEO & Sistem -->
-        <div x-show="activeTab === 'seo'" class="space-y-6" x-cloak>
-            <x-admin.card 
-                title="Optimasi Mesin Pencari (SEO) & Sistem" 
-                subtitle="Konfigurasi meta tag, hak cipta footer, dan kontrol status pemeliharaan situs."
-            >
-                <div class="space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <x-form.input
-                            name="meta_keywords"
-                            label="Meta Keywords (Kata Kunci)"
-                            icon="key"
-                            :value="old('meta_keywords', $config->meta_keywords)"
-                            placeholder="admin panel, pasar, manajemen transaksi"
-                            helper="Pisahkan kata kunci dengan tanda koma."
-                        />
-
-                        <x-form.input
-                            name="meta_author"
-                            label="Meta Author (Penulis / Pengembang)"
-                            icon="user"
-                            :value="old('meta_author', $config->meta_author)"
-                            placeholder="Lentera Pasar Tech Team"
-                        />
+                            name="custom_head_scripts"
+                            id="custom_head_scripts"
+                            rows="5"
+                            placeholder="<!-- Contoh: Skrip Facebook Meta Pixel, Microsoft Clarity, dsb -->&#10;<script>...</script>"
+                            class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] font-mono transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none leading-relaxed"
+                        >{{ old('custom_head_scripts', $config->custom_head_scripts) }}</textarea>
                     </div>
 
-                    <x-form.input
-                        name="footer_text"
-                        label="Teks Hak Cipta Footer"
-                        icon="copyright"
-                        :value="old('footer_text', $config->footer_text)"
-                        placeholder="© 2026 Lentera Pasar. All Rights Reserved."
-                    />
-
-                    <!-- Maintenance Mode Switch -->
-                    <div class="pt-4 border-t border-stone-100 flex items-center justify-between p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80">
-                        <div class="space-y-0.5">
-                            <h4 class="text-xs font-bold text-amber-950 flex items-center gap-1.5">
-                                <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-700"></i>
-                                <span>Mode Pemeliharaan (Maintenance Mode)</span>
-                            </h4>
-                            <p class="text-[11px] text-amber-800">Jika diaktifkan, pengguna umum akan melihat tampilan pemeliharaan sistem saat mengakses landing page.</p>
-                        </div>
-
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input 
-                                type="checkbox" 
-                                name="maintenance_mode" 
-                                value="1" 
-                                class="sr-only peer"
-                                {{ old('maintenance_mode', $config->maintenance_mode) ? 'checked' : '' }}
-                            >
-                            <div class="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1d3e35]"></div>
+                    <!-- Custom Body / Footer Scripts -->
+                    <div class="space-y-2">
+                        <label for="custom_body_scripts" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Custom Footer Scripts (Disuntikkan sebelum &lt;/body&gt;)
                         </label>
+                        <textarea
+                            name="custom_body_scripts"
+                            id="custom_body_scripts"
+                            rows="5"
+                            placeholder="<!-- Contoh: Widget Tawk.to, WhatsApp Floating Button, Crisp Live Chat -->&#10;<script>...</script>"
+                            class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] font-mono transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none leading-relaxed"
+                        >{{ old('custom_body_scripts', $config->custom_body_scripts) }}</textarea>
                     </div>
                 </div>
             </x-admin.card>
-        </div>
-
-        <!-- Sticky Bottom Save Bar -->
-        <div class="p-4 rounded-2xl bg-white border border-[#99cab7]/30 shadow-md flex items-center justify-between gap-4">
-            <p class="text-xs text-stone-500">
-                Terakhir diperbarui: <strong class="text-[#1d3e35]">{{ $config->updated_at ? $config->updated_at->translatedFormat('d F Y, H:i') . ' WIB' : 'Belum pernah' }}</strong>
-            </p>
-
-            <x-form.button 
-                type="submit" 
-                variant="primary" 
-                :fullWidth="false" 
-                icon="save"
-            >
-                Simpan Seluruh Perubahan
-            </x-form.button>
         </div>
     </form>
 </x-layouts.admin>
