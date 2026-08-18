@@ -18,6 +18,40 @@
             <input type="hidden" name="thumbnail_url" :value="thumbnailUrl" />
             <input type="hidden" name="remove_thumbnail" :value="removeThumbnailFlag ? 1 : 0" />
 
+            <!-- Top Action Header Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs">
+                <div class="flex items-center gap-3">
+                    <a 
+                        href="{{ route('admin.articles.index') }}" 
+                        class="p-2.5 rounded-2xl bg-stone-100 text-stone-600 hover:bg-stone-200 transition-colors"
+                        title="Kembali ke Daftar Artikel"
+                    >
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    </a>
+                    <div>
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Perbarui Artikel</span>
+                        <h3 class="text-base font-extrabold text-[#1d3e35] line-clamp-1">{{ $article->title }}</h3>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a 
+                        href="{{ route('admin.articles.index') }}" 
+                        class="px-4 py-2.5 rounded-2xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 font-bold text-xs transition-colors"
+                    >
+                        Batal
+                    </a>
+
+                    <button 
+                        type="submit" 
+                        class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white hover:opacity-95 font-bold text-xs inline-flex items-center gap-2 shadow-md shadow-[#1d3e35]/20 transition-all cursor-pointer"
+                    >
+                        <i data-lucide="check-circle" class="w-4 h-4 text-[#cca06e]"></i>
+                        <span>Simpan Perubahan & Update Sitemap</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
                 <!-- ==================================================== -->
                 <!-- LEFT COLUMN: PURE ARTICLE CONTENT (Dominant / Wide)  -->
@@ -92,7 +126,7 @@
                 <!-- RIGHT COLUMN: SIDEBAR (Compact & Accordion Cards)         -->
                 <!-- ======================================================== -->
                 <div class="md:col-span-4 space-y-4">
-                    <!-- 1. Card Status Publikasi & Tombol Aksi -->
+                    <!-- 1. Card Status Publikasi -->
                     <x-admin.card 
                         title="Publikasi" 
                         subtitle="Atur status penerbitan artikel."
@@ -101,15 +135,15 @@
                         :open="true"
                     >
                         <div class="space-y-5">
-                            <!-- Status -->
+                            <!-- Status (TomSelect) -->
                             <div class="space-y-1.5">
-                                <label for="status" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                <label for="status_select" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
                                     Status Publikasi
                                 </label>
                                 <select 
                                     name="status" 
-                                    id="status"
-                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-semibold"
+                                    id="status_select"
+                                    class="w-full"
                                 >
                                     <option value="published" {{ old('status', $article->status) === 'published' ? 'selected' : '' }}>Terbitkan (Published)</option>
                                     <option value="draft" {{ old('status', $article->status) === 'draft' ? 'selected' : '' }}>Simpan sebagai Draft</option>
@@ -124,24 +158,6 @@
                                 label="Jadwal / Waktu Terbit"
                                 :value="old('published_at', $article->published_at ? $article->published_at->format('Y-m-d\TH:i') : '')"
                             />
-
-                            <!-- Submit Action Buttons -->
-                            <div class="pt-4 border-t border-stone-100 flex flex-col gap-2">
-                                <button 
-                                    type="submit" 
-                                    class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white hover:opacity-95 font-bold text-xs inline-flex items-center justify-center gap-2 shadow-md shadow-[#1d3e35]/20 transition-all cursor-pointer"
-                                >
-                                    <i data-lucide="check-circle" class="w-4 h-4 text-[#cca06e]"></i>
-                                    <span>Simpan Perubahan & Update Sitemap</span>
-                                </button>
-
-                                <a 
-                                    href="{{ route('admin.articles.index') }}" 
-                                    class="w-full py-2.5 px-4 rounded-2xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-600 font-bold text-xs text-center transition-colors"
-                                >
-                                    Batal
-                                </a>
-                            </div>
                         </div>
                     </x-admin.card>
 
@@ -210,17 +226,18 @@
                         icon="tags"
                         collapsible
                         :open="true"
+                        class="relative z-10"
                     >
                         <div class="space-y-5">
-                            <!-- Kategori Selector -->
+                            <!-- Kategori Selector (TomSelect) -->
                             <div class="space-y-1.5">
-                                <label for="category_id" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                <label for="category_select" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
                                     Kategori Artikel
                                 </label>
                                 <select 
                                     name="category_id" 
-                                    id="category_id"
-                                    class="w-full rounded-2xl p-3 text-sm text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                    id="category_select"
+                                    class="w-full"
                                 >
                                     <option value="">-- Pilih Kategori --</option>
                                     @foreach($categories as $cat)
@@ -234,7 +251,7 @@
                                 @enderror
                             </div>
 
-                            <!-- Tag Multi-select -->
+                            <!-- Tag Multi-select (TomSelect) -->
                             <div class="space-y-1.5">
                                 <label for="tags_select" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
                                     Tag Artikel
@@ -264,7 +281,7 @@
                         icon="globe"
                         badge="Google SERP"
                         collapsible
-                        :open="$errors->hasAny(['meta_title', 'meta_description', 'meta_keywords', 'canonical_url']) || old('meta_title') || !empty($article->meta_title) ? true : false"
+                        :open="$errors->hasAny(['meta_title', 'meta_description', 'meta_keywords']) || old('meta_title') || !empty($article->meta_title) ? true : false"
                     >
                         <div class="space-y-5">
                             <!-- Live Google SERP Snippet Preview -->
@@ -339,21 +356,6 @@
                                     class="w-full rounded-2xl p-3 text-xs text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
                                 />
                             </div>
-
-                            <!-- Canonical URL -->
-                            <div class="space-y-1.5">
-                                <label for="canonical_url" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                                    Canonical URL (Opsional)
-                                </label>
-                                <input
-                                    type="url"
-                                    name="canonical_url"
-                                    id="canonical_url"
-                                    placeholder="https://domain.com/canonical-url"
-                                    value="{{ old('canonical_url', $article->canonical_url) }}"
-                                    class="w-full rounded-2xl p-3 text-xs text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-mono"
-                                />
-                            </div>
                         </div>
                     </x-admin.card>
                 </div>
@@ -368,6 +370,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             if (window.TomSelect) {
+                new window.TomSelect('#category_select', {
+                    create: false,
+                    placeholder: '-- Pilih Kategori --',
+                    allowEmptyOption: true,
+                });
+
+                new window.TomSelect('#status_select', {
+                    create: false,
+                    controlInput: null,
+                    placeholder: 'Pilih Status Publikasi',
+                });
+
                 new window.TomSelect('#tags_select', {
                     create: true,
                     persist: false,
@@ -401,7 +415,7 @@
 
                 init() {
                     window.addEventListener('media-selected', (event) => {
-                        if (event.detail && event.detail.media) {
+                        if (event.detail && event.detail.targetField === 'article_thumbnail' && event.detail.media) {
                             this.thumbnailMediaId = event.detail.media.id;
                             this.thumbnailUrl = event.detail.media.url;
                             this.removeThumbnailFlag = false;

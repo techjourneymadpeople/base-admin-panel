@@ -107,4 +107,12 @@ class Article extends Model
 
         return null;
     }
+
+    /**
+     * Get resolved Canonical URL.
+     */
+    public function getCanonicalUrl(): string
+    {
+        return $this->canonical_url ?: url('/articles/' . $this->slug);
+    }
 }

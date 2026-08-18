@@ -9,7 +9,7 @@
 ])
 
 <div 
-    {{ $attributes->merge(['class' => 'bg-white rounded-3xl shadow-sm border border-[#99cab7]/30 overflow-hidden transition-all duration-200 hover:shadow-md']) }}
+    {{ $attributes->merge(['class' => 'bg-white rounded-3xl shadow-sm border border-[#99cab7]/30 transition-all duration-200 hover:shadow-md']) }}
     @if($collapsible)
         x-data="{ isOpen: {{ $open ? 'true' : 'false' }} }"
     @endif
@@ -22,9 +22,9 @@
                 tabindex="0"
                 @keydown.space.prevent="isOpen = !isOpen"
                 @keydown.enter.prevent="isOpen = !isOpen"
-                class="px-6 py-4 border-b border-stone-100 flex items-center justify-between gap-4 cursor-pointer select-none hover:bg-[#f4f8f6]/60 transition-colors"
+                class="px-6 py-4 border-b border-stone-100 rounded-t-3xl flex items-center justify-between gap-4 cursor-pointer select-none hover:bg-[#f4f8f6]/60 transition-colors"
             @else
-                class="px-6 py-4 border-b border-stone-100 flex items-center justify-between gap-4"
+                class="px-6 py-4 border-b border-stone-100 rounded-t-3xl flex items-center justify-between gap-4"
             @endif
         >
             <div class="flex items-center gap-3 min-w-0">
@@ -78,13 +78,14 @@
             x-show="isOpen" 
             x-collapse
         @endif
+        class="rounded-b-3xl"
     >
         <div class="{{ $padding ? 'p-6' : '' }}">
             {{ $slot }}
         </div>
 
         @if(isset($footer))
-            <div class="px-6 py-3.5 bg-[#f2f8f5]/60 border-t border-stone-100 text-xs text-stone-500">
+            <div class="px-6 py-3.5 bg-[#f2f8f5]/60 border-t border-stone-100 rounded-b-3xl text-xs text-stone-500">
                 {{ $footer }}
             </div>
         @endif
