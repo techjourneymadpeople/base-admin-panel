@@ -1,3 +1,9 @@
+@php
+    $bizIdentity = \App\Models\BusinessIdentity::current();
+    $sidebarLogo = $bizIdentity->getLogoDark() ?: $bizIdentity->getLogoLight();
+    $brandName = $bizIdentity->getBrandDisplayName();
+    $brandInitials = $bizIdentity->getBrandInitials();
+@endphp
 <!-- Desktop & Mobile Sidebar Container -->
 <aside 
     class="fixed inset-y-0 left-0 z-40 flex flex-col transition-all duration-300 ease-in-out bg-gradient-to-b from-[#1d3e35] via-[#234b3f] to-[#1d3e35] text-white shadow-2xl border-r border-[#428e75]/20 overflow-hidden"
@@ -10,24 +16,41 @@
 >
     <!-- Brand Header -->
     <div class="h-16 flex items-center justify-between px-4 border-b border-[#428e75]/25 bg-black/10 shrink-0">
-        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group transition-transform duration-200">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#31725e] via-[#428e75] to-[#cca06e] p-0.5 shadow-md flex items-center justify-center shrink-0">
-                <div class="w-full h-full bg-[#1d3e35] rounded-[10px] flex items-center justify-center">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-[#c5e1d5]"></i>
+        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group transition-transform duration-200 overflow-hidden">
+            @if($sidebarLogo)
+                <img 
+                    src="{{ $sidebarLogo }}" 
+                    alt="{{ $brandName }}" 
+                    class="h-8 max-h-8 max-w-[130px] object-contain shrink-0"
+                    :class="$store.sidebar.collapsed ? 'hidden' : 'block'"
+                >
+                <div 
+                    class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#31725e] via-[#428e75] to-[#cca06e] p-0.5 shadow-md flex items-center justify-center shrink-0"
+                    :class="$store.sidebar.collapsed ? 'block' : 'hidden'"
+                >
+                    <div class="w-full h-full bg-[#1d3e35] rounded-[10px] flex items-center justify-center text-xs font-black text-[#c5e1d5]">
+                        {{ $brandInitials }}
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#31725e] via-[#428e75] to-[#cca06e] p-0.5 shadow-md flex items-center justify-center shrink-0">
+                    <div class="w-full h-full bg-[#1d3e35] rounded-[10px] flex items-center justify-center text-xs font-black text-[#c5e1d5]">
+                        {{ $brandInitials }}
+                    </div>
+                </div>
 
-            <div 
-                class="flex flex-col transition-all duration-200"
-                :class="$store.sidebar.collapsed ? 'opacity-0 w-0 hidden' : 'opacity-100 block'"
-            >
-                <span class="text-base font-extrabold tracking-tight text-white leading-tight">
-                    {{ config('app.name', 'Admin Panel') }}
-                </span>
-                <span class="text-[10px] font-semibold text-[#cca06e] uppercase tracking-wider -mt-0.5">
-                    Workspace
-                </span>
-            </div>
+                <div 
+                    class="flex flex-col transition-all duration-200 min-w-0"
+                    :class="$store.sidebar.collapsed ? 'opacity-0 w-0 hidden' : 'opacity-100 block'"
+                >
+                    <span class="text-sm font-extrabold tracking-tight text-white leading-tight truncate">
+                        {{ $brandName }}
+                    </span>
+                    <span class="text-[10px] font-semibold text-[#cca06e] uppercase tracking-wider -mt-0.5">
+                        Admin Workspace
+                    </span>
+                </div>
+            @endif
         </a>
 
         <!-- Mobile Close Button -->

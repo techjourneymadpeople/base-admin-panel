@@ -1,4 +1,13 @@
 @props(['title' => null])
+@php
+    $bizIdentity = \App\Models\BusinessIdentity::current();
+    $pageTitle = $title ? $title . ' - ' . $bizIdentity->getBrandDisplayName() : $bizIdentity->getBrandDisplayName() . ' - Autentikasi';
+    $faviconUrl = $bizIdentity->getFavicon() ?: asset('favicon.ico');
+    $ogImageUrl = $bizIdentity->getOgImage();
+    $authLogo = $bizIdentity->getLogoLight() ?: $bizIdentity->getLogoDark();
+    $brandName = $bizIdentity->getBrandDisplayName();
+    $brandInitials = $bizIdentity->getBrandInitials();
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
@@ -6,7 +15,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ? $title . ' - ' . config('app.name', 'Admin Panel') : config('app.name', 'Admin Panel') }}</title>
+    <title>{{ $pageTitle }}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}">
+
+    <!-- OpenGraph Meta Tags (OG Image default from Business Identity) -->
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $bizIdentity->about_summary ?: ($bizIdentity->tagline ?: 'Autentikasi ' . $brandName) }}">
+    @if($ogImageUrl)
+        <meta property="og:image" content="{{ $ogImageUrl }}">
+    @endif
+    <meta property="og:type" content="website">
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,19 +71,23 @@
         <!-- Top Header Navigation -->
         <header class="w-full max-w-7xl mx-auto flex items-center justify-between py-2">
             <a href="{{ url('/') }}" class="group flex items-center gap-3 transition-transform duration-300 hover:scale-[1.02]">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1d3e35] via-[#31725e] to-[#cca06e] p-0.5 shadow-lg shadow-[#1d3e35]/15 flex items-center justify-center">
-                    <div class="w-full h-full bg-[#1d3e35]/90 rounded-[14px] flex items-center justify-center backdrop-blur-sm">
-                        <i data-lucide="shield-check" class="w-5 h-5 text-[#c5e1d5] group-hover:rotate-12 transition-transform duration-300"></i>
+                @if($authLogo)
+                    <img src="{{ $authLogo }}" alt="{{ $brandName }}" class="h-10 max-h-10 max-w-[160px] object-contain">
+                @else
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1d3e35] via-[#31725e] to-[#cca06e] p-0.5 shadow-lg shadow-[#1d3e35]/15 flex items-center justify-center">
+                        <div class="w-full h-full bg-[#1d3e35]/90 rounded-[14px] flex items-center justify-center backdrop-blur-sm text-xs font-black text-[#c5e1d5]">
+                            {{ $brandInitials }}
+                        </div>
                     </div>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-lg font-bold tracking-tight text-[#1d3e35] group-hover:text-[#31725e] transition-colors">
-                        {{ config('app.name', 'Admin Panel') }}
-                    </span>
-                    <span class="text-[11px] font-medium text-[#784732] -mt-1 tracking-wider uppercase">
-                        Admin Workspace
-                    </span>
-                </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg font-bold tracking-tight text-[#1d3e35] group-hover:text-[#31725e] transition-colors">
+                            {{ $brandName }}
+                        </span>
+                        <span class="text-[11px] font-medium text-[#784732] -mt-1 tracking-wider uppercase">
+                            Admin Workspace
+                        </span>
+                    </div>
+                @endif
             </a>
 
             <!-- Relaxed Support / Status Badge -->

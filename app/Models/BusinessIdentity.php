@@ -129,4 +129,32 @@ class BusinessIdentity extends Model
     {
         return $this->heroBannerMedia?->getUrl() ?? $this->hero_banner_url;
     }
+
+    /**
+     * Get OpenGraph image fallback: Hero Banner -> Logo Light -> null.
+     */
+    public function getOgImage(): ?string
+    {
+        return $this->getHeroBanner() ?: ($this->getLogoLight() ?: $this->getLogoDark());
+    }
+
+    /**
+     * Get Brand Display Name (fallback to company_name or app.name).
+     */
+    public function getBrandDisplayName(): string
+    {
+        return $this->brand_name ?: ($this->company_name ?: config('app.name', 'Lentera Pasar'));
+    }
+
+    /**
+     * Get Brand 2-letter Initials for fallback badge.
+     */
+    public function getBrandInitials(): string
+    {
+        $words = preg_split('/\s+/', trim($this->getBrandDisplayName()));
+        if (count($words) >= 2) {
+            return strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+        }
+        return strtoupper(substr($this->getBrandDisplayName(), 0, 2));
+    }
 }

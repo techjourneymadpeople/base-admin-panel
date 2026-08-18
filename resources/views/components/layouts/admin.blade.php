@@ -1,4 +1,10 @@
 @props(['title' => null])
+@php
+    $bizIdentity = \App\Models\BusinessIdentity::current();
+    $pageTitle = $title ? $title . ' - ' . $bizIdentity->getBrandDisplayName() : $bizIdentity->getBrandDisplayName() . ' - Admin Panel';
+    $faviconUrl = $bizIdentity->getFavicon() ?: asset('favicon.ico');
+    $ogImageUrl = $bizIdentity->getOgImage();
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-[#f4f8f6]">
 <head>
@@ -6,7 +12,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ? $title . ' - ' . config('app.name', 'Admin Panel') : config('app.name', 'Admin Panel') }}</title>
+    <title>{{ $pageTitle }}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}">
+
+    <!-- OpenGraph Meta Tags (OG Image default from Business Identity) -->
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $bizIdentity->about_summary ?: ($bizIdentity->tagline ?: 'Panel Administrasi ' . $bizIdentity->getBrandDisplayName()) }}">
+    @if($ogImageUrl)
+        <meta property="og:image" content="{{ $ogImageUrl }}">
+    @endif
+    <meta property="og:type" content="website">
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
