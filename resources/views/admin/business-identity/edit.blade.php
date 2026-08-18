@@ -149,6 +149,16 @@
                     <i data-lucide="map-pin" class="w-4 h-4"></i>
                     <span>5. Kontak & Lokasi</span>
                 </button>
+
+                <button 
+                    type="button" 
+                    @click="currentTab = 'social'"
+                    :class="currentTab === 'social' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                    class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
+                >
+                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                    <span>6. Sosial Media Resmi</span>
+                </button>
             </div>
 
             <!-- ==================================================== -->
@@ -882,6 +892,180 @@
                                 class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] font-mono transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none leading-relaxed"
                             >{{ old('google_maps_embed', $identity->google_maps_embed) }}</textarea>
                             @error('google_maps_embed')
+                                <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </x-admin.card>
+            </div>
+
+            <!-- ==================================================== -->
+            <!-- TAB 6: SOSIAL MEDIA RESMI                           -->
+            <!-- ==================================================== -->
+            <div x-show="currentTab === 'social'" class="space-y-6">
+                <x-admin.card 
+                    title="Tautan Akun Sosial Media Resmi Perusahaan" 
+                    subtitle="Daftarkan link channel sosial media resmi untuk profil korporat dan navigasi publik."
+                    icon="share-2"
+                >
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Instagram -->
+                        <div class="space-y-2">
+                            <label for="social_instagram" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Instagram URL
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                    <i data-lucide="instagram" class="w-4 h-4"></i>
+                                </span>
+                                <input
+                                    type="url"
+                                    name="social_instagram"
+                                    id="social_instagram"
+                                    placeholder="https://instagram.com/lenterapasar"
+                                    value="{{ old('social_instagram', $identity->social_instagram) }}"
+                                    class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+                            @error('social_instagram')
+                                <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- TikTok -->
+                        <div class="space-y-2">
+                            <label for="social_tiktok" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                TikTok URL
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                    <i data-lucide="video" class="w-4 h-4"></i>
+                                </span>
+                                <input
+                                    type="url"
+                                    name="social_tiktok"
+                                    id="social_tiktok"
+                                    placeholder="https://tiktok.com/@lenterapasar"
+                                    value="{{ old('social_tiktok', $identity->social_tiktok) }}"
+                                    class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+                            @error('social_tiktok')
+                                <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- YouTube -->
+                        <div class="space-y-2">
+                            <label for="social_youtube" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                YouTube Channel URL
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                    <i data-lucide="youtube" class="w-4 h-4"></i>
+                                </span>
+                                <input
+                                    type="url"
+                                    name="social_youtube"
+                                    id="social_youtube"
+                                    placeholder="https://youtube.com/@lenterapasar"
+                                    value="{{ old('social_youtube', $identity->social_youtube) }}"
+                                    class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+                            @error('social_youtube')
+                                <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- LinkedIn -->
+                        <div class="space-y-2">
+                            <label for="social_linkedin" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                LinkedIn Company URL
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                    <i data-lucide="linkedin" class="w-4 h-4"></i>
+                                </span>
+                                <input
+                                    type="url"
+                                    name="social_linkedin"
+                                    id="social_linkedin"
+                                    placeholder="https://linkedin.com/company/lenterapasar"
+                                    value="{{ old('social_linkedin', $identity->social_linkedin) }}"
+                                    class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+                            @error('social_linkedin')
+                                <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Facebook -->
+                        <div class="space-y-2">
+                            <label for="social_facebook" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Facebook Page URL
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                    <i data-lucide="facebook" class="w-4 h-4"></i>
+                                </span>
+                                <input
+                                    type="url"
+                                    name="social_facebook"
+                                    id="social_facebook"
+                                    placeholder="https://facebook.com/lenterapasar"
+                                    value="{{ old('social_facebook', $identity->social_facebook) }}"
+                                    class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+                            @error('social_facebook')
+                                <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Twitter / X -->
+                        <div class="space-y-2">
+                            <label for="social_twitter" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Twitter / X URL
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                    <i data-lucide="twitter" class="w-4 h-4"></i>
+                                </span>
+                                <input
+                                    type="url"
+                                    name="social_twitter"
+                                    id="social_twitter"
+                                    placeholder="https://x.com/lenterapasar"
+                                    value="{{ old('social_twitter', $identity->social_twitter) }}"
+                                    class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+                            @error('social_twitter')
+                                <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Threads -->
+                        <div class="space-y-2">
+                            <label for="social_threads" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                Threads URL
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                                    <i data-lucide="at-sign" class="w-4 h-4"></i>
+                                </span>
+                                <input
+                                    type="url"
+                                    name="social_threads"
+                                    id="social_threads"
+                                    placeholder="https://threads.net/@lenterapasar"
+                                    value="{{ old('social_threads', $identity->social_threads) }}"
+                                    class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                                />
+                            </div>
+                            @error('social_threads')
                                 <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
                             @enderror
                         </div>

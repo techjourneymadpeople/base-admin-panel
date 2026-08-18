@@ -59,6 +59,15 @@ class BusinessIdentity extends Model
         'google_maps_embed',
         'google_maps_url',
         'operational_hours',
+
+        // Sosial Media Resmi
+        'social_instagram',
+        'social_tiktok',
+        'social_youtube',
+        'social_linkedin',
+        'social_facebook',
+        'social_twitter',
+        'social_threads',
     ];
 
     /**

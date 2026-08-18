@@ -74,6 +74,15 @@ class BusinessIdentityController extends Controller
             'google_maps_embed' => ['nullable', 'string'],
             'google_maps_url' => ['nullable', 'url', 'max:1000'],
             'operational_hours' => ['nullable', 'string', 'max:255'],
+
+            // Sosial Media Resmi
+            'social_instagram' => ['nullable', 'url', 'max:255'],
+            'social_tiktok' => ['nullable', 'url', 'max:255'],
+            'social_youtube' => ['nullable', 'url', 'max:255'],
+            'social_linkedin' => ['nullable', 'url', 'max:255'],
+            'social_facebook' => ['nullable', 'url', 'max:255'],
+            'social_twitter' => ['nullable', 'url', 'max:255'],
+            'social_threads' => ['nullable', 'url', 'max:255'],
         ]);
 
         $identity->update($validated);

@@ -59,6 +59,8 @@ class BusinessIdentityTest extends TestCase
             'bank_account_holder' => 'PT LENTERA NUSANTARA BARU',
             'bank_branch' => 'KCU Thamrin',
             'email' => 'admin@lenteranusantara.co.id',
+            'social_instagram' => 'https://instagram.com/lenterapasar',
+            'social_tiktok' => 'https://tiktok.com/@lenterapasar',
         ]);
 
         $updateResponse->assertRedirect(route('admin.business-identity.edit'));
@@ -68,6 +70,8 @@ class BusinessIdentityTest extends TestCase
             'company_name' => 'PT Lentera Nusantara Baru',
             'bank_name' => 'Bank Mandiri',
             'bank_account_number' => '9876543210',
+            'social_instagram' => 'https://instagram.com/lenterapasar',
+            'social_tiktok' => 'https://tiktok.com/@lenterapasar',
         ]);
     }
 }

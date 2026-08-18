@@ -32,9 +32,9 @@
                 <i data-lucide="info" class="w-5 h-5"></i>
             </div>
             <div class="space-y-0.5">
-                <h4 class="text-xs font-extrabold text-amber-900">Mencari Pengaturan Identitas PT / Rekening Perusahaan?</h4>
+                <h4 class="text-xs font-extrabold text-amber-900">Mencari Pengaturan Identitas PT, Rekening, atau Sosial Media Resmi?</h4>
                 <p class="text-[11px] text-amber-800">
-                    Data legalitas PT/CV, nomor rekening bank, visi-misi, sejarah, dan alamat kantor pusat kini dikelola secara terpusat di menu <strong class="underline font-bold">Profile Business Identity</strong>.
+                    Data legalitas PT/CV, nomor rekening bank, akun sosial media resmi, visi-misi, dan lokasi kantor dikelola secara terpusat di menu <strong class="underline font-bold">Profile Business Identity</strong>.
                 </p>
             </div>
         </div>
@@ -53,7 +53,7 @@
         enctype="multipart/form-data"
         class="space-y-6"
         x-data="{
-            activeTab: 'system', // 'system', 'social', 'seo', 'scripts'
+            activeTab: 'system', // 'system', 'seo', 'scripts'
             maintenanceMode: {{ $config->maintenance_mode ? 'true' : 'false' }},
             cookieConsent: {{ $config->cookie_consent_enabled ? 'true' : 'false' }},
             robotsIndexing: {{ $config->robots_indexing ?? true ? 'true' : 'false' }},
@@ -99,22 +99,12 @@
 
             <button 
                 type="button" 
-                @click="activeTab = 'social'"
-                :class="activeTab === 'social' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
-                class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
-            >
-                <i data-lucide="share-2" class="w-4 h-4"></i>
-                <span>2. Sosial Media Resmi</span>
-            </button>
-
-            <button 
-                type="button" 
                 @click="activeTab = 'seo'"
                 :class="activeTab === 'seo' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
                 class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
                 <i data-lucide="globe" class="w-4 h-4"></i>
-                <span>3. SEO & Mesin Pencari</span>
+                <span>2. SEO & Mesin Pencari</span>
             </button>
 
             <button 
@@ -124,7 +114,7 @@
                 class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
                 <i data-lucide="code-2" class="w-4 h-4"></i>
-                <span>4. Integrasi Skrip & Pelacak</span>
+                <span>3. Integrasi Skrip & Pelacak</span>
             </button>
         </div>
 
@@ -224,160 +214,7 @@
         </div>
 
         <!-- ==================================================== -->
-        <!-- TAB 2: SOSIAL MEDIA & KANAL KOMUNIKASI               -->
-        <!-- ==================================================== -->
-        <div x-show="activeTab === 'social'" class="space-y-6">
-            <x-admin.card 
-                title="Tautan Akun Sosial Media Resmi" 
-                subtitle="Daftarkan link channel sosial media resmi untuk ditampilkan pada ikon header & footer website."
-                icon="share-2"
-            >
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Instagram -->
-                    <div class="space-y-2">
-                        <label for="social_instagram" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            Instagram URL
-                        </label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                                <i data-lucide="instagram" class="w-4 h-4"></i>
-                            </span>
-                            <input
-                                type="url"
-                                name="social_instagram"
-                                id="social_instagram"
-                                placeholder="https://instagram.com/lenterapasar"
-                                value="{{ old('social_instagram', $config->social_instagram) }}"
-                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- TikTok -->
-                    <div class="space-y-2">
-                        <label for="social_tiktok" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            TikTok URL
-                        </label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                                <i data-lucide="video" class="w-4 h-4"></i>
-                            </span>
-                            <input
-                                type="url"
-                                name="social_tiktok"
-                                id="social_tiktok"
-                                placeholder="https://tiktok.com/@lenterapasar"
-                                value="{{ old('social_tiktok', $config->social_tiktok) }}"
-                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- YouTube -->
-                    <div class="space-y-2">
-                        <label for="social_youtube" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            YouTube Channel URL
-                        </label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                                <i data-lucide="youtube" class="w-4 h-4"></i>
-                            </span>
-                            <input
-                                type="url"
-                                name="social_youtube"
-                                id="social_youtube"
-                                placeholder="https://youtube.com/@lenterapasar"
-                                value="{{ old('social_youtube', $config->social_youtube) }}"
-                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- LinkedIn -->
-                    <div class="space-y-2">
-                        <label for="social_linkedin" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            LinkedIn Company URL
-                        </label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                                <i data-lucide="linkedin" class="w-4 h-4"></i>
-                            </span>
-                            <input
-                                type="url"
-                                name="social_linkedin"
-                                id="social_linkedin"
-                                placeholder="https://linkedin.com/company/lenterapasar"
-                                value="{{ old('social_linkedin', $config->social_linkedin) }}"
-                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- Facebook -->
-                    <div class="space-y-2">
-                        <label for="social_facebook" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            Facebook Page URL
-                        </label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                                <i data-lucide="facebook" class="w-4 h-4"></i>
-                            </span>
-                            <input
-                                type="url"
-                                name="social_facebook"
-                                id="social_facebook"
-                                placeholder="https://facebook.com/lenterapasar"
-                                value="{{ old('social_facebook', $config->social_facebook) }}"
-                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- Twitter / X -->
-                    <div class="space-y-2">
-                        <label for="social_twitter" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            Twitter / X URL
-                        </label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                                <i data-lucide="twitter" class="w-4 h-4"></i>
-                            </span>
-                            <input
-                                type="url"
-                                name="social_twitter"
-                                id="social_twitter"
-                                placeholder="https://x.com/lenterapasar"
-                                value="{{ old('social_twitter', $config->social_twitter) }}"
-                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- Threads -->
-                    <div class="space-y-2">
-                        <label for="social_threads" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            Threads URL
-                        </label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                                <i data-lucide="at-sign" class="w-4 h-4"></i>
-                            </span>
-                            <input
-                                type="url"
-                                name="social_threads"
-                                id="social_threads"
-                                placeholder="https://threads.net/@lenterapasar"
-                                value="{{ old('social_threads', $config->social_threads) }}"
-                                class="w-full rounded-2xl p-3.5 pl-10 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </x-admin.card>
-        </div>
-
-        <!-- ==================================================== -->
-        <!-- TAB 3: SEO GLOBAL & MESIN PENCARI                    -->
+        <!-- TAB 2: SEO GLOBAL & MESIN PENCARI                    -->
         <!-- ==================================================== -->
         <div x-show="activeTab === 'seo'" class="space-y-6">
             <x-admin.card 
@@ -487,7 +324,7 @@
         </div>
 
         <!-- ==================================================== -->
-        <!-- TAB 4: INTEGRASI SKRIP & PELACAK (CUSTOM SCRIPTS)    -->
+        <!-- TAB 3: INTEGRASI SKRIP & PELACAK (CUSTOM SCRIPTS)    -->
         <!-- ==================================================== -->
         <div x-show="activeTab === 'scripts'" class="space-y-6">
             <x-admin.card 
