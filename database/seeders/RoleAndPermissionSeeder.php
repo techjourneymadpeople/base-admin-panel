@@ -71,6 +71,13 @@ class RoleAndPermissionSeeder extends Seeder
             'edit-article-tags',
             'delete-article-tags',
 
+            // Gallery Activity Management
+            'view-gallery-activities',
+            'create-gallery-activities',
+            'edit-gallery-activities',
+            'delete-gallery-activities',
+            'publish-gallery-activities',
+
             // Support & Ticket Management
             'view-support',
             'reply-support',
@@ -137,6 +144,11 @@ class RoleAndPermissionSeeder extends Seeder
             'create-article-tags',
             'edit-article-tags',
             'delete-article-tags',
+            'view-gallery-activities',
+            'create-gallery-activities',
+            'edit-gallery-activities',
+            'delete-gallery-activities',
+            'publish-gallery-activities',
             'view-support',
             'view-settings',
             'edit-settings',
@@ -189,6 +201,11 @@ class RoleAndPermissionSeeder extends Seeder
             'create-article-tags',
             'edit-article-tags',
             'delete-article-tags',
+            'view-gallery-activities',
+            'create-gallery-activities',
+            'edit-gallery-activities',
+            'delete-gallery-activities',
+            'publish-gallery-activities',
             'view-support',
             'reply-support',
             'manage-support',
@@ -233,6 +250,11 @@ class RoleAndPermissionSeeder extends Seeder
             'create-article-tags',
             'edit-article-tags',
             'delete-article-tags',
+            'view-gallery-activities',
+            'create-gallery-activities',
+            'edit-gallery-activities',
+            'delete-gallery-activities',
+            'publish-gallery-activities',
             'export-reports',
         ]);
 

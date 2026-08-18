@@ -168,6 +168,19 @@ class MenuSeeder extends Seeder
         ]);
         $articleMenu->assignPermissions('view-articles');
 
+        // 9.4 Child: Gallery Activity
+        $galleryMenu = Menu::create([
+            'parent_id' => $articleSeoMenu->id,
+            'title' => 'Gallery Activity',
+            'type' => 'link',
+            'route' => 'admin.gallery-activities.index',
+            'icon' => 'images',
+            'permission' => 'view-gallery-activities',
+            'order' => 4,
+            'is_active' => true,
+        ]);
+        $galleryMenu->assignPermissions('view-gallery-activities');
+
         // 10. Heading: Pengaturan
         $settingsHeader = Menu::create([
             'title' => 'Pengaturan',

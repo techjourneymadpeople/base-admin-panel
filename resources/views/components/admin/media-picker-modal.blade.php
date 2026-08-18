@@ -1,4 +1,4 @@
-<!-- Media Library Picker Modal Component -->
+<!-- Media Library Picker Modal Component (Single & Multi-Select Support) -->
 <div 
     x-data="mediaPickerModal()"
     @open-media-picker.window="openPicker($event.detail)"
@@ -42,10 +42,10 @@
                     </div>
                     <div>
                         <h3 class="text-base font-extrabold text-[#1d3e35]" id="modal-title">
-                            Pilih Gambar dari Media Library
+                            <span x-text="isMultiple ? 'Pilih Foto-Foto Kegiatan' : 'Pilih Gambar dari Media Library'"></span>
                         </h3>
                         <p class="text-xs text-stone-500">
-                            Pilih gambar yang sudah ada atau unggah langsung ke Gudang Media
+                            <span x-text="isMultiple ? 'Pilih satu atau lebih foto sekaligus dari Gudang Media' : 'Pilih gambar yang sudah ada atau unggah langsung ke Gudang Media'"></span>
                         </p>
                     </div>
                 </div>
@@ -123,9 +123,9 @@
                     <div x-show="!isLoading && mediaList.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                         <template x-for="item in mediaList" :key="item.id">
                             <div 
-                                @click="selectMedia(item)"
+                                @click="toggleSelectMedia(item)"
                                 class="group relative rounded-2xl overflow-hidden border-2 cursor-pointer transition-all duration-200 aspect-square flex flex-col bg-stone-50"
-                                :class="selectedItem && selectedItem.id === item.id ? 'border-[#31725e] ring-4 ring-[#31725e]/20 shadow-md' : 'border-stone-200 hover:border-[#99cab7] hover:shadow-sm'"
+                                :class="isItemSelected(item) ? 'border-[#31725e] ring-4 ring-[#31725e]/20 shadow-md' : 'border-stone-200 hover:border-[#99cab7] hover:shadow-sm'"
                             >
                                 <img 
                                     :src="item.url" 
@@ -136,8 +136,8 @@
 
                                 <!-- Selected Checkmark Overlay -->
                                 <div 
-                                    x-show="selectedItem && selectedItem.id === item.id" 
-                                    class="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#31725e] text-white flex items-center justify-center shadow-md"
+                                    x-show="isItemSelected(item)" 
+                                    class="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#31725e] text-white flex items-center justify-center shadow-md animate-in fade-in zoom-in-75 duration-150"
                                 >
                                     <i data-lucide="check" class="w-3.5 h-3.5 stroke-[3]"></i>
                                 </div>
@@ -221,17 +221,30 @@
             <!-- Modal Footer -->
             <div class="px-6 py-4 border-t border-stone-100 bg-stone-50 flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-3 min-w-0">
-                    <template x-if="selectedItem">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <img :src="selectedItem.url" class="w-8 h-8 rounded-lg object-cover border border-stone-200 shrink-0" />
-                            <div class="truncate text-left">
-                                <p class="text-xs font-bold text-[#1d3e35] truncate" x-text="selectedItem.name"></p>
-                                <p class="text-[10px] text-stone-400 font-mono" x-text="selectedItem.size_formatted"></p>
-                            </div>
+                    <template x-if="isMultiple">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 rounded-xl bg-[#31725e]/10 text-[#31725e] font-bold text-xs" x-text="selectedItems.length + ' Foto Dipilih'"></span>
+                            <template x-if="selectedItems.length > 0">
+                                <button type="button" @click="selectedItems = []" class="text-[11px] text-red-500 hover:underline">Reset Pilihan</button>
+                            </template>
                         </div>
                     </template>
-                    <template x-if="!selectedItem">
-                        <span class="text-xs text-stone-400 italic">Pilih satu gambar untuk melanjutkan</span>
+
+                    <template x-if="!isMultiple">
+                        <div>
+                            <template x-if="selectedItem">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <img :src="selectedItem.url" class="w-8 h-8 rounded-lg object-cover border border-stone-200 shrink-0" />
+                                    <div class="truncate text-left">
+                                        <p class="text-xs font-bold text-[#1d3e35] truncate" x-text="selectedItem.name"></p>
+                                        <p class="text-[10px] text-stone-400 font-mono" x-text="selectedItem.size_formatted"></p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template x-if="!selectedItem">
+                                <span class="text-xs text-stone-400 italic">Pilih satu gambar untuk melanjutkan</span>
+                            </template>
+                        </div>
                     </template>
                 </div>
 
@@ -246,11 +259,11 @@
                     <button 
                         type="button" 
                         @click="confirmSelection()"
-                        :disabled="!selectedItem"
-                        class="px-5 py-2 rounded-xl bg-[#31725e] hover:bg-[#295c4d] text-white font-bold text-xs transition-all shadow-md shadow-[#31725e]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+                        :disabled="isMultiple ? selectedItems.length === 0 : !selectedItem"
+                        class="px-5 py-2 rounded-xl bg-[#31725e] hover:bg-[#295c4d] text-white font-bold text-xs transition-all shadow-md shadow-[#31725e]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
                     >
                         <i data-lucide="check-circle" class="w-4 h-4"></i>
-                        <span>Gunakan Gambar Ini</span>
+                        <span x-text="isMultiple ? ('Tambahkan ' + selectedItems.length + ' Foto') : 'Gunakan Gambar Ini'"></span>
                     </button>
                 </div>
             </div>
@@ -267,14 +280,15 @@ function mediaPickerModal() {
         isUploading: false,
         mediaList: [],
         selectedItem: null,
+        selectedItems: [],
         searchQuery: '',
         currentPage: 1,
         totalPages: 1,
         totalItems: 0,
         targetField: null,
+        isMultiple: false,
 
         init() {
-            // Re-render lucide icons when window opens
             this.$watch('isOpen', (value) => {
                 if (value) {
                     this.fetchMedia(1);
@@ -287,11 +301,16 @@ function mediaPickerModal() {
             this.$watch('activeTab', () => {
                 setTimeout(() => { if (window.refreshIcons) window.refreshIcons(); }, 50);
             });
+            this.$watch('selectedItems', () => {
+                setTimeout(() => { if (window.refreshIcons) window.refreshIcons(); }, 50);
+            });
         },
 
         openPicker(detail = {}) {
             this.targetField = detail.targetField || 'thumbnail';
+            this.isMultiple = detail.multiple === true;
             this.selectedItem = null;
+            this.selectedItems = [];
             this.activeTab = 'gallery';
             this.isOpen = true;
         },
@@ -328,19 +347,46 @@ function mediaPickerModal() {
             }
         },
 
-        selectMedia(item) {
-            this.selectedItem = item;
+        isItemSelected(item) {
+            if (this.isMultiple) {
+                return this.selectedItems.some(i => i.id === item.id);
+            }
+            return this.selectedItem && this.selectedItem.id === item.id;
+        },
+
+        toggleSelectMedia(item) {
+            if (this.isMultiple) {
+                const index = this.selectedItems.findIndex(i => i.id === item.id);
+                if (index >= 0) {
+                    this.selectedItems.splice(index, 1);
+                } else {
+                    this.selectedItems.push(item);
+                }
+            } else {
+                this.selectedItem = item;
+            }
         },
 
         confirmSelection() {
-            if (!this.selectedItem) return;
-
-            window.dispatchEvent(new CustomEvent('media-selected', {
-                detail: {
-                    targetField: this.targetField,
-                    media: this.selectedItem,
-                }
-            }));
+            if (this.isMultiple) {
+                if (this.selectedItems.length === 0) return;
+                window.dispatchEvent(new CustomEvent('media-selected', {
+                    detail: {
+                        targetField: this.targetField,
+                        items: [...this.selectedItems],
+                        multiple: true,
+                    }
+                }));
+            } else {
+                if (!this.selectedItem) return;
+                window.dispatchEvent(new CustomEvent('media-selected', {
+                    detail: {
+                        targetField: this.targetField,
+                        media: this.selectedItem,
+                        multiple: false,
+                    }
+                }));
+            }
 
             this.closePicker();
         },
@@ -378,7 +424,11 @@ function mediaPickerModal() {
                     this.activeTab = 'gallery';
                     await this.fetchMedia(1);
                     if (this.mediaList.length > 0) {
-                        this.selectedItem = this.mediaList[0];
+                        if (this.isMultiple) {
+                            this.selectedItems.push(this.mediaList[0]);
+                        } else {
+                            this.selectedItem = this.mediaList[0];
+                        }
                     }
                 }
             } catch (err) {

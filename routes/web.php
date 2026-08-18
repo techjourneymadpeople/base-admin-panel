@@ -79,4 +79,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Articles CRUD
     Route::resource('articles', ArticleController::class);
+
+    // 11. Gallery Activity Routes
+    Route::resource('gallery-activities', \App\Http\Controllers\Admin\GalleryActivityController::class, [
+        'names' => 'gallery-activities',
+    ]);
 });

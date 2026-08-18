@@ -28,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
         // Register Observers
         \App\Models\Article::observe(\App\Observers\ArticleObserver::class);
         \App\Models\ArticleCategory::observe(\App\Observers\ArticleCategoryObserver::class);
+        \App\Models\GalleryActivity::observe(\App\Observers\GalleryActivityObserver::class);
     }
 }
