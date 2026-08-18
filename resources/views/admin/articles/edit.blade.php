@@ -66,21 +66,20 @@
                                 @enderror
                             </div>
 
-                            <!-- Isi Konten Artikel Lengkap -->
+                            <!-- Isi Konten Artikel Lengkap dengan TipTap -->
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between">
                                     <label for="content" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                                        Isi Artikel Lengkap
+                                        Isi Artikel Lengkap <span class="text-red-500">*</span>
                                     </label>
-                                    <span class="text-[11px] text-stone-400 font-medium">Mendukung format paragraf & baris baru</span>
+                                    <span class="text-[11px] text-stone-400 font-medium">Editor Visual (TipTap)</span>
                                 </div>
-                                <textarea
+                                <x-form.tiptap-editor
                                     name="content"
                                     id="content"
-                                    rows="20"
+                                    :value="old('content', $article->content)"
                                     placeholder="Tulis artikel lengkap di sini..."
-                                    class="w-full rounded-2xl p-4 text-sm leading-relaxed text-[#1d3e35] placeholder:text-[#99cab7]/70 transition-all duration-200 border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-sans"
-                                >{{ old('content', $article->content) }}</textarea>
+                                />
                                 @error('content')
                                     <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
                                 @enderror

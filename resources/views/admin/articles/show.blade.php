@@ -112,8 +112,8 @@
                         @endif
 
                         <!-- Main Content -->
-                        <div class="prose max-w-none text-[#1d3e35] text-sm leading-relaxed space-y-4 pt-2 border-t border-stone-100">
-                            {!! nl2br(e($article->content)) !!}
+                        <div class="prose max-w-none text-[#1d3e35] text-sm leading-relaxed pt-2 border-t border-stone-100">
+                            {!! $article->content !!}
                         </div>
 
                         <!-- Tags -->
