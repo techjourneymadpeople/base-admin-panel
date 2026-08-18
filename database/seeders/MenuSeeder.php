@@ -18,7 +18,9 @@ class MenuSeeder extends Seeder
         Menu::truncate();
         Schema::enableForeignKeyConstraints();
 
-        // 1. Heading: General
+        // ==========================================
+        // 1. SECTION: General
+        // ==========================================
         $generalHeader = Menu::create([
             'title' => 'General',
             'type' => 'header',
@@ -26,7 +28,7 @@ class MenuSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // 2. Dashboard Menu Item with 'view-dashboard' permission
+        // 1.1 Dashboard
         $dashboardMenu = Menu::create([
             'title' => 'Dashboard',
             'type' => 'link',
@@ -40,71 +42,7 @@ class MenuSeeder extends Seeder
         ]);
         $dashboardMenu->assignPermissions('view-dashboard');
 
-        // 3. Heading: Pengguna & Akses
-        $userHeader = Menu::create([
-            'title' => 'Pengguna & Akses',
-            'type' => 'header',
-            'order' => 3,
-            'is_active' => true,
-        ]);
-
-        // 4. User List Menu Item with 'view-users' permission
-        $userMenu = Menu::create([
-            'title' => 'Daftar Pengguna',
-            'type' => 'link',
-            'route' => 'admin.users.index',
-            'icon' => 'users',
-            'permission' => 'view-users',
-            'badge' => null,
-            'badge_color' => 'emerald',
-            'order' => 4,
-            'is_active' => true,
-        ]);
-        $userMenu->assignPermissions('view-users');
-
-        // 5. Role Management Menu Item with 'view-roles' permission
-        $roleMenu = Menu::create([
-            'title' => 'Kelola Role',
-            'type' => 'link',
-            'route' => 'admin.roles.index',
-            'icon' => 'shield',
-            'permission' => 'view-roles',
-            'badge' => '6 Level',
-            'badge_color' => 'amber',
-            'order' => 5,
-            'is_active' => true,
-        ]);
-        $roleMenu->assignPermissions('view-roles');
-
-        // 6. Permission Management Menu Item with 'view-permissions' permission
-        $permissionMenu = Menu::create([
-            'title' => 'Kelola Permission',
-            'type' => 'link',
-            'route' => 'admin.permissions.index',
-            'icon' => 'key',
-            'permission' => 'view-permissions',
-            'badge' => null,
-            'badge_color' => 'emerald',
-            'order' => 6,
-            'is_active' => true,
-        ]);
-        $permissionMenu->assignPermissions('view-permissions');
-
-        // 7. Dynamic Menu Management Menu Item with 'view-menus' permission
-        $menuManagement = Menu::create([
-            'title' => 'Kelola Menu',
-            'type' => 'link',
-            'route' => 'admin.menus.index',
-            'icon' => 'menu',
-            'permission' => 'view-menus',
-            'badge' => null,
-            'badge_color' => 'emerald',
-            'order' => 7,
-            'is_active' => true,
-        ]);
-        $menuManagement->assignPermissions('view-menus');
-
-        // 8. Media Library Menu Item with 'view-content' permission
+        // 1.2 Media Library
         $mediaMenu = Menu::create([
             'title' => 'Media Library',
             'type' => 'link',
@@ -113,23 +51,99 @@ class MenuSeeder extends Seeder
             'permission' => 'view-content',
             'badge' => 'Gudang',
             'badge_color' => 'emerald',
-            'order' => 8,
+            'order' => 3,
             'is_active' => true,
         ]);
         $mediaMenu->assignPermissions('view-content');
 
-        // 9. Article SEO Dropdown Parent Menu
+        // ==========================================
+        // 2. SECTION: Pengguna & Hak Akses
+        // ==========================================
+        $userHeader = Menu::create([
+            'title' => 'Pengguna & Hak Akses',
+            'type' => 'header',
+            'order' => 4,
+            'is_active' => true,
+        ]);
+
+        // 2.1 Daftar Pengguna
+        $userMenu = Menu::create([
+            'title' => 'Daftar Pengguna',
+            'type' => 'link',
+            'route' => 'admin.users.index',
+            'icon' => 'users',
+            'permission' => 'view-users',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 5,
+            'is_active' => true,
+        ]);
+        $userMenu->assignPermissions('view-users');
+
+        // 2.2 Kelola Role
+        $roleMenu = Menu::create([
+            'title' => 'Kelola Role',
+            'type' => 'link',
+            'route' => 'admin.roles.index',
+            'icon' => 'shield',
+            'permission' => 'view-roles',
+            'badge' => '6 Level',
+            'badge_color' => 'amber',
+            'order' => 6,
+            'is_active' => true,
+        ]);
+        $roleMenu->assignPermissions('view-roles');
+
+        // 2.3 Kelola Permission
+        $permissionMenu = Menu::create([
+            'title' => 'Kelola Permission',
+            'type' => 'link',
+            'route' => 'admin.permissions.index',
+            'icon' => 'key',
+            'permission' => 'view-permissions',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 7,
+            'is_active' => true,
+        ]);
+        $permissionMenu->assignPermissions('view-permissions');
+
+        // 2.4 Kelola Menu
+        $menuManagement = Menu::create([
+            'title' => 'Kelola Menu',
+            'type' => 'link',
+            'route' => 'admin.menus.index',
+            'icon' => 'menu',
+            'permission' => 'view-menus',
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 8,
+            'is_active' => true,
+        ]);
+        $menuManagement->assignPermissions('view-menus');
+
+        // ==========================================
+        // 3. SECTION: Content
+        // ==========================================
+        $contentHeader = Menu::create([
+            'title' => 'Content',
+            'type' => 'header',
+            'order' => 9,
+            'is_active' => true,
+        ]);
+
+        // 3.1 Article SEO Dropdown Parent Menu
         $articleSeoMenu = Menu::create([
             'title' => 'Article SEO',
             'type' => 'dropdown',
             'icon' => 'newspaper',
             'badge' => 'SEO',
             'badge_color' => 'emerald',
-            'order' => 9,
+            'order' => 10,
             'is_active' => true,
         ]);
 
-        // 9.1 Child: Article Category
+        // 3.1.1 Child: Article Category
         $articleCategoryMenu = Menu::create([
             'parent_id' => $articleSeoMenu->id,
             'title' => 'Article Category',
@@ -142,7 +156,7 @@ class MenuSeeder extends Seeder
         ]);
         $articleCategoryMenu->assignPermissions('view-article-categories');
 
-        // 9.2 Child: Article Tag
+        // 3.1.2 Child: Article Tag
         $articleTagMenu = Menu::create([
             'parent_id' => $articleSeoMenu->id,
             'title' => 'Article Tag',
@@ -155,7 +169,7 @@ class MenuSeeder extends Seeder
         ]);
         $articleTagMenu->assignPermissions('view-article-tags');
 
-        // 9.3 Child: Article
+        // 3.1.3 Child: Article
         $articleMenu = Menu::create([
             'parent_id' => $articleSeoMenu->id,
             'title' => 'Article',
@@ -168,20 +182,21 @@ class MenuSeeder extends Seeder
         ]);
         $articleMenu->assignPermissions('view-articles');
 
-        // 9.4 Child: Gallery Activity
+        // 3.2 Gallery Activity
         $galleryMenu = Menu::create([
-            'parent_id' => $articleSeoMenu->id,
             'title' => 'Gallery Activity',
             'type' => 'link',
             'route' => 'admin.gallery-activities.index',
             'icon' => 'images',
             'permission' => 'view-gallery-activities',
-            'order' => 4,
+            'badge' => null,
+            'badge_color' => 'emerald',
+            'order' => 11,
             'is_active' => true,
         ]);
         $galleryMenu->assignPermissions('view-gallery-activities');
 
-        // 10. FAQ Menu Item with 'view-faqs' permission
+        // 3.3 FAQ
         $faqMenu = Menu::create([
             'title' => 'FAQ',
             'type' => 'link',
@@ -190,12 +205,12 @@ class MenuSeeder extends Seeder
             'permission' => 'view-faqs',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 10,
+            'order' => 12,
             'is_active' => true,
         ]);
         $faqMenu->assignPermissions('view-faqs');
 
-        // 11. Brand / Partner Menu Item with 'view-partners' permission
+        // 3.4 Brand / Partner
         $partnerMenu = Menu::create([
             'title' => 'Brand / Partner',
             'type' => 'link',
@@ -204,12 +219,12 @@ class MenuSeeder extends Seeder
             'permission' => 'view-partners',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 11,
+            'order' => 13,
             'is_active' => true,
         ]);
         $partnerMenu->assignPermissions('view-partners');
 
-        // 12. Testimonial Menu Item with 'view-testimonials' permission
+        // 3.5 Testimonial
         $testimonialMenu = Menu::create([
             'title' => 'Testimonial',
             'type' => 'link',
@@ -218,20 +233,22 @@ class MenuSeeder extends Seeder
             'permission' => 'view-testimonials',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 12,
+            'order' => 14,
             'is_active' => true,
         ]);
         $testimonialMenu->assignPermissions('view-testimonials');
 
-        // 13. Heading: Pengaturan
+        // ==========================================
+        // 4. SECTION: Pengaturan
+        // ==========================================
         $settingsHeader = Menu::create([
             'title' => 'Pengaturan',
             'type' => 'header',
-            'order' => 13,
+            'order' => 15,
             'is_active' => true,
         ]);
 
-        // 14. Profile Business Identity Menu Item with 'view-business-identity' permission
+        // 4.1 Profile Business Identity
         $businessIdentityMenu = Menu::create([
             'title' => 'Profile Business Identity',
             'type' => 'link',
@@ -240,12 +257,12 @@ class MenuSeeder extends Seeder
             'permission' => 'view-business-identity',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 14,
+            'order' => 16,
             'is_active' => true,
         ]);
         $businessIdentityMenu->assignPermissions('view-business-identity');
 
-        // 15. Web Configuration Menu Item with 'view-settings' permission
+        // 4.2 Web Konfigurasi
         $webConfigMenu = Menu::create([
             'title' => 'Web Konfigurasi',
             'type' => 'link',
@@ -254,7 +271,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-settings',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 15,
+            'order' => 17,
             'is_active' => true,
         ]);
         $webConfigMenu->assignPermissions('view-settings');
