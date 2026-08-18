@@ -17,7 +17,7 @@ class ArticleTagController extends Controller
      */
     public function index(Request $request): View|JsonResponse
     {
-        if ($request->ajax() && $request->wantsJson()) {
+        if ($request->ajax()) {
             $tags = ArticleTag::withCount('articles')->select('article_tags.*')->orderBy('name', 'asc');
 
             return DataTables::of($tags)
