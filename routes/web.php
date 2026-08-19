@@ -19,7 +19,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
+        $identity = \App\Models\BusinessIdentity::current();
+        return view('admin.dashboard', compact('identity'));
     })->name('dashboard');
 
     // 1. User Profile Management (Profil Saya)

@@ -74,4 +74,17 @@ class BusinessIdentityTest extends TestCase
             'social_tiktok' => 'https://tiktok.com/@lenterapasar',
         ]);
     }
+
+    public function test_dashboard_renders_with_business_identity(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $user = User::factory()->create();
+        $user->givePermissionTo(['view-dashboard']);
+
+        $response = $this->actingAs($user)->get(route('admin.dashboard'));
+        $response->assertStatus(200);
+        $response->assertSee('Identitas & Legalitas Usaha');
+        $response->assertSee('Informasi Rekening Perbankan');
+    }
 }
