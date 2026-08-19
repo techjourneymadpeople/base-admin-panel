@@ -225,12 +225,34 @@
                     }
                 });
 
+                let tsCategory = null;
+                let tsRating = null;
+                let tsStatus = null;
+
+                if (window.TomSelect) {
+                    tsCategory = new window.TomSelect('#filter_category', {
+                        create: false,
+                        allowEmptyOption: true,
+                        placeholder: 'Semua Kategori',
+                    });
+                    tsRating = new window.TomSelect('#filter_rating', {
+                        create: false,
+                        allowEmptyOption: true,
+                        placeholder: 'Semua Rating',
+                    });
+                    tsStatus = new window.TomSelect('#filter_status', {
+                        create: false,
+                        allowEmptyOption: true,
+                        placeholder: 'Semua Status',
+                    });
+                }
+
                 $('#filter_category, #filter_rating, #filter_status').on('change', () => table.draw());
 
                 $('#btn_reset_filters').on('click', () => {
-                    $('#filter_category').val('');
-                    $('#filter_rating').val('');
-                    $('#filter_status').val('');
+                    if (tsCategory) tsCategory.clear(); else $('#filter_category').val('');
+                    if (tsRating) tsRating.clear(); else $('#filter_rating').val('');
+                    if (tsStatus) tsStatus.clear(); else $('#filter_status').val('');
                     table.draw();
                 });
             }

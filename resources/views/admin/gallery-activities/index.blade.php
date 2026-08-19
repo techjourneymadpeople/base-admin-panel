@@ -196,10 +196,20 @@
                     }
                 });
 
+                let tsStatus = null;
+
+                if (window.TomSelect) {
+                    tsStatus = new window.TomSelect('#filter_status', {
+                        create: false,
+                        allowEmptyOption: true,
+                        placeholder: 'Semua Status',
+                    });
+                }
+
                 $('#filter_status').on('change', () => table.draw());
 
                 $('#btn_reset_filters').on('click', () => {
-                    $('#filter_status').val('');
+                    if (tsStatus) tsStatus.clear(); else $('#filter_status').val('');
                     table.draw();
                 });
             }

@@ -54,16 +54,19 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <!-- Status -->
                         <div>
-                            <label class="block text-xs font-bold text-stone-700 mb-1">
-                                Status Penanganan <span class="text-red-500">*</span>
-                            </label>
-                            <select name="status" required class="w-full rounded-xl p-2.5 text-xs font-extrabold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
-                                @foreach($statuses as $key => $meta)
-                                    <option value="{{ $key }}" {{ old('status', $feedback->status) === $key ? 'selected' : '' }}>
-                                        {{ $meta['label'] }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <x-form.select 
+                                name="status" 
+                                label="Status Penanganan" 
+                                :required="true"
+                                :selected="old('status', $feedback->status)"
+                                :options="[
+                                    'unread' => 'Belum Dibaca',
+                                    'read' => 'Sudah Dibaca',
+                                    'in_progress' => 'Sedang Diproses',
+                                    'resolved' => 'Selesai (Ditutup)',
+                                    'archived' => 'Diarsipkan',
+                                ]"
+                            />
                         </div>
 
                         <!-- Prioritas Bintang -->
@@ -147,34 +150,34 @@
 
                     <!-- Jenis Masukan (Hanya 2 Jenis) -->
                     <div>
-                        <label class="block text-xs font-bold text-stone-700 mb-1">
-                            Kategori Masukan <span class="text-red-500">*</span>
-                        </label>
-                        <select name="type" required class="w-full rounded-xl p-2.5 text-xs font-bold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
-                            @foreach($types as $key => $meta)
-                                <option value="{{ $key }}" {{ old('type', $feedback->type) === $key ? 'selected' : '' }}>
-                                    {{ $meta['label'] }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('type')
-                            <p class="text-[11px] text-red-500 mt-1 font-semibold">{{ $message }}</p>
-                        @enderror
+                        <x-form.select 
+                            name="type" 
+                            label="Kategori Masukan" 
+                            :required="true"
+                            :selected="old('type', $feedback->type)"
+                            :options="[
+                                'saran_masukan' => 'Saran & Masukan',
+                                'keluhan' => 'Keluhan',
+                            ]"
+                            placeholder="-- Pilih Kategori Masukan --"
+                        />
                     </div>
 
                     <!-- Skor Kepuasan Layanan -->
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold text-stone-700 mb-1">
-                            Skor Kepuasan Layanan (1 - 5 Bintang)
-                        </label>
-                        <select name="rating" class="w-full rounded-xl p-2.5 text-xs font-semibold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
-                            <option value="">Tidak ada skor (Opsional)</option>
-                            <option value="5" {{ old('rating', $feedback->rating) == 5 ? 'selected' : '' }}>★★★★★ (5 - Sangat Puas)</option>
-                            <option value="4" {{ old('rating', $feedback->rating) == 4 ? 'selected' : '' }}>★★★★☆ (4 - Puas)</option>
-                            <option value="3" {{ old('rating', $feedback->rating) == 3 ? 'selected' : '' }}>★★★☆☆ (3 - Cukup)</option>
-                            <option value="2" {{ old('rating', $feedback->rating) == 2 ? 'selected' : '' }}>★★☆☆☆ (2 - Kurang)</option>
-                            <option value="1" {{ old('rating', $feedback->rating) == 1 ? 'selected' : '' }}>★☆☆☆☆ (1 - Sangat Kecewa)</option>
-                        </select>
+                        <x-form.select 
+                            name="rating" 
+                            label="Skor Kepuasan Layanan (1 - 5 Bintang)" 
+                            :selected="old('rating', $feedback->rating)"
+                            :options="[
+                                '5' => '★★★★★ (5 - Sangat Puas)',
+                                '4' => '★★★★☆ (4 - Puas)',
+                                '3' => '★★★☆☆ (3 - Cukup)',
+                                '2' => '★★☆☆☆ (2 - Kurang)',
+                                '1' => '★☆☆☆☆ (1 - Sangat Kecewa)',
+                            ]"
+                            placeholder="Tidak ada skor (Opsional)"
+                        />
                     </div>
                 </div>
 

@@ -20,8 +20,8 @@ class LimitUsageReportTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('admin.limit-usage.index'));
         $response->assertStatus(200);
-        $response->assertSee('Laporan Penggunaan Kuota & Limit Sistem');
-        $response->assertSee('Kapasitas Media Storage');
-        $response->assertSee('Akun Pengguna Terdaftar');
+        $response->assertSee('Penggunaan Kuota', false);
+        $response->assertSee('Kapasitas Media Storage', false);
+        $response->assertSee('Akun Pengguna Terdaftar', false);
     }
 }

@@ -225,12 +225,34 @@
                     }
                 });
 
+                let tsType = null;
+                let tsStatus = null;
+                let tsStarred = null;
+
+                if (window.TomSelect) {
+                    tsType = new window.TomSelect('#filter_type', {
+                        create: false,
+                        allowEmptyOption: true,
+                        placeholder: 'Semua Jenis',
+                    });
+                    tsStatus = new window.TomSelect('#filter_status', {
+                        create: false,
+                        allowEmptyOption: true,
+                        placeholder: 'Semua Status',
+                    });
+                    tsStarred = new window.TomSelect('#filter_starred', {
+                        create: false,
+                        allowEmptyOption: true,
+                        placeholder: 'Semua Prioritas',
+                    });
+                }
+
                 $('#filter_type, #filter_status, #filter_starred').on('change', () => table.draw());
 
                 $('#btn_reset_filters').on('click', () => {
-                    $('#filter_type').val('');
-                    $('#filter_status').val('');
-                    $('#filter_starred').val('');
+                    if (tsType) tsType.clear(); else $('#filter_type').val('');
+                    if (tsStatus) tsStatus.clear(); else $('#filter_status').val('');
+                    if (tsStarred) tsStarred.clear(); else $('#filter_starred').val('');
                     table.draw();
                 });
             }

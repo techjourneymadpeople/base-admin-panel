@@ -554,9 +554,9 @@
             </div>
 
             <!-- Search and Sort Form -->
-            <form method="GET" action="{{ route('admin.media.index') }}" class="flex items-center gap-3 shrink-0">
-                @if(request('format'))
-                    <input type="hidden" name="format" value="{{ request('format') }}">
+            <form id="media_filter_form" method="GET" action="{{ route('admin.media.index') }}" class="flex items-center gap-3 w-full sm:w-auto">
+                @if(request('tab'))
+                    <input type="hidden" name="tab" value="{{ request('tab') }}">
                 @endif
 
                 <div class="relative w-48 sm:w-64">
@@ -570,17 +570,20 @@
                     />
                 </div>
 
-                <select 
-                    name="sort" 
-                    onchange="this.form.submit()"
-                    class="px-3 py-2 text-xs rounded-xl border border-[#99cab7]/50 bg-white font-medium text-stone-700 outline-none cursor-pointer"
-                >
-                    <option value="newest" {{ request('sort', 'newest') === 'newest' ? 'selected' : '' }}>Terbaru</option>
-                    <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Terlama</option>
-                    <option value="size_desc" {{ request('sort') === 'size_desc' ? 'selected' : '' }}>Ukuran Terbesar</option>
-                    <option value="size_asc" {{ request('sort') === 'size_asc' ? 'selected' : '' }}>Ukuran Terkecil</option>
-                    <option value="name_asc" {{ request('sort', 'newest') === 'name_asc' ? 'selected' : '' }}>Nama (A-Z)</option>
-                </select>
+                <div class="w-44">
+                    <select 
+                        name="sort" 
+                        id="media_sort_select"
+                        class="w-full px-3 py-2 text-xs rounded-xl border border-[#99cab7]/50 bg-white font-medium text-stone-700 outline-none cursor-pointer"
+                        onchange="document.getElementById('media_filter_form').submit()"
+                    >
+                        <option value="newest" {{ request('sort', 'newest') === 'newest' ? 'selected' : '' }}>Terbaru</option>
+                        <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Terlama</option>
+                        <option value="size_desc" {{ request('sort') === 'size_desc' ? 'selected' : '' }}>Ukuran Terbesar</option>
+                        <option value="size_asc" {{ request('sort') === 'size_asc' ? 'selected' : '' }}>Ukuran Terkecil</option>
+                        <option value="name_asc" {{ request('sort', 'newest') === 'name_asc' ? 'selected' : '' }}>Nama (A-Z)</option>
+                    </select>
+                </div>
             </form>
         </div>
 
@@ -1050,4 +1053,21 @@
             <span x-text="toastMessage"></span>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.TomSelect && document.getElementById('media_sort_select')) {
+                new window.TomSelect('#media_sort_select', {
+                    create: false,
+                    allowEmptyOption: false,
+                    controlInput: false,
+                    onChange: function() {
+                        document.getElementById('media_filter_form').submit();
+                    }
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-layouts.admin>

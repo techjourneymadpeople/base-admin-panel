@@ -251,14 +251,19 @@
 
                                 <!-- Status Selection -->
                                 <div>
-                                    <label class="block text-xs font-bold text-stone-700 mb-1">Ubah Status</label>
-                                    <select name="status" class="w-full rounded-xl p-2.5 text-xs font-bold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
-                                        @foreach($statuses as $key => $meta)
-                                            <option value="{{ $key }}" {{ old('status', $feedback->status) === $key ? 'selected' : '' }}>
-                                                {{ $meta['label'] }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <x-form.select 
+                                        name="status" 
+                                        label="Ubah Status" 
+                                        :required="true"
+                                        :selected="old('status', $feedback->status)"
+                                        :options="[
+                                            'unread' => 'Belum Dibaca',
+                                            'read' => 'Sudah Dibaca',
+                                            'in_progress' => 'Sedang Diproses',
+                                            'resolved' => 'Selesai (Ditutup)',
+                                            'archived' => 'Diarsipkan',
+                                        ]"
+                                    />
                                 </div>
 
                                 <!-- Prioritas Bintang Checkbox -->

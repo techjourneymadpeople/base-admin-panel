@@ -117,9 +117,10 @@
                 <!-- Category Filter -->
                 <div class="w-48">
                     <select 
+                        id="filter_category_select"
                         x-model="filterCategory" 
                         @change="applyFilters()"
-                        class="w-full text-xs rounded-xl border border-stone-200 bg-white py-1.5 px-3 focus:border-[#31725e] focus:ring-2 focus:ring-[#31725e]/20 outline-none"
+                        class="w-full"
                     >
                         <option value="">Semua Kategori</option>
                         @foreach($categories as $cat)
@@ -131,9 +132,10 @@
                 <!-- Status Filter -->
                 <div class="w-40">
                     <select 
+                        id="filter_status_select"
                         x-model="filterStatus" 
                         @change="applyFilters()"
-                        class="w-full text-xs rounded-xl border border-stone-200 bg-white py-1.5 px-3 focus:border-[#31725e] focus:ring-2 focus:ring-[#31725e]/20 outline-none"
+                        class="w-full"
                     >
                         <option value="">Semua Status</option>
                         <option value="published">Terbit (Published)</option>
@@ -208,4 +210,23 @@
             </div>
         </template>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.TomSelect) {
+                new window.TomSelect('#filter_category_select', {
+                    create: false,
+                    allowEmptyOption: true,
+                    placeholder: 'Semua Kategori',
+                });
+                new window.TomSelect('#filter_status_select', {
+                    create: false,
+                    allowEmptyOption: true,
+                    placeholder: 'Semua Status',
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-layouts.admin>

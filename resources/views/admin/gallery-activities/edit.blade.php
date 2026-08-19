@@ -253,20 +253,17 @@
                     >
                         <div class="space-y-5">
                             <!-- Status (TomSelect) -->
-                            <div class="space-y-1.5">
-                                <label for="status_select" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                                    Status Publikasi
-                                </label>
-                                <select 
-                                    name="status" 
-                                    id="status_select"
-                                    class="w-full"
-                                >
-                                    <option value="published" {{ old('status', $gallery->status) === 'published' ? 'selected' : '' }}>Terbitkan Langsung (Published)</option>
-                                    <option value="draft" {{ old('status', $gallery->status) === 'draft' ? 'selected' : '' }}>Simpan sebagai Draft</option>
-                                    <option value="archived" {{ old('status', $gallery->status) === 'archived' ? 'selected' : '' }}>Arsipkan</option>
-                                </select>
-                            </div>
+                            <x-form.select
+                                name="status"
+                                label="Status Publikasi"
+                                :options="[
+                                    'published' => 'Terbitkan Langsung (Published)',
+                                    'draft' => 'Simpan sebagai Draft',
+                                    'archived' => 'Arsipkan',
+                                ]"
+                                :selected="old('status', $gallery->status)"
+                                :required="true"
+                            />
 
                             <!-- Tanggal Publikasi -->
                             <x-form.input
