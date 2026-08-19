@@ -134,20 +134,22 @@ class LimitUsageReportController extends Controller
             ];
         }
 
-        $reportItems[] = [
-            'key' => 'galleries',
-            'name' => 'Galeri Kegiatan (Album)',
-            'category' => 'Konten Publikasi',
-            'icon' => 'images',
-            'current' => $totalGalleries,
-            'current_formatted' => $totalGalleries . ' Album',
-            'limit' => $limitGalleries,
-            'limit_formatted' => $limitGalleries > 0 ? $limitGalleries . ' Album' : 'Tidak Terbatas',
-            'percentage' => $galleriesUsagePercent,
-            'remaining' => $limitGalleries > 0 ? max(0, $limitGalleries - $totalGalleries) . ' Album' : '∞',
-            'unit' => 'Album',
-            'details' => $totalPhotos . ' foto dokumentasi di seluruh album',
-        ];
+        if ($config->gallery_module_enabled) {
+            $reportItems[] = [
+                'key' => 'galleries',
+                'name' => 'Galeri Kegiatan (Album)',
+                'category' => 'Konten Publikasi',
+                'icon' => 'images',
+                'current' => $totalGalleries,
+                'current_formatted' => $totalGalleries . ' Album',
+                'limit' => $limitGalleries,
+                'limit_formatted' => $limitGalleries > 0 ? $limitGalleries . ' Album' : 'Tidak Terbatas',
+                'percentage' => $galleriesUsagePercent,
+                'remaining' => $limitGalleries > 0 ? max(0, $limitGalleries - $totalGalleries) . ' Album' : '∞',
+                'unit' => 'Album',
+                'details' => $totalPhotos . ' foto dokumentasi di seluruh album',
+            ];
+        }
 
         if ($config->faq_module_enabled) {
             $reportItems[] = [

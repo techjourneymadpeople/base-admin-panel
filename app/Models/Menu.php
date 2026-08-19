@@ -248,6 +248,19 @@ class Menu extends Model
             }
         }
 
+        $isGalleryMenu = (
+            ($this->route && in_array($this->route, ['admin.gallery-activities.index'])) ||
+            in_array($this->title, ['Galeri Kegiatan', 'Gallery Activity', 'Galeri', 'Gallery']) ||
+            ($this->parent && in_array($this->parent->title, ['Galeri Kegiatan', 'Gallery Activity', 'Galeri', 'Gallery']))
+        );
+
+        if ($isGalleryMenu) {
+            $config = WebConfiguration::current();
+            if (!$config->gallery_module_enabled) {
+                return false;
+            }
+        }
+
         // Super Admin can view all remaining active menus
         if ($user->hasRole('Super Admin')) {
             return true;

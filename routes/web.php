@@ -105,10 +105,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         Route::resource('articles', ArticleController::class);
     });
 
-    // 11. Gallery Activity Routes
-    Route::resource('gallery-activities', \App\Http\Controllers\Admin\GalleryActivityController::class, [
-        'names' => 'gallery-activities',
-    ]);
+    // 11. Gallery Activity Routes (Guarded by EnsureGalleryModuleEnabled)
+    Route::middleware([\App\Http\Middleware\EnsureGalleryModuleEnabled::class])->group(function () {
+        Route::resource('gallery-activities', \App\Http\Controllers\Admin\GalleryActivityController::class, [
+            'names' => 'gallery-activities',
+        ]);
+    });
 
     // 12. FAQ Routes (Guarded by EnsureFaqModuleEnabled)
     Route::middleware([\App\Http\Middleware\EnsureFaqModuleEnabled::class])->group(function () {
