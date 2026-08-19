@@ -112,149 +112,17 @@ class RoleAndPermissionSeeder extends Seeder
         }
 
         // 2. Define and assign permissions to Roles
-
-        // Role 1: Super Admin (Has all active permissions)
+        
+        // 1. Super Admin: Bisa semua akses & fitur
         $superAdminRole = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web']);
         $superAdminRole->syncPermissions(Permission::all());
 
-        // Role 2: Owner (Executive ownership & management)
-        $ownerRole = Role::firstOrCreate(['name' => 'Owner', 'guard_name' => 'web']);
-        $ownerRole->syncPermissions([
-            'view-dashboard',
-            'view-users',
-            'create-users',
-            'edit-users',
-            'view-roles',
-            'create-roles',
-            'edit-roles',
-            'assign-roles',
-            'view-permissions',
-            'create-permissions',
-            'edit-permissions',
-            'assign-permissions',
-            'view-menus',
-            'create-menus',
-            'edit-menus',
-            'delete-menus',
-            'assign-menu-permissions',
-            'view-content',
-            'upload-media',
-            'delete-media',
-            'view-article-categories',
-            'create-article-categories',
-            'edit-article-categories',
-            'delete-article-categories',
-            'view-article-tags',
-            'create-article-tags',
-            'edit-article-tags',
-            'delete-article-tags',
-            'view-articles',
-            'create-articles',
-            'edit-articles',
-            'delete-articles',
-            'view-gallery-activities',
-            'create-gallery-activities',
-            'edit-gallery-activities',
-            'delete-gallery-activities',
-            'view-faqs',
-            'create-faqs',
-            'edit-faqs',
-            'delete-faqs',
-            'view-partners',
-            'create-partners',
-            'edit-partners',
-            'delete-partners',
-            'view-testimonials',
-            'create-testimonials',
-            'edit-testimonials',
-            'delete-testimonials',
-            'view-feedbacks',
-            'create-feedbacks',
-            'edit-feedbacks',
-            'delete-feedbacks',
-            'view-business-identity',
-            'edit-business-identity',
-            'view-settings',
-            'edit-settings',
-        ]);
-
-        // Role 3: Admin (Daily operational & content management)
-        $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
-        $adminRole->syncPermissions([
-            'view-dashboard',
-            'view-users',
-            'create-users',
-            'edit-users',
-            'view-roles',
-            'create-roles',
-            'edit-roles',
-            'assign-roles',
-            'view-permissions',
-            'create-permissions',
-            'edit-permissions',
-            'assign-permissions',
-            'view-menus',
-            'create-menus',
-            'edit-menus',
-            'delete-menus',
-            'assign-menu-permissions',
-            'view-content',
-            'upload-media',
-            'delete-media',
-            'view-article-categories',
-            'create-article-categories',
-            'edit-article-categories',
-            'delete-article-categories',
-            'view-article-tags',
-            'create-article-tags',
-            'edit-article-tags',
-            'delete-article-tags',
-            'view-articles',
-            'create-articles',
-            'edit-articles',
-            'delete-articles',
-            'view-gallery-activities',
-            'create-gallery-activities',
-            'edit-gallery-activities',
-            'delete-gallery-activities',
-            'view-faqs',
-            'create-faqs',
-            'edit-faqs',
-            'delete-faqs',
-            'view-partners',
-            'create-partners',
-            'edit-partners',
-            'delete-partners',
-            'view-testimonials',
-            'create-testimonials',
-            'edit-testimonials',
-            'delete-testimonials',
-            'view-feedbacks',
-            'create-feedbacks',
-            'edit-feedbacks',
-            'delete-feedbacks',
-            'view-business-identity',
-            'edit-business-identity',
-            'view-settings',
-        ]);
-
-        // Role 4: Support (Customer service & user assistance)
+        // 2. Support: Seperti Super Admin (Bisa semua akses & fitur)
         $supportRole = Role::firstOrCreate(['name' => 'Support', 'guard_name' => 'web']);
-        $supportRole->syncPermissions([
-            'view-dashboard',
-            'view-users',
-            'view-faqs',
-            'view-partners',
-            'view-testimonials',
-            'view-feedbacks',
-            'edit-feedbacks',
-            'view-business-identity',
-        ]);
+        $supportRole->syncPermissions(Permission::all());
 
-        // Role 5: Editor (Content production and publishing)
-        $editorRole = Role::firstOrCreate(['name' => 'Editor', 'guard_name' => 'web']);
-        $editorRole->syncPermissions([
-            'view-dashboard',
+        // Permissions untuk modul Content
+        $contentPermissions = [
             'view-content',
             'upload-media',
             'delete-media',
@@ -289,15 +157,37 @@ class RoleAndPermissionSeeder extends Seeder
             'view-feedbacks',
             'create-feedbacks',
             'edit-feedbacks',
-            'view-business-identity',
-            'edit-business-identity',
-        ]);
+            'delete-feedbacks',
+        ];
 
-        // Role 6: User (Standard registered user)
+        // 3. Owner: Tidak bisa masuk ke Setting, Kelola Role, Kelola Permission, dan Kelola Menu (Bisa Dashboard, Pengguna, dan Content)
+        $ownerRole = Role::firstOrCreate(['name' => 'Owner', 'guard_name' => 'web']);
+        $ownerRole->syncPermissions(array_merge([
+            'view-dashboard',
+            'view-users',
+            'create-users',
+            'edit-users',
+        ], $contentPermissions));
+
+        // 4. Admin: Seperti Owner
+        $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
+        $adminRole->syncPermissions(array_merge([
+            'view-dashboard',
+            'view-users',
+            'create-users',
+            'edit-users',
+        ], $contentPermissions));
+
+        // 5. Editor: Hanya bisa yang di Menu Header Content + Dashboard
+        $editorRole = Role::firstOrCreate(['name' => 'Editor', 'guard_name' => 'web']);
+        $editorRole->syncPermissions(array_merge([
+            'view-dashboard',
+        ], $contentPermissions));
+
+        // 6. User: Hanya bisa lihat Dashboard saja
         $userRole = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
         $userRole->syncPermissions([
             'view-dashboard',
-            'view-content',
         ]);
     }
 }
