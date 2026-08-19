@@ -25,52 +25,58 @@
         </div>
     @endif
 
-    <div class="space-y-6" x-data="{
-        currentTab: 'identity',
-        logoLightMediaId: '{{ old('logo_light_media_id', $identity->logo_light_media_id) }}',
-        logoLightUrl: '{{ old('logo_light_url', $identity->getLogoLight()) }}',
-        logoDarkMediaId: '{{ old('logo_dark_media_id', $identity->logo_dark_media_id) }}',
-        logoDarkUrl: '{{ old('logo_dark_url', $identity->getLogoDark()) }}',
-        faviconMediaId: '{{ old('favicon_media_id', $identity->favicon_media_id) }}',
-        faviconUrl: '{{ old('favicon_url', $identity->getFavicon()) }}',
-        heroBannerMediaId: '{{ old('hero_banner_media_id', $identity->hero_banner_media_id) }}',
-        heroBannerUrl: '{{ old('hero_banner_url', $identity->getHeroBanner()) }}',
+    <script>
+        function initBusinessIdentity() {
+            return {
+                currentTab: 'identity',
+                logoLightMediaId: @json(old('logo_light_media_id', $identity->logo_light_media_id ?? '')),
+                logoLightUrl: @json(old('logo_light_url', $identity->getLogoLight() ?? '')),
+                logoDarkMediaId: @json(old('logo_dark_media_id', $identity->logo_dark_media_id ?? '')),
+                logoDarkUrl: @json(old('logo_dark_url', $identity->getLogoDark() ?? '')),
+                faviconMediaId: @json(old('favicon_media_id', $identity->favicon_media_id ?? '')),
+                faviconUrl: @json(old('favicon_url', $identity->getFavicon() ?? '')),
+                heroBannerMediaId: @json(old('hero_banner_media_id', $identity->hero_banner_media_id ?? '')),
+                heroBannerUrl: @json(old('hero_banner_url', $identity->getHeroBanner() ?? '')),
 
-        handleMediaSelected(event) {
-            const detail = event.detail;
-            if (!detail.media) return;
+                handleMediaSelected(event) {
+                    const detail = event.detail;
+                    if (!detail.media) return;
 
-            if (detail.targetField === 'identity_logo_light') {
-                this.logoLightMediaId = detail.media.id;
-                this.logoLightUrl = detail.media.url;
-            } else if (detail.targetField === 'identity_logo_dark') {
-                this.logoDarkMediaId = detail.media.id;
-                this.logoDarkUrl = detail.media.url;
-            } else if (detail.targetField === 'identity_favicon') {
-                this.faviconMediaId = detail.media.id;
-                this.faviconUrl = detail.media.url;
-            } else if (detail.targetField === 'identity_hero_banner') {
-                this.heroBannerMediaId = detail.media.id;
-                this.heroBannerUrl = detail.media.url;
-            }
-        },
+                    if (detail.targetField === 'identity_logo_light') {
+                        this.logoLightMediaId = detail.media.id;
+                        this.logoLightUrl = detail.media.url;
+                    } else if (detail.targetField === 'identity_logo_dark') {
+                        this.logoDarkMediaId = detail.media.id;
+                        this.logoDarkUrl = detail.media.url;
+                    } else if (detail.targetField === 'identity_favicon') {
+                        this.faviconMediaId = detail.media.id;
+                        this.faviconUrl = detail.media.url;
+                    } else if (detail.targetField === 'identity_hero_banner') {
+                        this.heroBannerMediaId = detail.media.id;
+                        this.heroBannerUrl = detail.media.url;
+                    }
+                },
 
-        removeAsset(type) {
-            if (type === 'logo_light') {
-                this.logoLightMediaId = '';
-                this.logoLightUrl = '';
-            } else if (type === 'logo_dark') {
-                this.logoDarkMediaId = '';
-                this.logoDarkUrl = '';
-            } else if (type === 'favicon') {
-                this.faviconMediaId = '';
-                this.faviconUrl = '';
-            } else if (type === 'hero_banner') {
-                this.heroBannerMediaId = '';
-                this.heroBannerUrl = '';
-            }
+                removeAsset(type) {
+                    if (type === 'logo_light') {
+                        this.logoLightMediaId = '';
+                        this.logoLightUrl = '';
+                    } else if (type === 'logo_dark') {
+                        this.logoDarkMediaId = '';
+                        this.logoDarkUrl = '';
+                    } else if (type === 'favicon') {
+                        this.faviconMediaId = '';
+                        this.faviconUrl = '';
+                    } else if (type === 'hero_banner') {
+                        this.heroBannerMediaId = '';
+                        this.heroBannerUrl = '';
+                    }
+                }
+            };
         }
-    }" @media-selected.window="handleMediaSelected($event)">
+    </script>
+
+    <div class="space-y-6" x-data="initBusinessIdentity()" @media-selected.window="handleMediaSelected($event)">
         <form action="{{ route('admin.business-identity.update') }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
@@ -98,68 +104,194 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation Bar -->
-            <div class="flex items-center gap-2 p-1.5 rounded-2xl bg-white/80 border border-[#99cab7]/30 shadow-2xs overflow-x-auto">
-                <button 
-                    type="button" 
-                    @click="currentTab = 'identity'"
-                    :class="currentTab === 'identity' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
-                    class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
-                >
-                    <i data-lucide="briefcase" class="w-4 h-4"></i>
-                    <span>1. Identitas & Legalitas</span>
-                </button>
+            <!-- Main Two-Column Layout (Sidebar Navigation on the left, Content on the right) -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                <!-- Vertical Sidebar Tabs (Left Side) -->
+                <div class="col-span-12 md:col-span-4 xl:col-span-3 space-y-4 md:sticky md:top-6">
+                    <div class="p-3 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs space-y-1.5">
+                        <div class="px-3 py-2 border-b border-stone-100 mb-1 flex items-center justify-between">
+                            <span class="text-[10px] font-extrabold text-stone-400 uppercase tracking-wider">Kategori Profil</span>
+                            <span class="text-[10px] font-bold text-[#31725e] bg-[#e2f0ea] px-2 py-0.5 rounded-full">6 Menu</span>
+                        </div>
 
-                <button 
-                    type="button" 
-                    @click="currentTab = 'banking'"
-                    :class="currentTab === 'banking' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
-                    class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
-                >
-                    <i data-lucide="credit-card" class="w-4 h-4"></i>
-                    <span>2. Perbankan & Rekening</span>
-                </button>
+                        <!-- Tab 1: Identitas & Legalitas -->
+                        <button 
+                            type="button" 
+                            @click="currentTab = 'identity'"
+                            :class="currentTab === 'identity' ? 'bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white shadow-md shadow-[#1d3e35]/15' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                            class="w-full px-3.5 py-3 rounded-2xl font-bold text-xs transition-all text-left flex items-center justify-between gap-3 cursor-pointer group"
+                        >
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div 
+                                    :class="currentTab === 'identity' ? 'bg-white/20 text-[#cca06e]' : 'bg-[#e2f0ea] text-[#31725e] group-hover:bg-[#31725e] group-hover:text-white'"
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                                >
+                                    <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="block text-xs font-extrabold truncate">1. Identitas & Legalitas</span>
+                                    <span 
+                                        :class="currentTab === 'identity' ? 'text-[#e2f0ea]/80' : 'text-stone-400'"
+                                        class="block text-[10px] font-normal truncate"
+                                    >Nama usaha, NIB, NPWP</span>
+                                </div>
+                            </div>
+                            <i 
+                                data-lucide="chevron-right" 
+                                :class="currentTab === 'identity' ? 'text-[#cca06e] opacity-100' : 'text-stone-300 opacity-0 group-hover:opacity-100'"
+                                class="w-4 h-4 shrink-0 transition-all"
+                            ></i>
+                        </button>
 
-                <button 
-                    type="button" 
-                    @click="currentTab = 'profile'"
-                    :class="currentTab === 'profile' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
-                    class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
-                >
-                    <i data-lucide="book-open" class="w-4 h-4"></i>
-                    <span>3. Tentang, Visi & Misi</span>
-                </button>
+                        <!-- Tab 2: Perbankan & Rekening -->
+                        <button 
+                            type="button" 
+                            @click="currentTab = 'banking'"
+                            :class="currentTab === 'banking' ? 'bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white shadow-md shadow-[#1d3e35]/15' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                            class="w-full px-3.5 py-3 rounded-2xl font-bold text-xs transition-all text-left flex items-center justify-between gap-3 cursor-pointer group"
+                        >
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div 
+                                    :class="currentTab === 'banking' ? 'bg-white/20 text-[#cca06e]' : 'bg-[#e2f0ea] text-[#31725e] group-hover:bg-[#31725e] group-hover:text-white'"
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                                >
+                                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="block text-xs font-extrabold truncate">2. Perbankan & Rekening</span>
+                                    <span 
+                                        :class="currentTab === 'banking' ? 'text-[#e2f0ea]/80' : 'text-stone-400'"
+                                        class="block text-[10px] font-normal truncate"
+                                    >Bank & rekening resmi</span>
+                                </div>
+                            </div>
+                            <i 
+                                data-lucide="chevron-right" 
+                                :class="currentTab === 'banking' ? 'text-[#cca06e] opacity-100' : 'text-stone-300 opacity-0 group-hover:opacity-100'"
+                                class="w-4 h-4 shrink-0 transition-all"
+                            ></i>
+                        </button>
 
-                <button 
-                    type="button" 
-                    @click="currentTab = 'media'"
-                    :class="currentTab === 'media' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
-                    class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
-                >
-                    <i data-lucide="images" class="w-4 h-4"></i>
-                    <span>4. Aset Visual & Logo</span>
-                </button>
+                        <!-- Tab 3: Tentang, Visi & Misi -->
+                        <button 
+                            type="button" 
+                            @click="currentTab = 'profile'"
+                            :class="currentTab === 'profile' ? 'bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white shadow-md shadow-[#1d3e35]/15' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                            class="w-full px-3.5 py-3 rounded-2xl font-bold text-xs transition-all text-left flex items-center justify-between gap-3 cursor-pointer group"
+                        >
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div 
+                                    :class="currentTab === 'profile' ? 'bg-white/20 text-[#cca06e]' : 'bg-[#e2f0ea] text-[#31725e] group-hover:bg-[#31725e] group-hover:text-white'"
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                                >
+                                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="block text-xs font-extrabold truncate">3. Tentang, Visi & Misi</span>
+                                    <span 
+                                        :class="currentTab === 'profile' ? 'text-[#e2f0ea]/80' : 'text-stone-400'"
+                                        class="block text-[10px] font-normal truncate"
+                                    >Visi, misi & nilai inti</span>
+                                </div>
+                            </div>
+                            <i 
+                                data-lucide="chevron-right" 
+                                :class="currentTab === 'profile' ? 'text-[#cca06e] opacity-100' : 'text-stone-300 opacity-0 group-hover:opacity-100'"
+                                class="w-4 h-4 shrink-0 transition-all"
+                            ></i>
+                        </button>
 
-                <button 
-                    type="button" 
-                    @click="currentTab = 'contact'"
-                    :class="currentTab === 'contact' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
-                    class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
-                >
-                    <i data-lucide="map-pin" class="w-4 h-4"></i>
-                    <span>5. Kontak & Lokasi</span>
-                </button>
+                        <!-- Tab 4: Aset Visual & Logo -->
+                        <button 
+                            type="button" 
+                            @click="currentTab = 'media'"
+                            :class="currentTab === 'media' ? 'bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white shadow-md shadow-[#1d3e35]/15' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                            class="w-full px-3.5 py-3 rounded-2xl font-bold text-xs transition-all text-left flex items-center justify-between gap-3 cursor-pointer group"
+                        >
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div 
+                                    :class="currentTab === 'media' ? 'bg-white/20 text-[#cca06e]' : 'bg-[#e2f0ea] text-[#31725e] group-hover:bg-[#31725e] group-hover:text-white'"
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                                >
+                                    <i data-lucide="images" class="w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="block text-xs font-extrabold truncate">4. Aset Visual & Logo</span>
+                                    <span 
+                                        :class="currentTab === 'media' ? 'text-[#e2f0ea]/80' : 'text-stone-400'"
+                                        class="block text-[10px] font-normal truncate"
+                                    >Logo, favicon, banner</span>
+                                </div>
+                            </div>
+                            <i 
+                                data-lucide="chevron-right" 
+                                :class="currentTab === 'media' ? 'text-[#cca06e] opacity-100' : 'text-stone-300 opacity-0 group-hover:opacity-100'"
+                                class="w-4 h-4 shrink-0 transition-all"
+                            ></i>
+                        </button>
 
-                <button 
-                    type="button" 
-                    @click="currentTab = 'social'"
-                    :class="currentTab === 'social' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
-                    class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
-                >
-                    <i data-lucide="share-2" class="w-4 h-4"></i>
-                    <span>6. Sosial Media Resmi</span>
-                </button>
-            </div>
+                        <!-- Tab 5: Kontak & Lokasi -->
+                        <button 
+                            type="button" 
+                            @click="currentTab = 'contact'"
+                            :class="currentTab === 'contact' ? 'bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white shadow-md shadow-[#1d3e35]/15' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                            class="w-full px-3.5 py-3 rounded-2xl font-bold text-xs transition-all text-left flex items-center justify-between gap-3 cursor-pointer group"
+                        >
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div 
+                                    :class="currentTab === 'contact' ? 'bg-white/20 text-[#cca06e]' : 'bg-[#e2f0ea] text-[#31725e] group-hover:bg-[#31725e] group-hover:text-white'"
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                                >
+                                    <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="block text-xs font-extrabold truncate">5. Kontak & Lokasi</span>
+                                    <span 
+                                        :class="currentTab === 'contact' ? 'text-[#e2f0ea]/80' : 'text-stone-400'"
+                                        class="block text-[10px] font-normal truncate"
+                                    >Email, WA, alamat, maps</span>
+                                </div>
+                            </div>
+                            <i 
+                                data-lucide="chevron-right" 
+                                :class="currentTab === 'contact' ? 'text-[#cca06e] opacity-100' : 'text-stone-300 opacity-0 group-hover:opacity-100'"
+                                class="w-4 h-4 shrink-0 transition-all"
+                            ></i>
+                        </button>
+
+                        <!-- Tab 6: Sosial Media Resmi -->
+                        <button 
+                            type="button" 
+                            @click="currentTab = 'social'"
+                            :class="currentTab === 'social' ? 'bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white shadow-md shadow-[#1d3e35]/15' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                            class="w-full px-3.5 py-3 rounded-2xl font-bold text-xs transition-all text-left flex items-center justify-between gap-3 cursor-pointer group"
+                        >
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div 
+                                    :class="currentTab === 'social' ? 'bg-white/20 text-[#cca06e]' : 'bg-[#e2f0ea] text-[#31725e] group-hover:bg-[#31725e] group-hover:text-white'"
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                                >
+                                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="block text-xs font-extrabold truncate">6. Sosial Media Resmi</span>
+                                    <span 
+                                        :class="currentTab === 'social' ? 'text-[#e2f0ea]/80' : 'text-stone-400'"
+                                        class="block text-[10px] font-normal truncate"
+                                    >Instagram, TikTok, YouTube</span>
+                                </div>
+                            </div>
+                            <i 
+                                data-lucide="chevron-right" 
+                                :class="currentTab === 'social' ? 'text-[#cca06e] opacity-100' : 'text-stone-300 opacity-0 group-hover:opacity-100'"
+                                class="w-4 h-4 shrink-0 transition-all"
+                            ></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Side: Content Panels Container -->
+                <div class="col-span-12 md:col-span-8 xl:col-span-9 space-y-6">
 
             <!-- ==================================================== -->
             <!-- TAB 1: IDENTITAS & LEGALITAS USAHA                   -->
@@ -1072,6 +1204,9 @@
                     </div>
                 </x-admin.card>
             </div>
+            <!-- End Right Side Content Panels Container -->
+            </div>
+            <!-- End Main Two-Column Layout -->
         </form>
     </div>
 
