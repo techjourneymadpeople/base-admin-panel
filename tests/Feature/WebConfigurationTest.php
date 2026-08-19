@@ -123,4 +123,40 @@ class WebConfigurationTest extends TestCase
         $responseTags = $this->actingAs($admin)->get(route('admin.article-tags.index'));
         $responseTags->assertStatus(200);
     }
+
+    public function test_testimonial_module_disabled_blocks_access_to_testimonial_routes(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('Super Admin');
+
+        $config = WebConfiguration::current();
+        $config->update(['testimonial_module_enabled' => false]);
+
+        // 1. Web request redirects to dashboard
+        $response = $this->actingAs($admin)->get(route('admin.testimonials.index'));
+        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertSessionHas('error');
+
+        // 2. AJAX request returns 403 JSON
+        $ajaxResponse = $this->actingAs($admin)->getJson(route('admin.testimonials.index'), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+        $ajaxResponse->assertStatus(403);
+    }
+
+    public function test_testimonial_module_enabled_allows_access_to_testimonial_routes(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('Super Admin');
+
+        $config = WebConfiguration::current();
+        $config->update(['testimonial_module_enabled' => true]);
+
+        $response = $this->actingAs($admin)->get(route('admin.testimonials.index'));
+        $response->assertStatus(200);
+    }
 }

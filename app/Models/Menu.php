@@ -209,6 +209,19 @@ class Menu extends Model
             }
         }
 
+        $isTestimonialMenu = (
+            ($this->route && in_array($this->route, ['admin.testimonials.index'])) ||
+            in_array($this->title, ['Testimonial', 'Testimoni']) ||
+            ($this->parent && in_array($this->parent->title, ['Testimonial', 'Testimoni']))
+        );
+
+        if ($isTestimonialMenu) {
+            $config = WebConfiguration::current();
+            if (!$config->testimonial_module_enabled) {
+                return false;
+            }
+        }
+
         // Super Admin can view all remaining active menus
         if ($user->hasRole('Super Admin')) {
             return true;

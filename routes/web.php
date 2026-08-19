@@ -118,9 +118,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('partners/{partner}/toggle-status', [\App\Http\Controllers\Admin\PartnerController::class, 'toggleStatus'])->name('partners.toggle-status')->middleware('can:edit-partners');
     Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
 
-    // 14. Testimonial Routes
-    Route::post('testimonials/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status')->middleware('can:edit-testimonials');
-    Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class);
+    // 14. Testimonial Routes (Guarded by EnsureTestimonialModuleEnabled)
+    Route::middleware([\App\Http\Middleware\EnsureTestimonialModuleEnabled::class])->group(function () {
+        Route::post('testimonials/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status')->middleware('can:edit-testimonials');
+        Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class);
+    });
 
     // 15. Feedback / Saran & Masukan Routes
     Route::post('feedbacks/{feedback}/toggle-star', [\App\Http\Controllers\Admin\FeedbackController::class, 'toggleStar'])->name('feedbacks.toggle-star')->middleware('can:edit-feedbacks');

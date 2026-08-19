@@ -35,6 +35,7 @@
             maintenanceMode: {{ $config->maintenance_mode ? 'true' : 'false' }},
             registrationEnabled: {{ $config->registration_enabled ?? true ? 'true' : 'false' }},
             articleModuleEnabled: {{ $config->article_module_enabled ?? true ? 'true' : 'false' }},
+            testimonialModuleEnabled: {{ $config->testimonial_module_enabled ?? true ? 'true' : 'false' }},
             cookieConsent: {{ $config->cookie_consent_enabled ? 'true' : 'false' }},
             robotsIndexing: {{ $config->robots_indexing ?? true ? 'true' : 'false' }},
         }"
@@ -184,6 +185,30 @@
                                 name="article_module_enabled" 
                                 value="1" 
                                 x-model="articleModuleEnabled"
+                                class="sr-only peer"
+                            >
+                            <div class="w-12 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#31725e]"></div>
+                        </label>
+                    </div>
+
+                    <!-- Buka / Tutup Modul Testimonial Switch -->
+                    <div class="p-5 rounded-2xl border border-[#99cab7]/50 bg-[#f2f8f5]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="quote" class="w-4 h-4 text-[#31725e]"></i>
+                                <h4 class="text-xs font-bold text-[#1d3e35]">Buka / Tutup Modul Testimonial (Testimonial Module)</h4>
+                            </div>
+                            <p class="text-[11px] text-stone-500 max-w-xl">
+                                Jika <strong>Dibuka (Aktif)</strong>, menu Testimonial akan muncul di navigasi sidebar dan fitur kelola ulasan testimoni dapat diakses. Jika <strong>Ditutup (Nonaktif)</strong>, menu testimoni akan disembunyikan dan seluruh akses halaman terkait testimoni otomatis ditutup/diblokir sistem.
+                            </p>
+                        </div>
+
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input 
+                                type="checkbox" 
+                                name="testimonial_module_enabled" 
+                                value="1" 
+                                x-model="testimonialModuleEnabled"
                                 class="sr-only peer"
                             >
                             <div class="w-12 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#31725e]"></div>
