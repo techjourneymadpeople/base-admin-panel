@@ -149,20 +149,22 @@ class LimitUsageReportController extends Controller
             'details' => $totalPhotos . ' foto dokumentasi di seluruh album',
         ];
 
-        $reportItems[] = [
-            'key' => 'faqs',
-            'name' => 'Tanya Jawab (FAQ)',
-            'category' => 'Informasi & Layanan',
-            'icon' => 'help-circle',
-            'current' => $totalFaqs,
-            'current_formatted' => $totalFaqs . ' Pertanyaan',
-            'limit' => $limitFaqs,
-            'limit_formatted' => $limitFaqs > 0 ? $limitFaqs . ' FAQ' : 'Tidak Terbatas',
-            'percentage' => $faqsUsagePercent,
-            'remaining' => $limitFaqs > 0 ? max(0, $limitFaqs - $totalFaqs) . ' FAQ' : '∞',
-            'unit' => 'FAQ',
-            'details' => $activeFaqs . ' Tampil Aktif • ' . $inactiveFaqs . ' Dinonaktifkan',
-        ];
+        if ($config->faq_module_enabled) {
+            $reportItems[] = [
+                'key' => 'faqs',
+                'name' => 'Tanya Jawab (FAQ)',
+                'category' => 'Informasi & Layanan',
+                'icon' => 'help-circle',
+                'current' => $totalFaqs,
+                'current_formatted' => $totalFaqs . ' Pertanyaan',
+                'limit' => $limitFaqs,
+                'limit_formatted' => $limitFaqs > 0 ? $limitFaqs . ' FAQ' : 'Tidak Terbatas',
+                'percentage' => $faqsUsagePercent,
+                'remaining' => $limitFaqs > 0 ? max(0, $limitFaqs - $totalFaqs) . ' FAQ' : '∞',
+                'unit' => 'FAQ',
+                'details' => $activeFaqs . ' Tampil Aktif • ' . $inactiveFaqs . ' Dinonaktifkan',
+            ];
+        }
 
         if ($config->partner_module_enabled) {
             $reportItems[] = [

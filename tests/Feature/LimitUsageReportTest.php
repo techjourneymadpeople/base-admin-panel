@@ -37,6 +37,7 @@ class LimitUsageReportTest extends TestCase
             'article_module_enabled' => false,
             'testimonial_module_enabled' => false,
             'partner_module_enabled' => false,
+            'faq_module_enabled' => false,
         ]);
 
         $response = $this->actingAs($user)->get(route('admin.limit-usage.index'));
@@ -45,10 +46,10 @@ class LimitUsageReportTest extends TestCase
         $response->assertDontSeeText('Artikel & Berita (SEO)');
         $response->assertDontSeeText('Testimoni Klien');
         $response->assertDontSeeText('Mitra / Brand Partner');
+        $response->assertDontSeeText('Tanya Jawab (FAQ)');
 
         $response->assertSeeText('Kapasitas Media Storage');
         $response->assertSeeText('Galeri Kegiatan (Album)');
-        $response->assertSeeText('Tanya Jawab (FAQ)');
     }
 
     public function test_limit_usage_report_shows_article_and_testimonial_when_toggled_on(): void
@@ -63,6 +64,7 @@ class LimitUsageReportTest extends TestCase
             'article_module_enabled' => true,
             'testimonial_module_enabled' => true,
             'partner_module_enabled' => true,
+            'faq_module_enabled' => true,
         ]);
 
         $response = $this->actingAs($user)->get(route('admin.limit-usage.index'));
@@ -71,5 +73,6 @@ class LimitUsageReportTest extends TestCase
         $response->assertSeeText('Artikel & Berita (SEO)');
         $response->assertSeeText('Testimoni Klien');
         $response->assertSeeText('Mitra / Brand Partner');
+        $response->assertSeeText('Tanya Jawab (FAQ)');
     }
 }

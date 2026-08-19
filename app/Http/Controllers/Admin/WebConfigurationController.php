@@ -82,6 +82,7 @@ class WebConfigurationController extends Controller
             'article_module_enabled' => ['sometimes', 'boolean'],
             'testimonial_module_enabled' => ['sometimes', 'boolean'],
             'partner_module_enabled' => ['sometimes', 'boolean'],
+            'faq_module_enabled' => ['sometimes', 'boolean'],
             'limit_media_storage_mb' => ['nullable', 'integer', 'min:0'],
             'limit_users_count' => ['nullable', 'integer', 'min:0'],
             'limit_articles_count' => ['nullable', 'integer', 'min:0'],
@@ -98,6 +99,7 @@ class WebConfigurationController extends Controller
         $validated['article_module_enabled'] = $request->boolean('article_module_enabled');
         $validated['testimonial_module_enabled'] = $request->boolean('testimonial_module_enabled');
         $validated['partner_module_enabled'] = $request->boolean('partner_module_enabled');
+        $validated['faq_module_enabled'] = $request->boolean('faq_module_enabled');
         $validated['robots_indexing'] = $request->boolean('robots_indexing', true);
         $validated['cookie_consent_enabled'] = $request->boolean('cookie_consent_enabled');
 

@@ -34,6 +34,7 @@ return new class extends Migration
             $table->boolean('article_module_enabled')->default(true);
             $table->boolean('testimonial_module_enabled')->default(true);
             $table->boolean('partner_module_enabled')->default(true);
+            $table->boolean('faq_module_enabled')->default(true);
             $table->timestamps();
         });
     }

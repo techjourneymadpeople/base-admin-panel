@@ -110,9 +110,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         'names' => 'gallery-activities',
     ]);
 
-    // 12. FAQ Routes
-    Route::post('faqs/{faq}/toggle-status', [\App\Http\Controllers\Admin\FaqController::class, 'toggleStatus'])->name('faqs.toggle-status')->middleware('can:edit-faqs');
-    Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
+    // 12. FAQ Routes (Guarded by EnsureFaqModuleEnabled)
+    Route::middleware([\App\Http\Middleware\EnsureFaqModuleEnabled::class])->group(function () {
+        Route::post('faqs/{faq}/toggle-status', [\App\Http\Controllers\Admin\FaqController::class, 'toggleStatus'])->name('faqs.toggle-status')->middleware('can:edit-faqs');
+        Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
+    });
 
     // 13. Brand / Partner Routes (Guarded by EnsurePartnerModuleEnabled)
     Route::middleware([\App\Http\Middleware\EnsurePartnerModuleEnabled::class])->group(function () {

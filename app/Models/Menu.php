@@ -235,6 +235,19 @@ class Menu extends Model
             }
         }
 
+        $isFaqMenu = (
+            ($this->route && in_array($this->route, ['admin.faqs.index'])) ||
+            in_array($this->title, ['FAQ', 'Tanya Jawab', 'Faq']) ||
+            ($this->parent && in_array($this->parent->title, ['FAQ', 'Tanya Jawab', 'Faq']))
+        );
+
+        if ($isFaqMenu) {
+            $config = WebConfiguration::current();
+            if (!$config->faq_module_enabled) {
+                return false;
+            }
+        }
+
         // Super Admin can view all remaining active menus
         if ($user->hasRole('Super Admin')) {
             return true;
