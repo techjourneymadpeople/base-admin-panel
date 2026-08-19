@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
+use App\Models\Faq;
+use App\Models\GalleryActivity;
+use App\Models\MediaWarehouse;
+use App\Models\Partner;
+use App\Models\Testimonial;
+use App\Models\User;
 use App\Models\WebConfiguration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class WebConfigurationController extends Controller
 {
@@ -18,7 +26,24 @@ class WebConfigurationController extends Controller
     {
         $config = WebConfiguration::current();
 
-        return view('admin.settings.web-configuration', compact('config'));
+        $warehouse = MediaWarehouse::getInstance();
+        $totalMediaBytes = Media::where('model_type', MediaWarehouse::class)
+            ->where('model_id', $warehouse->id)
+            ->sum('size');
+        $mediaStorageUsedMb = round($totalMediaBytes / (1024 * 1024), 2);
+
+        $currentUsage = [
+            'media_storage_bytes' => $totalMediaBytes,
+            'media_storage_mb' => $mediaStorageUsedMb,
+            'users_count' => User::count(),
+            'articles_count' => Article::count(),
+            'gallery_activities_count' => GalleryActivity::count(),
+            'faqs_count' => Faq::count(),
+            'partners_count' => Partner::count(),
+            'testimonials_count' => Testimonial::count(),
+        ];
+
+        return view('admin.settings.web-configuration', compact('config', 'currentUsage'));
     }
 
     /**
@@ -53,6 +78,13 @@ class WebConfigurationController extends Controller
             'cookie_consent_enabled' => ['sometimes', 'boolean'],
             'cookie_consent_text' => ['nullable', 'string', 'max:500'],
             'maintenance_mode' => ['sometimes', 'boolean'],
+            'limit_media_storage_mb' => ['nullable', 'integer', 'min:0'],
+            'limit_users_count' => ['nullable', 'integer', 'min:0'],
+            'limit_articles_count' => ['nullable', 'integer', 'min:0'],
+            'limit_gallery_activities_count' => ['nullable', 'integer', 'min:0'],
+            'limit_faqs_count' => ['nullable', 'integer', 'min:0'],
+            'limit_partners_count' => ['nullable', 'integer', 'min:0'],
+            'limit_testimonials_count' => ['nullable', 'integer', 'min:0'],
             'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:2048'],
             'favicon' => ['nullable', 'image', 'mimes:png,ico,svg,jpg,jpeg', 'max:1024'],
         ]);

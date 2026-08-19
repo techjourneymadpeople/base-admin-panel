@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GalleryActivity;
 use App\Models\GalleryActivityPhoto;
 use App\Models\Media;
+use App\Models\WebConfiguration;
 use App\Services\SitemapService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -146,6 +147,13 @@ class GalleryActivityController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $config = WebConfiguration::current();
+        if ($config && $config->limit_gallery_activities_count > 0 && GalleryActivity::count() >= $config->limit_gallery_activities_count) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Jumlah galeri kegiatan telah mencapai batas kuota maksimal ({$config->limit_gallery_activities_count} galeri). Silakan perluas kuota di Web Konfigurasi.");
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'activity_date' => 'nullable|date',

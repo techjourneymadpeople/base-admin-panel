@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
+use App\Models\WebConfiguration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,22 +32,22 @@ class FaqController extends Controller
             return DataTables::of($faqs)
                 ->addIndexColumn()
                 ->addColumn('faq_info', function (Faq $faq) {
-                    $plainAnswer = strip_tags($faq->answer);
-                    $truncated = mb_strimwidth($plainAnswer, 0, 120, '...');
-
+                    $question = e($faq->question);
+                    $answer = e(\Illuminate\Support\Str::limit(strip_tags($faq->answer), 80));
                     return '
-                        <div class="space-y-1 max-w-md">
-                            <h4 class="font-extrabold text-xs text-[#1d3e35] line-clamp-1">' . e($faq->question) . '</h4>
-                            <p class="text-[11px] text-stone-500 line-clamp-2 leading-relaxed">' . e($truncated) . '</p>
+                        <div class="space-y-1">
+                            <span class="font-extrabold text-xs text-[#1d3e35] line-clamp-1">' . $question . '</span>
+                            <p class="text-[11px] text-stone-500 line-clamp-1">' . $answer . '</p>
                         </div>
                     ';
                 })
                 ->addColumn('category_badge', function (Faq $faq) {
-                    $cat = $faq->category ?: 'Umum';
-                    return '<span class="inline-flex items-center gap-1 text-[11px] font-bold text-[#295c4d] bg-[#f2f8f5] px-2.5 py-1 rounded-xl border border-[#99cab7]/40 shadow-2xs">' . e($cat) . '</span>';
+                    return $faq->category
+                        ? '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold text-[#295c4d] bg-[#f2f8f5] border border-[#99cab7]/40">' . e($faq->category) . '</span>'
+                        : '<span class="text-[11px] text-stone-400 italic">Umum</span>';
                 })
                 ->addColumn('order_badge', function (Faq $faq) {
-                    return '<span class="font-mono text-xs font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-lg">#' . $faq->order . '</span>';
+                    return '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold text-stone-600 bg-stone-100 border border-stone-200">#' . $faq->order . '</span>';
                 })
                 ->addColumn('status_toggle', function (Faq $faq) {
                     $checked = $faq->is_active ? 'checked' : '';
@@ -107,6 +108,13 @@ class FaqController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $config = WebConfiguration::current();
+        if ($config && $config->limit_faqs_count > 0 && Faq::count() >= $config->limit_faqs_count) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Jumlah FAQ telah mencapai batas kuota maksimal ({$config->limit_faqs_count} FAQ). Silakan perluas kuota di Web Konfigurasi.");
+        }
+
         $validated = $request->validate([
             'question' => 'required|string|max:255',
             'answer' => 'required|string',

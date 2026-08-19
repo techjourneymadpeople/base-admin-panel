@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\Media;
+use App\Models\WebConfiguration;
 use App\Services\SitemapService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -137,6 +138,13 @@ class ArticleController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $config = WebConfiguration::current();
+        if ($config && $config->limit_articles_count > 0 && Article::count() >= $config->limit_articles_count) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Jumlah artikel telah mencapai batas kuota maksimal ({$config->limit_articles_count} artikel). Silakan perluas kuota di Web Konfigurasi.");
+        }
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'category_id' => ['nullable', 'exists:article_categories,id'],

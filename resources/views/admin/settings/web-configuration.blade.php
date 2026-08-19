@@ -53,7 +53,7 @@
         enctype="multipart/form-data"
         class="space-y-6"
         x-data="{
-            activeTab: 'system', // 'system', 'seo', 'scripts'
+            activeTab: 'system', // 'system', 'limits', 'seo', 'scripts'
             maintenanceMode: {{ $config->maintenance_mode ? 'true' : 'false' }},
             cookieConsent: {{ $config->cookie_consent_enabled ? 'true' : 'false' }},
             robotsIndexing: {{ $config->robots_indexing ?? true ? 'true' : 'false' }},
@@ -99,12 +99,22 @@
 
             <button 
                 type="button" 
+                @click="activeTab = 'limits'"
+                :class="activeTab === 'limits' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
+                class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
+            >
+                <i data-lucide="gauge" class="w-4 h-4"></i>
+                <span>2. Batasan & Kuota Sistem</span>
+            </button>
+
+            <button 
+                type="button" 
                 @click="activeTab = 'seo'"
                 :class="activeTab === 'seo' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
                 class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
                 <i data-lucide="globe" class="w-4 h-4"></i>
-                <span>2. SEO & Mesin Pencari</span>
+                <span>3. SEO & Mesin Pencari</span>
             </button>
 
             <button 
@@ -114,7 +124,7 @@
                 class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
                 <i data-lucide="code-2" class="w-4 h-4"></i>
-                <span>3. Integrasi Skrip & Pelacak</span>
+                <span>4. Integrasi Skrip & Pelacak</span>
             </button>
         </div>
 
@@ -214,7 +224,294 @@
         </div>
 
         <!-- ==================================================== -->
-        <!-- TAB 2: SEO GLOBAL & MESIN PENCARI                    -->
+        <!-- TAB 2: BATASAN & KUOTA SISTEM (SYSTEM LIMITS)        -->
+        <!-- ==================================================== -->
+        <div x-show="activeTab === 'limits'" class="space-y-6">
+            <!-- Header Info Card -->
+            <div class="p-5 rounded-3xl bg-white border border-[#99cab7]/40 shadow-2xs space-y-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-[#31725e]/10 text-[#31725e] flex items-center justify-center shrink-0">
+                        <i data-lucide="gauge" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-extrabold text-[#1d3e35]">Pengaturan Kapasitas & Batasan Kuota Data</h4>
+                        <p class="text-xs text-stone-500">
+                            Atur batas maksimal kapasitas penyimpanan berkas dan jumlah entitas data di dalam sistem. Masukkan angka <code class="px-1.5 py-0.5 rounded bg-stone-100 font-mono text-[#31725e] font-bold">0</code> jika ingin kuota tidak terbatas (unlimited).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Limit 1: Penyimpanan Media Library (Gudang Gambar) -->
+            <x-admin.card 
+                title="1. Batasan Penyimpanan Media Library" 
+                subtitle="Atur kuota total kapasitas media penyimpanan gambar/foto di Gudang Media."
+                icon="hard-drive"
+            >
+                <div class="space-y-4">
+                    <div class="p-4 rounded-2xl bg-[#f2f8f5]/60 border border-[#99cab7]/40 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Status Pemakaian Saat Ini</span>
+                                <div class="text-sm font-extrabold text-[#1d3e35] flex items-center gap-2 mt-0.5">
+                                    <span>{{ $currentUsage['media_storage_mb'] }} MB</span>
+                                    <span class="text-stone-400 font-normal">/</span>
+                                    <span>{{ $config->limit_media_storage_mb > 0 ? $config->limit_media_storage_mb . ' MB (' . round($config->limit_media_storage_mb / 1024, 2) . ' GB)' : 'Unlimited (Tidak Terbatas)' }}</span>
+                                </div>
+                            </div>
+
+                            @if($config->limit_media_storage_mb > 0)
+                                @php
+                                    $mediaPercent = min(100, round(($currentUsage['media_storage_mb'] / $config->limit_media_storage_mb) * 100, 1));
+                                    $barColor = $mediaPercent > 90 ? 'bg-red-500' : ($mediaPercent > 70 ? 'bg-amber-500' : 'bg-[#31725e]');
+                                @endphp
+                                <div class="text-right">
+                                    <span class="text-xs font-bold {{ $mediaPercent > 90 ? 'text-red-600' : 'text-[#31725e]' }}">{{ $mediaPercent }}% Terpakai</span>
+                                </div>
+                            @else
+                                <span class="px-2.5 py-1 rounded-full bg-[#e2f0ea] text-[#295c4d] text-xs font-bold">Kapasitas Unlimited</span>
+                            @endif
+                        </div>
+
+                        @if($config->limit_media_storage_mb > 0)
+                            <div class="w-full h-2.5 bg-stone-200/80 rounded-full overflow-hidden">
+                                <div class="h-full {{ $barColor }} rounded-full transition-all duration-500" style="width: {{ $mediaPercent }}%;"></div>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="limit_media_storage_mb" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                            Batas Maksimal Penyimpanan Media (MB) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input
+                                type="number"
+                                name="limit_media_storage_mb"
+                                id="limit_media_storage_mb"
+                                min="0"
+                                placeholder="1024"
+                                value="{{ old('limit_media_storage_mb', $config->limit_media_storage_mb) }}"
+                                class="w-full rounded-2xl p-3.5 pr-16 text-xs text-[#1d3e35] font-bold transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none"
+                            />
+                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-xs font-bold text-stone-400">
+                                MB
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-stone-500">
+                            Panduan konversi: <strong class="text-[#31725e]">512 MB</strong> = 0.5 GB, <strong class="text-[#31725e]">1024 MB</strong> = 1 GB, <strong class="text-[#31725e]">2048 MB</strong> = 2 GB, <strong class="text-[#31725e]">5120 MB</strong> = 5 GB. Masukkan <strong class="text-[#31725e]">0</strong> untuk Unlimited.
+                        </p>
+                        @error('limit_media_storage_mb')
+                            <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </x-admin.card>
+
+            <!-- Limit 2: Kuota Modul Utama & Konten Web -->
+            <x-admin.card 
+                title="2. Batasan Kuota Pengguna & Konten Dinamis" 
+                subtitle="Atur jumlah maksimal data yang diizinkan untuk setiap entitas."
+                icon="layers"
+            >
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Limit Pengguna -->
+                    <div class="p-4 rounded-2xl bg-white border border-[#99cab7]/40 space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i data-lucide="users" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-xs font-extrabold text-[#1d3e35]">Jumlah Pengguna</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-md">
+                                Saat Ini: {{ $currentUsage['users_count'] }}
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="limit_users_count" class="block text-[11px] font-bold uppercase text-[#295c4d]">
+                                Batas Pengguna (Akun)
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    name="limit_users_count"
+                                    id="limit_users_count"
+                                    min="0"
+                                    placeholder="50"
+                                    value="{{ old('limit_users_count', $config->limit_users_count) }}"
+                                    class="w-full rounded-xl p-2.5 pr-14 text-xs text-[#1d3e35] font-bold border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-2 focus:ring-[#428e75]/20 bg-white outline-none"
+                                />
+                                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[11px] font-semibold text-stone-400">User</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Limit Artikel -->
+                    <div class="p-4 rounded-2xl bg-white border border-[#99cab7]/40 space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-xs font-extrabold text-[#1d3e35]">Limit Artikel</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-md">
+                                Saat Ini: {{ $currentUsage['articles_count'] }}
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="limit_articles_count" class="block text-[11px] font-bold uppercase text-[#295c4d]">
+                                Batas Artikel (Pos)
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    name="limit_articles_count"
+                                    id="limit_articles_count"
+                                    min="0"
+                                    placeholder="100"
+                                    value="{{ old('limit_articles_count', $config->limit_articles_count) }}"
+                                    class="w-full rounded-xl p-2.5 pr-16 text-xs text-[#1d3e35] font-bold border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-2 focus:ring-[#428e75]/20 bg-white outline-none"
+                                />
+                                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[11px] font-semibold text-stone-400">Artikel</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Limit Galeri Kegiatan -->
+                    <div class="p-4 rounded-2xl bg-white border border-[#99cab7]/40 space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                                    <i data-lucide="image" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-xs font-extrabold text-[#1d3e35]">Limit Galeri Kegiatan</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-md">
+                                Saat Ini: {{ $currentUsage['gallery_activities_count'] }}
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="limit_gallery_activities_count" class="block text-[11px] font-bold uppercase text-[#295c4d]">
+                                Batas Galeri Kegiatan
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    name="limit_gallery_activities_count"
+                                    id="limit_gallery_activities_count"
+                                    min="0"
+                                    placeholder="50"
+                                    value="{{ old('limit_gallery_activities_count', $config->limit_gallery_activities_count) }}"
+                                    class="w-full rounded-xl p-2.5 pr-16 text-xs text-[#1d3e35] font-bold border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-2 focus:ring-[#428e75]/20 bg-white outline-none"
+                                />
+                                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[11px] font-semibold text-stone-400">Galeri</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Limit FAQ -->
+                    <div class="p-4 rounded-2xl bg-white border border-[#99cab7]/40 space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-xs font-extrabold text-[#1d3e35]">Limit FAQ</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-md">
+                                Saat Ini: {{ $currentUsage['faqs_count'] }}
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="limit_faqs_count" class="block text-[11px] font-bold uppercase text-[#295c4d]">
+                                Batas Tanya Jawab (FAQ)
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    name="limit_faqs_count"
+                                    id="limit_faqs_count"
+                                    min="0"
+                                    placeholder="50"
+                                    value="{{ old('limit_faqs_count', $config->limit_faqs_count) }}"
+                                    class="w-full rounded-xl p-2.5 pr-14 text-xs text-[#1d3e35] font-bold border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-2 focus:ring-[#428e75]/20 bg-white outline-none"
+                                />
+                                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[11px] font-semibold text-stone-400">FAQ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Limit Brand / Partner -->
+                    <div class="p-4 rounded-2xl bg-white border border-[#99cab7]/40 space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                                    <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-xs font-extrabold text-[#1d3e35]">Limit Brand / Partner</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-md">
+                                Saat Ini: {{ $currentUsage['partners_count'] }}
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="limit_partners_count" class="block text-[11px] font-bold uppercase text-[#295c4d]">
+                                Batas Mitra / Partner
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    name="limit_partners_count"
+                                    id="limit_partners_count"
+                                    min="0"
+                                    placeholder="50"
+                                    value="{{ old('limit_partners_count', $config->limit_partners_count) }}"
+                                    class="w-full rounded-xl p-2.5 pr-16 text-xs text-[#1d3e35] font-bold border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-2 focus:ring-[#428e75]/20 bg-white outline-none"
+                                />
+                                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[11px] font-semibold text-stone-400">Mitra</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Limit Testimonial -->
+                    <div class="p-4 rounded-2xl bg-white border border-[#99cab7]/40 space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                                    <i data-lucide="message-square-quote" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-xs font-extrabold text-[#1d3e35]">Limit Testimonial</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-md">
+                                Saat Ini: {{ $currentUsage['testimonials_count'] }}
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="limit_testimonials_count" class="block text-[11px] font-bold uppercase text-[#295c4d]">
+                                Batas Ulasan Testimoni
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    name="limit_testimonials_count"
+                                    id="limit_testimonials_count"
+                                    min="0"
+                                    placeholder="50"
+                                    value="{{ old('limit_testimonials_count', $config->limit_testimonials_count) }}"
+                                    class="w-full rounded-xl p-2.5 pr-16 text-xs text-[#1d3e35] font-bold border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-2 focus:ring-[#428e75]/20 bg-white outline-none"
+                                />
+                                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[11px] font-semibold text-stone-400">Testimoni</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </x-admin.card>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- TAB 3: SEO GLOBAL & MESIN PENCARI                    -->
         <!-- ==================================================== -->
         <div x-show="activeTab === 'seo'" class="space-y-6">
             <x-admin.card 

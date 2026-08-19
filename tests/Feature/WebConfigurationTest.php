@@ -33,6 +33,13 @@ class WebConfigurationTest extends TestCase
             'google_analytics_id' => 'G-ABC1234567',
             'maintenance_mode' => 1,
             'robots_indexing' => 1,
+            'limit_media_storage_mb' => 2048,
+            'limit_users_count' => 100,
+            'limit_articles_count' => 250,
+            'limit_gallery_activities_count' => 80,
+            'limit_faqs_count' => 75,
+            'limit_partners_count' => 60,
+            'limit_testimonials_count' => 45,
         ]);
 
         $updateResponse->assertRedirect(route('admin.settings.edit'));
@@ -43,6 +50,13 @@ class WebConfigurationTest extends TestCase
             'social_tiktok' => 'https://tiktok.com/@lenterapasar',
             'google_analytics_id' => 'G-ABC1234567',
             'maintenance_mode' => 1,
+            'limit_media_storage_mb' => 2048,
+            'limit_users_count' => 100,
+            'limit_articles_count' => 250,
+            'limit_gallery_activities_count' => 80,
+            'limit_faqs_count' => 75,
+            'limit_partners_count' => 60,
+            'limit_testimonials_count' => 45,
         ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Imports\UsersImport;
 use App\Models\User;
+use App\Models\WebConfiguration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,77 +47,51 @@ class UserController extends Controller
 
                     return '
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#1d3e35] via-[#295c4d] to-[#cca06e] p-0.5 shadow-xs shrink-0">
-                                <div class="w-full h-full bg-[#1d3e35] rounded-[10px] flex items-center justify-center text-white font-bold text-xs">
-                                    ' . $initial . '
-                                </div>
+                            <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#1d3e35] to-[#31725e] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+                                ' . $initial . '
                             </div>
                             <div class="min-w-0">
-                                <div class="font-bold text-[#1d3e35] hover:text-[#31725e] transition-colors truncate">' . $name . '</div>
-                                <div class="text-[11px] text-stone-500 truncate">' . $email . '</div>
+                                <div class="font-extrabold text-xs text-[#1d3e35] truncate">' . $name . '</div>
+                                <div class="text-[11px] text-stone-400 font-mono truncate">' . $email . '</div>
                             </div>
                         </div>
                     ';
                 })
                 ->addColumn('role_badge', function (User $user) {
-                    $roleName = $user->roles->pluck('name')->first() ?? 'User';
-
-                    $colorMap = [
-                        'Super Admin' => 'bg-[#1d3e35] text-white border-[#1d3e35]',
-                        'Owner' => 'bg-[#784732] text-white border-[#784732]',
-                        'Admin' => 'bg-[#295c4d] text-white border-[#295c4d]',
-                        'Support' => 'bg-[#b17042] text-white border-[#b17042]',
-                        'Editor' => 'bg-[#31725e] text-white border-[#31725e]',
-                        'User' => 'bg-[#e2f0ea] text-[#1d3e35] border-[#99cab7]/40',
+                    $roleName = $user->getRoleNames()->first() ?? 'User';
+                    $roleColors = [
+                        'Super Admin' => 'bg-red-50 text-red-700 border-red-200',
+                        'Administrator' => 'bg-emerald-50 text-[#1d3e35] border-[#99cab7]/50',
+                        'Manager' => 'bg-amber-50 text-amber-800 border-amber-200',
+                        'Editor' => 'bg-blue-50 text-blue-700 border-blue-200',
+                        'Support' => 'bg-purple-50 text-purple-700 border-purple-200',
                     ];
+                    $colorClass = $roleColors[$roleName] ?? 'bg-stone-50 text-stone-600 border-stone-200';
 
-                    $badgeClass = $colorMap[$roleName] ?? 'bg-stone-100 text-stone-800 border-stone-200';
-
-                    return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider shadow-2xs ' . $badgeClass . '">' . e($roleName) . '</span>';
+                    return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ' . $colorClass . '">' . e($roleName) . '</span>';
                 })
                 ->addColumn('status_badge', function (User $user) {
+                    $status = $user->status ?? 'active';
                     $statusConfig = [
-                        'active' => [
-                            'label' => 'Aktif',
-                            'class' => 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
-                            'dot' => 'bg-emerald-500',
-                        ],
-                        'nonactive' => [
-                            'label' => 'Non-Aktif',
-                            'class' => 'bg-stone-100 text-stone-700 border-stone-200',
-                            'dot' => 'bg-stone-400',
-                        ],
-                        'suspended' => [
-                            'label' => 'Suspended',
-                            'class' => 'bg-amber-50 text-amber-700 border-amber-200/80',
-                            'dot' => 'bg-amber-500',
-                        ],
-                        'banned' => [
-                            'label' => 'Banned',
-                            'class' => 'bg-red-50 text-red-700 border-red-200/80',
-                            'dot' => 'bg-red-500',
-                        ],
+                        'active' => ['bg' => 'bg-emerald-50 text-emerald-700 border-emerald-200', 'dot' => 'bg-emerald-500', 'label' => 'Aktif'],
+                        'nonactive' => ['bg' => 'bg-stone-100 text-stone-600 border-stone-200', 'dot' => 'bg-stone-400', 'label' => 'Nonaktif'],
+                        'suspended' => ['bg' => 'bg-amber-50 text-amber-700 border-amber-200', 'dot' => 'bg-amber-500', 'label' => 'Ditangguhkan'],
+                        'banned' => ['bg' => 'bg-red-50 text-red-700 border-red-200', 'dot' => 'bg-red-500', 'label' => 'Diblokir'],
                     ];
+                    $cfg = $statusConfig[$status] ?? $statusConfig['active'];
 
-                    $config = $statusConfig[$user->status] ?? $statusConfig['active'];
-
-                    return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ' . $config['class'] . '"><span class="w-1.5 h-1.5 rounded-full ' . $config['dot'] . '"></span>' . e($config['label']) . '</span>';
+                    return '
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ' . $cfg['bg'] . '">
+                            <span class="w-1.5 h-1.5 rounded-full ' . $cfg['dot'] . '"></span>
+                            ' . $cfg['label'] . '
+                        </span>
+                    ';
                 })
                 ->addColumn('email_status', function (User $user) {
                     if ($user->email_verified_at) {
-                        return '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            Terverifikasi
-                        </span>';
+                        return '<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Terverifikasi</span>';
                     }
-
-                    return '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200/60">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                        Belum Verifikasi
-                    </span>';
-                })
-                ->addColumn('created_at_formatted', function (User $user) {
-                    return $user->created_at ? $user->created_at->translatedFormat('d M Y, H:i') : '-';
+                    return '<span class="inline-flex items-center gap-1 text-[11px] font-bold text-stone-400"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Belum</span>';
                 })
                 ->addColumn('action', function (User $user) {
                     $showUrl = route('admin.users.show', $user->id);
@@ -157,6 +132,13 @@ class UserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $config = WebConfiguration::current();
+        if ($config && $config->limit_users_count > 0 && User::count() >= $config->limit_users_count) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Jumlah pengguna telah mencapai batas kuota maksimal ({$config->limit_users_count} akun). Silakan perluas kuota di Web Konfigurasi.");
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
@@ -296,6 +278,11 @@ class UserController extends Controller
         $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:5120'], // Max 5MB
         ]);
+
+        $config = WebConfiguration::current();
+        if ($config && $config->limit_users_count > 0 && User::count() >= $config->limit_users_count) {
+            return back()->with('error', "Jumlah pengguna telah mencapai batas kuota maksimal ({$config->limit_users_count} akun). Silakan perluas kuota di Web Konfigurasi.");
+        }
 
         try {
             $import = new UsersImport;

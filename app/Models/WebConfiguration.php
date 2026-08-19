@@ -50,6 +50,13 @@ class WebConfiguration extends Model
         'cookie_consent_enabled',
         'cookie_consent_text',
         'maintenance_mode',
+        'limit_media_storage_mb',
+        'limit_users_count',
+        'limit_articles_count',
+        'limit_gallery_activities_count',
+        'limit_faqs_count',
+        'limit_partners_count',
+        'limit_testimonials_count',
     ];
 
     /**
@@ -61,6 +68,13 @@ class WebConfiguration extends Model
         'maintenance_mode' => 'boolean',
         'robots_indexing' => 'boolean',
         'cookie_consent_enabled' => 'boolean',
+        'limit_media_storage_mb' => 'integer',
+        'limit_users_count' => 'integer',
+        'limit_articles_count' => 'integer',
+        'limit_gallery_activities_count' => 'integer',
+        'limit_faqs_count' => 'integer',
+        'limit_partners_count' => 'integer',
+        'limit_testimonials_count' => 'integer',
     ];
 
     /**
@@ -80,6 +94,13 @@ class WebConfiguration extends Model
             'meta_keywords' => 'admin panel, lentera pasar, manajemen pasar, dashboard',
             'meta_author' => 'Lentera Pasar Tech Team',
             'maintenance_mode' => false,
+            'limit_media_storage_mb' => 1024,
+            'limit_users_count' => 50,
+            'limit_articles_count' => 100,
+            'limit_gallery_activities_count' => 50,
+            'limit_faqs_count' => 50,
+            'limit_partners_count' => 50,
+            'limit_testimonials_count' => 50,
         ]);
     }
 

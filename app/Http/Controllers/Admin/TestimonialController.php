@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use App\Models\WebConfiguration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -142,6 +143,13 @@ class TestimonialController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $config = WebConfiguration::current();
+        if ($config && $config->limit_testimonials_count > 0 && Testimonial::count() >= $config->limit_testimonials_count) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Jumlah Testimonial telah mencapai batas kuota maksimal ({$config->limit_testimonials_count} testimoni). Silakan perluas kuota di Web Konfigurasi.");
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role_or_title' => 'nullable|string|max:255',

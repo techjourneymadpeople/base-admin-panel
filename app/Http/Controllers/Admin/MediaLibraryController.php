@@ -107,6 +107,31 @@ class MediaLibraryController extends Controller
         ]);
 
         $warehouse = MediaWarehouse::getInstance();
+
+        $config = WebConfiguration::current();
+        if ($config && $config->limit_media_storage_mb > 0) {
+            $totalBytes = Media::where('model_type', MediaWarehouse::class)
+                ->where('model_id', $warehouse->id)
+                ->sum('size');
+
+            $incomingBytes = 0;
+            foreach ($request->file('files') as $file) {
+                $incomingBytes += $file->getSize();
+            }
+
+            $maxAllowedBytes = $config->limit_media_storage_mb * 1024 * 1024;
+            if (($totalBytes + $incomingBytes) > $maxAllowedBytes) {
+                $errorMsg = "Kapasitas penyimpanan Media Library telah melebihi batas kuota maksimal ({$config->limit_media_storage_mb} MB). Silakan tingkatkan kuota di Web Konfigurasi atau hapus gambar yang tidak terpakai.";
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMsg,
+                    ], 422);
+                }
+                return redirect()->back()->with('error', $errorMsg);
+            }
+        }
+
         $uploadedCount = 0;
 
         foreach ($request->file('files') as $file) {
