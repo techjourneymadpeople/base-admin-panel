@@ -42,27 +42,13 @@ class MenuSeeder extends Seeder
         ]);
         $dashboardMenu->assignPermissions('view-dashboard');
 
-        // 1.2 Media Library
-        $mediaMenu = Menu::create([
-            'title' => 'Media Library',
-            'type' => 'link',
-            'route' => 'admin.media.index',
-            'icon' => 'image',
-            'permission' => 'view-content',
-            'badge' => 'Gudang',
-            'badge_color' => 'emerald',
-            'order' => 3,
-            'is_active' => true,
-        ]);
-        $mediaMenu->assignPermissions('view-content');
-
         // ==========================================
         // 2. SECTION: Pengguna & Hak Akses
         // ==========================================
         $userHeader = Menu::create([
             'title' => 'Pengguna & Hak Akses',
             'type' => 'header',
-            'order' => 4,
+            'order' => 3,
             'is_active' => true,
         ]);
 
@@ -75,7 +61,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-users',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 5,
+            'order' => 4,
             'is_active' => true,
         ]);
         $userMenu->assignPermissions('view-users');
@@ -89,7 +75,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-roles',
             'badge' => '6 Level',
             'badge_color' => 'amber',
-            'order' => 6,
+            'order' => 5,
             'is_active' => true,
         ]);
         $roleMenu->assignPermissions('view-roles');
@@ -103,7 +89,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-permissions',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 7,
+            'order' => 6,
             'is_active' => true,
         ]);
         $permissionMenu->assignPermissions('view-permissions');
@@ -117,7 +103,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-menus',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 8,
+            'order' => 7,
             'is_active' => true,
         ]);
         $menuManagement->assignPermissions('view-menus');
@@ -128,11 +114,25 @@ class MenuSeeder extends Seeder
         $contentHeader = Menu::create([
             'title' => 'Content',
             'type' => 'header',
-            'order' => 9,
+            'order' => 8,
             'is_active' => true,
         ]);
 
-        // 3.1 Article SEO Dropdown Parent Menu
+        // 3.1 Media Library
+        $mediaMenu = Menu::create([
+            'title' => 'Media Library',
+            'type' => 'link',
+            'route' => 'admin.media.index',
+            'icon' => 'image',
+            'permission' => 'view-content',
+            'badge' => 'Gudang',
+            'badge_color' => 'emerald',
+            'order' => 9,
+            'is_active' => true,
+        ]);
+        $mediaMenu->assignPermissions('view-content');
+
+        // 3.2 Article SEO Dropdown Parent Menu
         $articleSeoMenu = Menu::create([
             'title' => 'Article SEO',
             'type' => 'dropdown',
