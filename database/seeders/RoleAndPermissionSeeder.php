@@ -21,6 +21,7 @@ class RoleAndPermissionSeeder extends Seeder
         $permissions = [
             // General / Dashboard / Report
             'view-dashboard',
+            'view-content-reports',
             'view-limit-usage',
 
             // User Management
@@ -159,10 +160,11 @@ class RoleAndPermissionSeeder extends Seeder
             'create-feedbacks',
         ];
 
-        // 3. Owner: Bisa Dashboard, Penggunaan Limit, Pengguna, Content, dan Profile Business Identity
+        // 3. Owner: Bisa Dashboard, Laporan Content, Penggunaan Limit, Pengguna, Content, dan Profile Business Identity
         $ownerRole = Role::firstOrCreate(['name' => 'Owner', 'guard_name' => 'web']);
         $ownerRole->syncPermissions(array_merge([
             'view-dashboard',
+            'view-content-reports',
             'view-limit-usage',
             'view-users',
             'create-users',

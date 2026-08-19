@@ -72,4 +72,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->status === 'banned';
     }
+
+    /**
+     * Articles written by this user.
+     */
+    public function articles(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Article::class, 'user_id');
+    }
 }
