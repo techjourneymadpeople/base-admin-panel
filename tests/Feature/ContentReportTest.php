@@ -107,4 +107,129 @@ class ContentReportTest extends TestCase
         $response->assertSee('Dokumentasi Bazar Pasar 2026');
         $response->assertSee('Bagaimana cara bergabung?');
     }
+
+    public function test_content_report_hides_modules_when_toggled_off(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $owner = User::factory()->create(['name' => 'Owner Lentera']);
+        $owner->assignRole('Owner');
+
+        $editor = User::factory()->create(['name' => 'Editor Tim']);
+        $editor->assignRole('Editor');
+
+        $category = ArticleCategory::create([
+            'name' => 'Bisnis',
+            'slug' => 'bisnis',
+            'is_active' => true,
+        ]);
+
+        Article::create([
+            'category_id' => $category->id,
+            'user_id' => $editor->id,
+            'title' => 'Judul Artikel Tersembunyi',
+            'slug' => 'judul-artikel-tersembunyi',
+            'status' => 'published',
+            'published_at' => now(),
+        ]);
+
+        GalleryActivity::create([
+            'title' => 'Galeri Foto Tersembunyi',
+            'slug' => 'galeri-foto-tersembunyi',
+            'status' => 'published',
+            'event_date' => now(),
+        ]);
+
+        Faq::create([
+            'category' => 'Umum',
+            'question' => 'Pertanyaan FAQ Tersembunyi',
+            'answer' => 'Jawaban.',
+            'is_active' => true,
+        ]);
+
+        $config = \App\Models\WebConfiguration::current();
+        $config->update([
+            'article_module_enabled' => false,
+            'gallery_module_enabled' => false,
+            'faq_module_enabled' => false,
+            'partner_module_enabled' => false,
+            'testimonial_module_enabled' => false,
+        ]);
+
+        $response = $this->actingAs($owner)->get(route('admin.content-report.index'));
+        $response->assertStatus(200);
+
+        // Should not see disabled module names / content items in report
+        $response->assertDontSeeText('Judul Artikel Tersembunyi');
+        $response->assertDontSeeText('Galeri Foto Tersembunyi');
+        $response->assertDontSeeText('Pertanyaan FAQ Tersembunyi');
+        $response->assertDontSeeText('Artikel SEO');
+        $response->assertDontSeeText('Galeri Foto');
+        $response->assertDontSeeText('FAQ Tanya Jawab');
+        $response->assertDontSeeText('Brand Mitra');
+        $response->assertDontSeeText('Testimoni');
+        $response->assertDontSeeText('Kinerja & Aktivitas Tim Kontributor Artikel');
+    }
+
+    public function test_content_report_shows_modules_when_toggled_on(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $owner = User::factory()->create(['name' => 'Owner Lentera']);
+        $owner->assignRole('Owner');
+
+        $editor = User::factory()->create(['name' => 'Editor Tim']);
+        $editor->assignRole('Editor');
+
+        $category = ArticleCategory::create([
+            'name' => 'Bisnis',
+            'slug' => 'bisnis',
+            'is_active' => true,
+        ]);
+
+        Article::create([
+            'category_id' => $category->id,
+            'user_id' => $editor->id,
+            'title' => 'Judul Artikel Terbuka',
+            'slug' => 'judul-artikel-terbuka',
+            'status' => 'published',
+            'published_at' => now(),
+        ]);
+
+        GalleryActivity::create([
+            'title' => 'Galeri Foto Terbuka',
+            'slug' => 'galeri-foto-terbuka',
+            'status' => 'published',
+            'event_date' => now(),
+        ]);
+
+        Faq::create([
+            'category' => 'Umum',
+            'question' => 'Pertanyaan FAQ Terbuka',
+            'answer' => 'Jawaban.',
+            'is_active' => true,
+        ]);
+
+        $config = \App\Models\WebConfiguration::current();
+        $config->update([
+            'article_module_enabled' => true,
+            'gallery_module_enabled' => true,
+            'faq_module_enabled' => true,
+            'partner_module_enabled' => true,
+            'testimonial_module_enabled' => true,
+        ]);
+
+        $response = $this->actingAs($owner)->get(route('admin.content-report.index'));
+        $response->assertStatus(200);
+
+        $response->assertSeeText('Judul Artikel Terbuka');
+        $response->assertSeeText('Galeri Foto Terbuka');
+        $response->assertSeeText('Pertanyaan FAQ Terbuka');
+        $response->assertSeeText('Artikel SEO');
+        $response->assertSeeText('Galeri Foto');
+        $response->assertSeeText('FAQ Tanya Jawab');
+        $response->assertSeeText('Brand Mitra');
+        $response->assertSeeText('Testimoni');
+        $response->assertSeeText('Kinerja & Aktivitas Tim Kontributor Artikel');
+    }
 }
