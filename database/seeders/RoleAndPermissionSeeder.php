@@ -157,8 +157,6 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-testimonials',
             'view-feedbacks',
             'create-feedbacks',
-            'edit-feedbacks',
-            'delete-feedbacks',
         ];
 
         // 3. Owner: Bisa Dashboard, Penggunaan Limit, Pengguna, Content, dan Profile Business Identity

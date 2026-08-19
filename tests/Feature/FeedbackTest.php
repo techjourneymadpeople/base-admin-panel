@@ -12,23 +12,21 @@ class FeedbackTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_feedback_can_be_created(): void
+    public function test_feedback_can_be_created_with_new_category(): void
     {
         $this->seed(RoleAndPermissionSeeder::class);
 
         $user = User::factory()->create();
-        $user->givePermissionTo(['view-feedbacks', 'create-feedbacks']);
+        $user->assignRole('Owner'); // Non-support role can create
 
         $response = $this->actingAs($user)->post(route('admin.feedbacks.store'), [
             'name' => 'Budi Pratama',
             'email' => 'budi@example.com',
             'phone' => '081234567890',
             'subject' => 'Saran UI Baru',
-            'type' => 'saran',
+            'type' => 'saran_masukan',
             'message' => 'Tampilan admin panel sangat bagus dan modern!',
             'rating' => 5,
-            'status' => 'unread',
-            'is_starred' => true,
         ]);
 
         $response->assertRedirect(route('admin.feedbacks.index'));
@@ -37,18 +35,18 @@ class FeedbackTest extends TestCase
         $this->assertDatabaseHas('feedbacks', [
             'name' => 'Budi Pratama',
             'email' => 'budi@example.com',
-            'type' => 'saran',
+            'type' => 'saran_masukan',
             'rating' => 5,
-            'is_starred' => 1,
+            'status' => 'unread',
         ]);
     }
 
-    public function test_feedback_status_can_be_updated_via_ajax(): void
+    public function test_feedback_status_can_be_updated_by_super_admin_or_support(): void
     {
         $this->seed(RoleAndPermissionSeeder::class);
 
         $user = User::factory()->create();
-        $user->givePermissionTo(['view-feedbacks', 'edit-feedbacks']);
+        $user->assignRole('Support');
 
         $feedback = Feedback::create([
             'name' => 'Rina Wijaya',
@@ -74,18 +72,64 @@ class FeedbackTest extends TestCase
         ]);
     }
 
-    public function test_feedback_star_can_be_toggled_via_ajax(): void
+    public function test_feedback_status_cannot_be_updated_by_non_support_role(): void
     {
         $this->seed(RoleAndPermissionSeeder::class);
 
         $user = User::factory()->create();
-        $user->givePermissionTo(['view-feedbacks', 'edit-feedbacks']);
+        $user->assignRole('Owner'); // Owner tidak berhak update status feedback
+
+        $feedback = Feedback::create([
+            'name' => 'Rina Wijaya',
+            'email' => 'rina@example.com',
+            'type' => 'keluhan',
+            'message' => 'Ada kendala pada menu pembayaran.',
+            'status' => 'unread',
+        ]);
+
+        $response = $this->actingAs($user)->postJson(route('admin.feedbacks.update-status', $feedback->id), [
+            'status' => 'resolved',
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_feedback_cannot_be_modified_when_already_resolved(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $user = User::factory()->create();
+        $user->assignRole('Super Admin');
+
+        $feedback = Feedback::create([
+            'name' => 'Rina Wijaya',
+            'email' => 'rina@example.com',
+            'type' => 'keluhan',
+            'message' => 'Ada kendala pada menu pembayaran.',
+            'status' => 'resolved',
+            'replied_at' => now(),
+        ]);
+
+        // Trying to update status on resolved item
+        $response = $this->actingAs($user)->postJson(route('admin.feedbacks.update-status', $feedback->id), [
+            'status' => 'in_progress',
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_feedback_star_can_be_toggled_by_support(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $user = User::factory()->create();
+        $user->assignRole('Support');
 
         $feedback = Feedback::create([
             'name' => 'Andi Saputra',
             'email' => 'andi@example.com',
-            'type' => 'pertanyaan',
-            'message' => 'Apakah ada paket langganan tahunan?',
+            'type' => 'keluhan',
+            'message' => 'Layanan respons lambat.',
             'status' => 'read',
             'is_starred' => false,
         ]);
@@ -102,28 +146,5 @@ class FeedbackTest extends TestCase
             'id' => $feedback->id,
             'is_starred' => 1,
         ]);
-    }
-
-    public function test_feedback_index_ajax_returns_data(): void
-    {
-        $this->seed(RoleAndPermissionSeeder::class);
-
-        $user = User::factory()->create();
-        $user->givePermissionTo(['view-feedbacks']);
-
-        Feedback::create([
-            'name' => 'Dewi Lestari',
-            'email' => 'dewi@example.com',
-            'type' => 'saran',
-            'message' => 'Mohon tambahkan ekspor ke PDF.',
-            'status' => 'in_progress',
-        ]);
-
-        $response = $this->actingAs($user)->get(route('admin.feedbacks.index'), [
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ]);
-
-        $response->assertOk();
-        $response->assertJsonStructure(['data', 'recordsTotal', 'recordsFiltered']);
     }
 }

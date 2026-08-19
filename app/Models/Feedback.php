@@ -34,14 +34,11 @@ class Feedback extends Model
     ];
 
     /**
-     * Types Definition with Labels & Badges
+     * Types Definition with Labels & Badges (Hanya Saran & Masukan dan Keluhan)
      */
     public const TYPES = [
-        'saran' => ['label' => 'Saran / Masukan', 'color' => 'emerald', 'icon' => 'lightbulb'],
-        'kritik' => ['label' => 'Kritik Konstruktif', 'color' => 'amber', 'icon' => 'alert-triangle'],
-        'pertanyaan' => ['label' => 'Pertanyaan', 'color' => 'sky', 'icon' => 'help-circle'],
-        'keluhan' => ['label' => 'Keluhan Layanan', 'color' => 'rose', 'icon' => 'alert-octagon'],
-        'lainnya' => ['label' => 'Lainnya', 'color' => 'stone', 'icon' => 'message-square'],
+        'saran_masukan' => ['label' => 'Saran & Masukan', 'color' => 'emerald', 'icon' => 'lightbulb'],
+        'keluhan' => ['label' => 'Keluhan', 'color' => 'rose', 'icon' => 'alert-triangle'],
     ];
 
     /**
@@ -51,9 +48,17 @@ class Feedback extends Model
         'unread' => ['label' => 'Belum Dibaca', 'color' => 'rose', 'icon' => 'mail'],
         'read' => ['label' => 'Sudah Dibaca', 'color' => 'sky', 'icon' => 'mail-open'],
         'in_progress' => ['label' => 'Sedang Diproses', 'color' => 'amber', 'icon' => 'clock'],
-        'resolved' => ['label' => 'Selesai / Ditindaklanjuti', 'color' => 'emerald', 'icon' => 'check-circle-2'],
+        'resolved' => ['label' => 'Selesai (Ditutup)', 'color' => 'emerald', 'icon' => 'check-circle-2'],
         'archived' => ['label' => 'Diarsipkan', 'color' => 'stone', 'icon' => 'archive'],
     ];
+
+    /**
+     * Check if feedback is resolved / completed
+     */
+    public function isResolved(): bool
+    {
+        return $this->status === 'resolved';
+    }
 
     /**
      * Scopes
@@ -83,7 +88,16 @@ class Feedback extends Model
      */
     public function getTypeInfo(): array
     {
-        return self::TYPES[$this->type] ?? ['label' => ucfirst($this->type), 'color' => 'stone', 'icon' => 'message-square'];
+        if (isset(self::TYPES[$this->type])) {
+            return self::TYPES[$this->type];
+        }
+
+        // Backward compatibility fallback
+        if (in_array($this->type, ['saran', 'kritik', 'pertanyaan', 'lainnya'])) {
+            return self::TYPES['saran_masukan'];
+        }
+
+        return ['label' => ucfirst($this->type), 'color' => 'stone', 'icon' => 'message-square'];
     }
 
     /**

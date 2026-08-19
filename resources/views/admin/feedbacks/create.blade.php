@@ -30,9 +30,6 @@
             </button>
         </div>
 
-        <!-- Hidden Default Status -->
-        <input type="hidden" name="status" value="unread">
-
         <div class="max-w-4xl mx-auto space-y-6">
             <div class="p-6 sm:p-8 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs space-y-6">
                 <div class="flex items-center gap-3 pb-4 border-b border-stone-100">
@@ -40,8 +37,8 @@
                         <i data-lucide="message-square" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h4 class="text-sm font-extrabold text-[#1d3e35]">Formulir Catat Saran & Masukan</h4>
-                        <p class="text-xs text-stone-400">Catat pesan, saran, pertanyaan, atau keluhan dari pengguna secara rapi.</p>
+                        <h4 class="text-sm font-extrabold text-[#1d3e35]">Formulir Catat Saran, Masukan & Keluhan</h4>
+                        <p class="text-xs text-stone-400">Catat pesan saran atau keluhan dari pengguna secara terstruktur.</p>
                     </div>
                 </div>
 
@@ -99,10 +96,10 @@
                         @enderror
                     </div>
 
-                    <!-- Jenis Masukan -->
+                    <!-- Kategori Masukan (2 Jenis: Saran & Masukan / Keluhan) -->
                     <div>
                         <label class="block text-xs font-bold text-stone-700 mb-1">
-                            Jenis Masukan <span class="text-red-500">*</span>
+                            Kategori Masukan <span class="text-red-500">*</span>
                         </label>
                         <select name="type" required class="w-full rounded-xl p-2.5 text-xs font-bold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
                             @foreach($types as $key => $meta)
@@ -116,7 +113,7 @@
                         @enderror
                     </div>
 
-                    <!-- Skor Kepuasan Layanan (Dipindahkan ke sini) -->
+                    <!-- Skor Kepuasan Layanan -->
                     <div class="sm:col-span-2">
                         <label class="block text-xs font-bold text-stone-700 mb-1">
                             Skor Kepuasan Layanan (1 - 5 Bintang)
@@ -141,7 +138,7 @@
                         type="text" 
                         name="subject" 
                         value="{{ old('subject') }}" 
-                        placeholder="Contoh: Saran Penambahan Fitur Pembayaran QRIS"
+                        placeholder="Contoh: Saran Pembaruan Jam Operasional / Keluhan Akses Layanan"
                         class="w-full rounded-xl p-2.5 text-xs border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none"
                     >
                     @error('subject')
@@ -152,13 +149,13 @@
                 <!-- Isi Pesan Masukan -->
                 <div>
                     <label class="block text-xs font-bold text-stone-700 mb-1">
-                        Isi Pesan Masukan Lengkap <span class="text-red-500">*</span>
+                        Isi Pesan Masukan / Keluhan Lengkap <span class="text-red-500">*</span>
                     </label>
                     <textarea 
                         name="message" 
                         rows="6" 
                         required 
-                        placeholder="Tuliskan aspirasi, kritik, atau saran perbaikan secara detail..."
+                        placeholder="Tuliskan isi saran atau keluhan secara detail..."
                         class="w-full rounded-xl p-3 text-xs border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none"
                     >{{ old('message') }}</textarea>
                     @error('message')
@@ -166,20 +163,34 @@
                     @enderror
                 </div>
 
-                <!-- Prioritas Bintang -->
-                <div class="flex items-center gap-2 pt-2 border-t border-stone-100">
-                    <input 
-                        type="checkbox" 
-                        id="is_starred" 
-                        name="is_starred" 
-                        value="1" 
-                        {{ old('is_starred') ? 'checked' : '' }}
-                        class="w-4 h-4 rounded text-[#31725e] focus:ring-[#31725e] border-stone-300"
-                    >
-                    <label for="is_starred" class="text-xs font-bold text-stone-700 cursor-pointer">
-                        Tandai Sebagai Prioritas Penting (★)
-                    </label>
-                </div>
+                @if($isSupportOrSuperAdmin)
+                    <!-- Prioritas Bintang & Catatan Staf (Khusus Super Admin & Support) -->
+                    <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <input 
+                                type="checkbox" 
+                                id="is_starred" 
+                                name="is_starred" 
+                                value="1" 
+                                {{ old('is_starred') ? 'checked' : '' }}
+                                class="w-4 h-4 rounded text-[#31725e] focus:ring-[#31725e] border-stone-300"
+                            >
+                            <label for="is_starred" class="text-xs font-bold text-stone-700 cursor-pointer">
+                                Tandai Sebagai Prioritas Penting (★)
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-stone-700 mb-1">Catatan Internal Awal (Opsional)</label>
+                            <textarea 
+                                name="admin_notes" 
+                                rows="2" 
+                                placeholder="Catatan internal tim..."
+                                class="w-full rounded-xl p-2.5 text-xs border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none"
+                            >{{ old('admin_notes') }}</textarea>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </form>

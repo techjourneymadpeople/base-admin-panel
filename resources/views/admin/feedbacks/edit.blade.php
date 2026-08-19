@@ -1,11 +1,11 @@
-<x-layouts.admin title="Edit Masukan: {{ $feedback->name }}">
+<x-layouts.admin title="Tindak Lanjut & Edit Masukan: {{ $feedback->name }}">
     <x-admin.breadcrumb 
-        title="Edit Masukan" 
+        title="Tindak Lanjut & Edit Masukan" 
         :items="[
             'Konten' => '',
             'Saran & Masukan' => route('admin.feedbacks.index'),
             $feedback->name => route('admin.feedbacks.show', $feedback->id),
-            'Edit' => ''
+            'Tindak Lanjut' => ''
         ]" 
     />
 
@@ -28,12 +28,9 @@
                 class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#1d3e35] to-[#31725e] text-white hover:opacity-95 font-bold text-xs inline-flex items-center gap-2 shadow-md shadow-[#1d3e35]/20 transition-all cursor-pointer"
             >
                 <i data-lucide="check" class="w-4 h-4 text-[#cca06e]"></i>
-                <span>Perbarui Masukan</span>
+                <span>Simpan Perubahan & Tindak Lanjut</span>
             </button>
         </div>
-
-        <!-- Hidden Status (Managed in Index / Show) -->
-        <input type="hidden" name="status" value="{{ $feedback->status }}">
 
         <div class="max-w-4xl mx-auto space-y-6">
             <div class="p-6 sm:p-8 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs space-y-6">
@@ -42,8 +39,58 @@
                         <i data-lucide="edit-3" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h4 class="text-sm font-extrabold text-[#1d3e35]">Edit Data Saran & Masukan</h4>
-                        <p class="text-xs text-stone-400">Perbarui data informasi pengirim dan isi pesan masukan.</p>
+                        <h4 class="text-sm font-extrabold text-[#1d3e35]">Formulir Tindak Lanjut & Status Masukan</h4>
+                        <p class="text-xs text-stone-400">Kelola status penyelesaian dan catatan tindak lanjut solusi kepada pengirim.</p>
+                    </div>
+                </div>
+
+                <!-- Status & Prioritas (Section Utama) -->
+                <div class="p-5 rounded-2xl bg-[#f2f8f5]/80 border border-[#99cab7]/40 space-y-4">
+                    <h5 class="text-xs font-extrabold text-[#1d3e35] uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="activity" class="w-4 h-4 text-[#31725e]"></i>
+                        <span>Status & Alur Penanganan</span>
+                    </h5>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-xs font-bold text-stone-700 mb-1">
+                                Status Penanganan <span class="text-red-500">*</span>
+                            </label>
+                            <select name="status" required class="w-full rounded-xl p-2.5 text-xs font-extrabold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
+                                @foreach($statuses as $key => $meta)
+                                    <option value="{{ $key }}" {{ old('status', $feedback->status) === $key ? 'selected' : '' }}>
+                                        {{ $meta['label'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Prioritas Bintang -->
+                        <div class="flex items-center gap-2 pt-6">
+                            <input 
+                                type="checkbox" 
+                                id="is_starred" 
+                                name="is_starred" 
+                                value="1" 
+                                {{ old('is_starred', $feedback->is_starred) ? 'checked' : '' }}
+                                class="w-4 h-4 rounded text-[#31725e] focus:ring-[#31725e] border-stone-300"
+                            >
+                            <label for="is_starred" class="text-xs font-bold text-stone-700 cursor-pointer">
+                                Tandai Sebagai Prioritas Penting (★)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Catatan Tindak Lanjut -->
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 mb-1">Catatan Tindak Lanjut / Solusi (Admin Notes)</label>
+                        <textarea 
+                            name="admin_notes" 
+                            rows="3" 
+                            placeholder="Catatan penanganan, nomor tiket, atau solusi yang telah diberikan kepada pengirim..."
+                            class="w-full rounded-xl p-2.5 text-xs border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none"
+                        >{{ old('admin_notes', $feedback->admin_notes) }}</textarea>
                     </div>
                 </div>
 
@@ -98,10 +145,10 @@
                         @enderror
                     </div>
 
-                    <!-- Jenis Masukan -->
+                    <!-- Jenis Masukan (Hanya 2 Jenis) -->
                     <div>
                         <label class="block text-xs font-bold text-stone-700 mb-1">
-                            Jenis Masukan <span class="text-red-500">*</span>
+                            Kategori Masukan <span class="text-red-500">*</span>
                         </label>
                         <select name="type" required class="w-full rounded-xl p-2.5 text-xs font-bold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
                             @foreach($types as $key => $meta)
@@ -115,7 +162,7 @@
                         @enderror
                     </div>
 
-                    <!-- Skor Kepuasan Layanan (Dipindahkan ke sini) -->
+                    <!-- Skor Kepuasan Layanan -->
                     <div class="sm:col-span-2">
                         <label class="block text-xs font-bold text-stone-700 mb-1">
                             Skor Kepuasan Layanan (1 - 5 Bintang)
@@ -161,32 +208,6 @@
                     @error('message')
                         <p class="text-[11px] text-red-500 mt-1 font-semibold">{{ $message }}</p>
                     @enderror
-                </div>
-
-                <!-- Catatan Internal Admin -->
-                <div>
-                    <label class="block text-xs font-bold text-stone-700 mb-1">Catatan Internal / Solusi (Admin Notes)</label>
-                    <textarea 
-                        name="admin_notes" 
-                        rows="3" 
-                        placeholder="Catatan tindak lanjut internal staf/admin..."
-                        class="w-full rounded-xl p-2.5 text-xs border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none"
-                    >{{ old('admin_notes', $feedback->admin_notes) }}</textarea>
-                </div>
-
-                <!-- Prioritas Bintang -->
-                <div class="flex items-center gap-2 pt-2 border-t border-stone-100">
-                    <input 
-                        type="checkbox" 
-                        id="is_starred" 
-                        name="is_starred" 
-                        value="1" 
-                        {{ old('is_starred', $feedback->is_starred) ? 'checked' : '' }}
-                        class="w-4 h-4 rounded text-[#31725e] focus:ring-[#31725e] border-stone-300"
-                    >
-                    <label for="is_starred" class="text-xs font-bold text-stone-700 cursor-pointer">
-                        Tandai Sebagai Prioritas Penting (★)
-                    </label>
                 </div>
             </div>
         </div>

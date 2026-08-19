@@ -26,6 +26,17 @@
         </div>
     @endif
 
+    @if(session('info'))
+        <div 
+            class="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-between shadow-xs mb-6"
+        >
+            <div class="flex items-center gap-3">
+                <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                <span class="text-xs font-bold">{{ session('info') }}</span>
+            </div>
+        </div>
+    @endif
+
     <div class="space-y-6">
         <!-- Top Action Bar -->
         <div class="flex items-center justify-between gap-3 flex-wrap">
@@ -38,21 +49,33 @@
             </a>
 
             <div class="flex items-center gap-2">
-                <a 
-                    href="{{ route('admin.feedbacks.edit', $feedback->id) }}" 
-                    class="px-4 py-2 rounded-2xl bg-[#1d3e35] text-white hover:bg-[#31725e] font-bold text-xs inline-flex items-center gap-2 shadow-md transition-all"
-                >
-                    <i data-lucide="pencil" class="w-4 h-4 text-[#cca06e]"></i>
-                    <span>Edit Masukan</span>
-                </a>
-                <button 
-                    type="button" 
-                    onclick="confirmDelete()"
-                    class="px-4 py-2 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
-                >
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    <span>Hapus</span>
-                </button>
+                @if($feedback->isResolved())
+                    <span class="px-3.5 py-1.5 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-300 font-bold text-xs inline-flex items-center gap-1.5 shadow-2xs">
+                        <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-600"></i>
+                        <span>Selesai (Read-Only)</span>
+                    </span>
+                @else
+                    @if($isSupportOrSuperAdmin)
+                        <a 
+                            href="{{ route('admin.feedbacks.edit', $feedback->id) }}" 
+                            class="px-4 py-2 rounded-2xl bg-[#1d3e35] text-white hover:bg-[#31725e] font-bold text-xs inline-flex items-center gap-2 shadow-md transition-all"
+                        >
+                            <i data-lucide="pencil" class="w-4 h-4 text-[#cca06e]"></i>
+                            <span>Tindak Lanjut & Edit</span>
+                        </a>
+                    @endif
+                @endif
+
+                @if($isSupportOrSuperAdmin)
+                    <button 
+                        type="button" 
+                        onclick="confirmDelete()"
+                        class="px-4 py-2 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
+                    >
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span>Hapus</span>
+                    </button>
+                @endif
             </div>
         </div>
 
@@ -166,91 +189,143 @@
                 </div>
             </div>
 
-            <!-- Right 1 Col: Quick Follow-up Form -->
+            <!-- Right 1 Col: Follow-up Panel -->
             <div class="space-y-6">
-                <div class="p-6 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs space-y-5">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-xl bg-[#31725e]/10 text-[#31725e] flex items-center justify-center">
-                            <i data-lucide="check-square" class="w-4 h-4"></i>
+                @if($feedback->isResolved())
+                    <!-- Panel Selesai (Read-Only Archive) -->
+                    <div class="p-6 rounded-3xl bg-emerald-50/70 border border-emerald-200 shadow-2xs space-y-4">
+                        <div class="flex items-center gap-2 text-emerald-800">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-extrabold text-emerald-900">Status: Selesai Ditutup</h4>
+                                <span class="text-[10px] text-emerald-700 font-semibold">Arsip Read-Only</span>
+                            </div>
                         </div>
-                        <h4 class="text-sm font-extrabold text-[#1d3e35]">Tindak Lanjut & Status</h4>
+
+                        <div class="space-y-2 pt-2 border-t border-emerald-200/80 text-xs">
+                            <div>
+                                <span class="block text-[10px] text-emerald-700 font-bold uppercase">Tanggal Penyelesaian</span>
+                                <span class="font-extrabold text-emerald-900">
+                                    {{ $feedback->replied_at ? $feedback->replied_at->translatedFormat('d F Y, H:i') . ' WIB' : '-' }}
+                                </span>
+                            </div>
+
+                            <div class="pt-2">
+                                <span class="block text-[10px] text-emerald-700 font-bold uppercase mb-1">Catatan Tindak Lanjut / Solusi</span>
+                                <div class="p-3.5 rounded-xl bg-white border border-emerald-200 text-stone-700 leading-relaxed whitespace-pre-line text-xs font-normal">
+                                    {{ $feedback->admin_notes ?: 'Tidak ada catatan khusus yang dicantumkan.' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-emerald-100/60 text-[11px] text-emerald-800 font-medium flex items-center gap-2">
+                            <i data-lucide="lock" class="w-4 h-4 shrink-0 text-emerald-600"></i>
+                            <span>Pesan ini telah diselesaikan dan dikunci untuk menjaga integritas riwayat layanan.</span>
+                        </div>
                     </div>
+                @else
+                    @if($isSupportOrSuperAdmin)
+                        <!-- Panel Tindak Lanjut untuk Super Admin & Support -->
+                        <div class="p-6 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs space-y-5">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-xl bg-[#31725e]/10 text-[#31725e] flex items-center justify-center">
+                                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                                </div>
+                                <h4 class="text-sm font-extrabold text-[#1d3e35]">Tindak Lanjut & Status</h4>
+                            </div>
 
-                    <form action="{{ route('admin.feedbacks.update', $feedback->id) }}" method="POST" class="space-y-4">
-                        @csrf
-                        @method('PUT')
+                            <form action="{{ route('admin.feedbacks.update', $feedback->id) }}" method="POST" class="space-y-4">
+                                @csrf
+                                @method('PUT')
 
-                        <!-- Hidden fields to preserve original submission -->
-                        <input type="hidden" name="name" value="{{ $feedback->name }}">
-                        <input type="hidden" name="email" value="{{ $feedback->email }}">
-                        <input type="hidden" name="phone" value="{{ $feedback->phone }}">
-                        <input type="hidden" name="subject" value="{{ $feedback->subject }}">
-                        <input type="hidden" name="type" value="{{ $feedback->type }}">
-                        <input type="hidden" name="message" value="{{ $feedback->message }}">
-                        <input type="hidden" name="rating" value="{{ $feedback->rating }}">
+                                <!-- Hidden fields to preserve original submission -->
+                                <input type="hidden" name="name" value="{{ $feedback->name }}">
+                                <input type="hidden" name="email" value="{{ $feedback->email }}">
+                                <input type="hidden" name="phone" value="{{ $feedback->phone }}">
+                                <input type="hidden" name="subject" value="{{ $feedback->subject }}">
+                                <input type="hidden" name="type" value="{{ $feedback->type }}">
+                                <input type="hidden" name="message" value="{{ $feedback->message }}">
+                                <input type="hidden" name="rating" value="{{ $feedback->rating }}">
 
-                        <!-- Status Selection -->
-                        <div>
-                            <label class="block text-xs font-bold text-stone-700 mb-1">Ubah Status</label>
-                            <select name="status" class="w-full rounded-xl p-2.5 text-xs font-bold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
-                                @foreach($statuses as $key => $meta)
-                                    <option value="{{ $key }}" {{ old('status', $feedback->status) === $key ? 'selected' : '' }}>
-                                        {{ $meta['label'] }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                <!-- Status Selection -->
+                                <div>
+                                    <label class="block text-xs font-bold text-stone-700 mb-1">Ubah Status</label>
+                                    <select name="status" class="w-full rounded-xl p-2.5 text-xs font-bold border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none">
+                                        @foreach($statuses as $key => $meta)
+                                            <option value="{{ $key }}" {{ old('status', $feedback->status) === $key ? 'selected' : '' }}>
+                                                {{ $meta['label'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Prioritas Bintang Checkbox -->
+                                <div class="flex items-center gap-2 py-1">
+                                    <input 
+                                        type="checkbox" 
+                                        id="is_starred" 
+                                        name="is_starred" 
+                                        value="1" 
+                                        {{ old('is_starred', $feedback->is_starred) ? 'checked' : '' }}
+                                        class="w-4 h-4 rounded text-[#31725e] focus:ring-[#31725e] border-stone-300"
+                                    >
+                                    <label for="is_starred" class="text-xs font-bold text-stone-700 cursor-pointer">
+                                        Tandai Sebagai Prioritas (★)
+                                    </label>
+                                </div>
+
+                                <!-- Internal Admin Notes -->
+                                <div>
+                                    <label class="block text-xs font-bold text-stone-700 mb-1">Catatan Tindak Lanjut / Solusi</label>
+                                    <textarea 
+                                        name="admin_notes" 
+                                        rows="4" 
+                                        placeholder="Tuliskan catatan tindak lanjut, langkah penanganan, atau ringkasan solusi yang diberikan..."
+                                        class="w-full rounded-xl p-2.5 text-xs border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none"
+                                    >{{ old('admin_notes', $feedback->admin_notes) }}</textarea>
+                                    <span class="text-[10px] text-stone-400">Catatan disimpan untuk riwayat penanganan pelanggan.</span>
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    class="w-full py-2.5 rounded-2xl bg-[#1d3e35] text-white hover:bg-[#31725e] font-bold text-xs shadow-md shadow-[#1d3e35]/15 transition-all cursor-pointer"
+                                >
+                                    Simpan Tindak Lanjut
+                                </button>
+                            </form>
                         </div>
-
-                        <!-- Prioritas Bintang Checkbox -->
-                        <div class="flex items-center gap-2 py-1">
-                            <input 
-                                type="checkbox" 
-                                id="is_starred" 
-                                name="is_starred" 
-                                value="1" 
-                                {{ old('is_starred', $feedback->is_starred) ? 'checked' : '' }}
-                                class="w-4 h-4 rounded text-[#31725e] focus:ring-[#31725e] border-stone-300"
-                            >
-                            <label for="is_starred" class="text-xs font-bold text-stone-700 cursor-pointer">
-                                Tandai Sebagai Prioritas (★)
-                            </label>
+                    @else
+                        <!-- Panel untuk Role Non-Super Admin / Non-Support -->
+                        <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-2xs space-y-4">
+                            <div class="flex items-center gap-2 text-stone-800">
+                                <i data-lucide="shield-alert" class="w-4 h-4 text-stone-400"></i>
+                                <h4 class="text-xs font-bold">Otoritas Tindak Lanjut</h4>
+                            </div>
+                            <p class="text-xs text-stone-500 leading-relaxed">
+                                Pengubahan status dan pencatatan tindak lanjut komplain/masukan hanya dapat dilakukan oleh staf <strong>Super Admin</strong> dan <strong>Support</strong>.
+                            </p>
                         </div>
-
-                        <!-- Internal Admin Notes -->
-                        <div>
-                            <label class="block text-xs font-bold text-stone-700 mb-1">Catatan Internal / Solusi</label>
-                            <textarea 
-                                name="admin_notes" 
-                                rows="4" 
-                                placeholder="Tuliskan catatan tindak lanjut, nomor tiket komplain, atau ringkasan respon yang telah diberikan kepada pengirim..."
-                                class="w-full rounded-xl p-2.5 text-xs border border-stone-200 bg-white text-stone-800 focus:border-[#31725e] outline-none"
-                            >{{ old('admin_notes', $feedback->admin_notes) }}</textarea>
-                            <span class="text-[10px] text-stone-400">Catatan ini hanya dapat dilihat oleh tim admin / CS.</span>
-                        </div>
-
-                        <button 
-                            type="submit" 
-                            class="w-full py-2.5 rounded-2xl bg-[#1d3e35] text-white hover:bg-[#31725e] font-bold text-xs shadow-md shadow-[#1d3e35]/15 transition-all cursor-pointer"
-                        >
-                            Simpan Tindak Lanjut
-                        </button>
-                    </form>
-                </div>
+                    @endif
+                @endif
             </div>
         </div>
     </div>
 
-    <!-- Hidden Form for Delete -->
-    <form id="deleteForm" action="{{ route('admin.feedbacks.destroy', $feedback->id) }}" method="POST" class="hidden">
-        @csrf
-        @method('DELETE')
-    </form>
+    @if($isSupportOrSuperAdmin)
+        <!-- Hidden Form for Delete -->
+        <form id="deleteForm" action="{{ route('admin.feedbacks.destroy', $feedback->id) }}" method="POST" class="hidden">
+            @csrf
+            @method('DELETE')
+        </form>
 
-    <script>
-        function confirmDelete() {
-            if (confirm('Apakah Anda yakin ingin menghapus pesan masukan ini secara permanen?')) {
-                document.getElementById('deleteForm').submit();
+        <script>
+            function confirmDelete() {
+                if (confirm('Apakah Anda yakin ingin menghapus pesan masukan ini secara permanen?')) {
+                    document.getElementById('deleteForm').submit();
+                }
             }
-        }
-    </script>
+        </script>
+    @endif
 </x-layouts.admin>
