@@ -73,6 +73,10 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::registerView(function () {
+            $config = \App\Models\WebConfiguration::current();
+            if (!$config->registration_enabled) {
+                return redirect()->route('login')->with('status', 'Pendaftaran akun baru saat ini sedang ditutup oleh Administrator.');
+            }
             return view('auth.register');
         });
 

@@ -62,7 +62,7 @@
             </form>
 
             <!-- Card Footer -->
-            @if (Route::has('register'))
+            @if (Route::has('register') && \App\Models\WebConfiguration::current()->registration_enabled)
                 <x-slot:footer>
                     <p class="text-xs sm:text-sm">
                         Belum memiliki akun pengelola? 

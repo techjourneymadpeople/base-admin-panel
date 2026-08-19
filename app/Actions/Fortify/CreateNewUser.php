@@ -22,6 +22,13 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        $config = \App\Models\WebConfiguration::current();
+        if (!$config->registration_enabled) {
+            throw ValidationException::withMessages([
+                'email' => ['Pendaftaran akun baru saat ini sedang ditutup oleh Administrator.'],
+            ]);
+        }
+
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => [

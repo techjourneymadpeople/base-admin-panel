@@ -55,6 +55,7 @@
         x-data="{
             activeTab: 'system', // 'system', 'limits', 'seo', 'scripts'
             maintenanceMode: {{ $config->maintenance_mode ? 'true' : 'false' }},
+            registrationEnabled: {{ $config->registration_enabled ?? true ? 'true' : 'false' }},
             cookieConsent: {{ $config->cookie_consent_enabled ? 'true' : 'false' }},
             robotsIndexing: {{ $config->robots_indexing ?? true ? 'true' : 'false' }},
         }"
@@ -133,8 +134,8 @@
         <!-- ==================================================== -->
         <div x-show="activeTab === 'system'" class="space-y-6">
             <x-admin.card 
-                title="Status Sistem & Tampilan Footer" 
-                subtitle="Kontrol mode pemeliharaan, banner persetujuan cookie, dan copyright teks footer."
+                title="Status Sistem & Operasional Web" 
+                subtitle="Kontrol mode pemeliharaan, buka/tutup pendaftaran akun publik, banner cookie, dan copyright teks footer."
                 icon="shield-alert"
             >
                 <div class="space-y-6">
@@ -159,6 +160,30 @@
                                 class="sr-only peer"
                             >
                             <div class="w-12 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Buka / Tutup Register Switch -->
+                    <div class="p-5 rounded-2xl border border-[#99cab7]/50 bg-[#f2f8f5]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="user-plus" class="w-4 h-4 text-[#31725e]"></i>
+                                <h4 class="text-xs font-bold text-[#1d3e35]">Buka / Tutup Pendaftaran Pengguna (User Registration)</h4>
+                            </div>
+                            <p class="text-[11px] text-stone-500 max-w-xl">
+                                Jika <strong>Dibuka (Aktif)</strong>, pengunjung umum dapat mendaftarkan akun baru secara mandiri. Jika <strong>Ditutup (Nonaktif)</strong>, pendaftaran akun baru dimatikan dan siapa pun yang mengakses tautan pendaftaran akan langsung diarahkan ke halaman Login.
+                            </p>
+                        </div>
+
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input 
+                                type="checkbox" 
+                                name="registration_enabled" 
+                                value="1" 
+                                x-model="registrationEnabled"
+                                class="sr-only peer"
+                            >
+                            <div class="w-12 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#31725e]"></div>
                         </label>
                     </div>
 

@@ -32,6 +32,7 @@ class WebConfigurationTest extends TestCase
             'social_tiktok' => 'https://tiktok.com/@lenterapasar',
             'google_analytics_id' => 'G-ABC1234567',
             'maintenance_mode' => 1,
+            'registration_enabled' => 0,
             'robots_indexing' => 1,
             'limit_media_storage_mb' => 2048,
             'limit_users_count' => 100,
@@ -50,6 +51,7 @@ class WebConfigurationTest extends TestCase
             'social_tiktok' => 'https://tiktok.com/@lenterapasar',
             'google_analytics_id' => 'G-ABC1234567',
             'maintenance_mode' => 1,
+            'registration_enabled' => 0,
             'limit_media_storage_mb' => 2048,
             'limit_users_count' => 100,
             'limit_articles_count' => 250,
@@ -58,5 +60,15 @@ class WebConfigurationTest extends TestCase
             'limit_partners_count' => 60,
             'limit_testimonials_count' => 45,
         ]);
+    }
+
+    public function test_registration_disabled_redirects_to_login(): void
+    {
+        $config = WebConfiguration::current();
+        $config->update(['registration_enabled' => false]);
+
+        $response = $this->get('/register');
+        $response->assertRedirect('/login');
+        $response->assertSessionHas('status');
     }
 }

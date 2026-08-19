@@ -1,5 +1,7 @@
 @php
     $bizIdentity = \App\Models\BusinessIdentity::current();
+    $webConfig = \App\Models\WebConfiguration::current();
+    $registrationEnabled = $webConfig->registration_enabled ?? true;
     $pageTitle = $bizIdentity->getBrandDisplayName() . ' - Home';
     $faviconUrl = $bizIdentity->getFavicon() ?: asset('favicon.ico');
     $ogImageUrl = $bizIdentity->getOgImage();
@@ -99,7 +101,7 @@
                         <span>Masuk</span>
                     </a>
                 @endif
-                @if (Route::has('register'))
+                @if (Route::has('register') && $registrationEnabled)
                     <a href="{{ route('register') }}" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#31725e] to-[#428e75] shadow-md shadow-[#31725e]/20 hover:from-[#295c4d] hover:to-[#367561] transition-all">
                         <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
                         <span>Daftar</span>
@@ -183,7 +185,11 @@
                             Akses Pengelola Workspace
                         </h2>
                         <p class="text-xs text-[#784732] mt-0.5">
-                            Silakan masuk ke akun Anda atau daftarkan akun baru untuk mulai mengelola.
+                            @if($registrationEnabled)
+                                Silakan masuk ke akun Anda atau daftarkan akun baru untuk mulai mengelola.
+                            @else
+                                Silakan masuk ke akun Anda untuk mulai mengelola.
+                            @endif
                         </p>
                     </div>
 
@@ -196,7 +202,7 @@
                             </a>
                         @endif
 
-                        @if (Route::has('register'))
+                        @if (Route::has('register') && $registrationEnabled)
                             <a href="{{ route('register') }}" class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-sm font-semibold text-[#1d3e35] bg-white border border-[#99cab7]/60 hover:bg-[#f2f8f5] hover:border-[#31725e] shadow-sm transition-all">
                                 <i data-lucide="user-plus" class="w-4 h-4 text-[#31725e]"></i>
                                 <span>Daftar Akun Baru</span>

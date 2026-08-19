@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(\App\Http\Middleware\RedirectOldSlugs::class);
+        $middleware->append(\App\Http\Middleware\EnsureRegistrationIsEnabled::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
