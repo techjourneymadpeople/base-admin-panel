@@ -24,4 +24,48 @@ class LimitUsageReportTest extends TestCase
         $response->assertSee('Kapasitas Media Storage', false);
         $response->assertSee('Akun Pengguna Terdaftar', false);
     }
+
+    public function test_limit_usage_report_hides_article_and_testimonial_when_toggled_off(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $user = User::factory()->create();
+        $user->assignRole('Super Admin');
+
+        $config = \App\Models\WebConfiguration::current();
+        $config->update([
+            'article_module_enabled' => false,
+            'testimonial_module_enabled' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.limit-usage.index'));
+        $response->assertStatus(200);
+
+        $response->assertDontSeeText('Artikel & Berita (SEO)');
+        $response->assertDontSeeText('Testimoni Klien');
+
+        $response->assertSeeText('Kapasitas Media Storage');
+        $response->assertSeeText('Galeri Kegiatan (Album)');
+        $response->assertSeeText('Tanya Jawab (FAQ)');
+    }
+
+    public function test_limit_usage_report_shows_article_and_testimonial_when_toggled_on(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $user = User::factory()->create();
+        $user->assignRole('Super Admin');
+
+        $config = \App\Models\WebConfiguration::current();
+        $config->update([
+            'article_module_enabled' => true,
+            'testimonial_module_enabled' => true,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.limit-usage.index'));
+        $response->assertStatus(200);
+
+        $response->assertSeeText('Artikel & Berita (SEO)');
+        $response->assertSeeText('Testimoni Klien');
+    }
 }

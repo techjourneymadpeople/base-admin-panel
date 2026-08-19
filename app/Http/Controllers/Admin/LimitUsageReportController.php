@@ -88,9 +88,10 @@ class LimitUsageReportController extends Controller
         // Compile comprehensive report items
         $reportItems = [
             [
+                'key' => 'storage',
                 'name' => 'Kapasitas Media Storage',
                 'category' => 'File & Penyimpanan',
-                'icon' => 'image',
+                'icon' => 'hard-drive',
                 'current' => $totalMediaMb,
                 'current_formatted' => $totalMediaMb . ' MB (' . $totalMediaFiles . ' berkas)',
                 'limit' => $limitMediaMb,
@@ -101,6 +102,7 @@ class LimitUsageReportController extends Controller
                 'details' => $totalMediaFiles . ' berkas gambar/media terunggah',
             ],
             [
+                'key' => 'users',
                 'name' => 'Akun Pengguna Terdaftar',
                 'category' => 'Pengguna & Akses',
                 'icon' => 'users',
@@ -113,7 +115,11 @@ class LimitUsageReportController extends Controller
                 'unit' => 'User',
                 'details' => $activeUsers . ' Aktif • ' . $inactiveUsers . ' Non-Aktif • ' . $suspendedUsers . ' Suspended',
             ],
-            [
+        ];
+
+        if ($config->article_module_enabled) {
+            $reportItems[] = [
+                'key' => 'articles',
                 'name' => 'Artikel & Berita (SEO)',
                 'category' => 'Konten Publikasi',
                 'icon' => 'file-text',
@@ -125,47 +131,57 @@ class LimitUsageReportController extends Controller
                 'remaining' => $limitArticles > 0 ? max(0, $limitArticles - $totalArticles) . ' Artikel' : '∞',
                 'unit' => 'Artikel',
                 'details' => $publishedArticles . ' Publikasi • ' . $draftArticles . ' Draf • ' . $totalCategories . ' Kategori • ' . $totalTags . ' Tag',
-            ],
-            [
-                'name' => 'Galeri Kegiatan (Album)',
-                'category' => 'Konten Publikasi',
-                'icon' => 'images',
-                'current' => $totalGalleries,
-                'current_formatted' => $totalGalleries . ' Album',
-                'limit' => $limitGalleries,
-                'limit_formatted' => $limitGalleries > 0 ? $limitGalleries . ' Album' : 'Tidak Terbatas',
-                'percentage' => $galleriesUsagePercent,
-                'remaining' => $limitGalleries > 0 ? max(0, $limitGalleries - $totalGalleries) . ' Album' : '∞',
-                'unit' => 'Album',
-                'details' => $totalPhotos . ' foto dokumentasi di seluruh album',
-            ],
-            [
-                'name' => 'Tanya Jawab (FAQ)',
-                'category' => 'Informasi & Layanan',
-                'icon' => 'help-circle',
-                'current' => $totalFaqs,
-                'current_formatted' => $totalFaqs . ' Pertanyaan',
-                'limit' => $limitFaqs,
-                'limit_formatted' => $limitFaqs > 0 ? $limitFaqs . ' FAQ' : 'Tidak Terbatas',
-                'percentage' => $faqsUsagePercent,
-                'remaining' => $limitFaqs > 0 ? max(0, $limitFaqs - $totalFaqs) . ' FAQ' : '∞',
-                'unit' => 'FAQ',
-                'details' => $activeFaqs . ' Tampil Aktif • ' . $inactiveFaqs . ' Dinonaktifkan',
-            ],
-            [
-                'name' => 'Mitra / Brand Partner',
-                'category' => 'Relasi Bisnis',
-                'icon' => 'handshake',
-                'current' => $totalPartners,
-                'current_formatted' => $totalPartners . ' Mitra',
-                'limit' => $limitPartners,
-                'limit_formatted' => $limitPartners > 0 ? $limitPartners . ' Mitra' : 'Tidak Terbatas',
-                'percentage' => $partnersUsagePercent,
-                'remaining' => $limitPartners > 0 ? max(0, $limitPartners - $totalPartners) . ' Mitra' : '∞',
-                'unit' => 'Mitra',
-                'details' => $activePartners . ' Tampil Aktif • ' . $inactivePartners . ' Disembunyikan',
-            ],
-            [
+            ];
+        }
+
+        $reportItems[] = [
+            'key' => 'galleries',
+            'name' => 'Galeri Kegiatan (Album)',
+            'category' => 'Konten Publikasi',
+            'icon' => 'images',
+            'current' => $totalGalleries,
+            'current_formatted' => $totalGalleries . ' Album',
+            'limit' => $limitGalleries,
+            'limit_formatted' => $limitGalleries > 0 ? $limitGalleries . ' Album' : 'Tidak Terbatas',
+            'percentage' => $galleriesUsagePercent,
+            'remaining' => $limitGalleries > 0 ? max(0, $limitGalleries - $totalGalleries) . ' Album' : '∞',
+            'unit' => 'Album',
+            'details' => $totalPhotos . ' foto dokumentasi di seluruh album',
+        ];
+
+        $reportItems[] = [
+            'key' => 'faqs',
+            'name' => 'Tanya Jawab (FAQ)',
+            'category' => 'Informasi & Layanan',
+            'icon' => 'help-circle',
+            'current' => $totalFaqs,
+            'current_formatted' => $totalFaqs . ' Pertanyaan',
+            'limit' => $limitFaqs,
+            'limit_formatted' => $limitFaqs > 0 ? $limitFaqs . ' FAQ' : 'Tidak Terbatas',
+            'percentage' => $faqsUsagePercent,
+            'remaining' => $limitFaqs > 0 ? max(0, $limitFaqs - $totalFaqs) . ' FAQ' : '∞',
+            'unit' => 'FAQ',
+            'details' => $activeFaqs . ' Tampil Aktif • ' . $inactiveFaqs . ' Dinonaktifkan',
+        ];
+
+        $reportItems[] = [
+            'key' => 'partners',
+            'name' => 'Mitra / Brand Partner',
+            'category' => 'Relasi Bisnis',
+            'icon' => 'handshake',
+            'current' => $totalPartners,
+            'current_formatted' => $totalPartners . ' Mitra',
+            'limit' => $limitPartners,
+            'limit_formatted' => $limitPartners > 0 ? $limitPartners . ' Mitra' : 'Tidak Terbatas',
+            'percentage' => $partnersUsagePercent,
+            'remaining' => $limitPartners > 0 ? max(0, $limitPartners - $totalPartners) . ' Mitra' : '∞',
+            'unit' => 'Mitra',
+            'details' => $activePartners . ' Tampil Aktif • ' . $inactivePartners . ' Disembunyikan',
+        ];
+
+        if ($config->testimonial_module_enabled) {
+            $reportItems[] = [
+                'key' => 'testimonials',
                 'name' => 'Testimoni Klien',
                 'category' => 'Ulasan & Reputasi',
                 'icon' => 'quote',
@@ -177,8 +193,8 @@ class LimitUsageReportController extends Controller
                 'remaining' => $limitTestimonials > 0 ? max(0, $limitTestimonials - $totalTestimonials) . ' Testimoni' : '∞',
                 'unit' => 'Testimoni',
                 'details' => $activeTestimonials . ' Tampil Aktif • Rating rata-rata: ' . $avgRating . '/5.0',
-            ],
-        ];
+            ];
+        }
 
         // Overall system health score
         $limitedItems = array_filter($reportItems, fn($i) => $i['limit'] > 0);

@@ -33,6 +33,14 @@
         @endcan
     </div>
 
+    @php
+        $storageItem = collect($reportItems)->firstWhere('key', 'storage') ?? $reportItems[0];
+        $usersItem = collect($reportItems)->firstWhere('key', 'users') ?? ($reportItems[1] ?? $reportItems[0]);
+        $highlightItem = collect($reportItems)->firstWhere('key', 'articles') 
+            ?? collect($reportItems)->firstWhere('key', 'testimonials')
+            ?? ($reportItems[2] ?? $reportItems[0]);
+    @endphp
+
     <!-- Executive KPI Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Card 1: Storage -->
@@ -45,18 +53,18 @@
             </div>
             <div class="space-y-1">
                 <div class="flex items-baseline gap-1.5">
-                    <span class="text-2xl font-extrabold text-[#1d3e35]">{{ $reportItems[0]['current'] }}</span>
-                    <span class="text-xs text-stone-400 font-bold">/ {{ $reportItems[0]['limit_formatted'] }}</span>
+                    <span class="text-2xl font-extrabold text-[#1d3e35]">{{ $storageItem['current'] }}</span>
+                    <span class="text-xs text-stone-400 font-bold">/ {{ $storageItem['limit_formatted'] }}</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-stone-100 overflow-hidden mt-2">
                     <div 
-                        class="h-full rounded-full transition-all duration-500 {{ $reportItems[0]['percentage'] >= 90 ? 'bg-red-500' : ($reportItems[0]['percentage'] >= 70 ? 'bg-amber-500' : 'bg-[#31725e]') }}" 
-                        style="width: {{ min(100, $reportItems[0]['percentage']) }}%"
+                        class="h-full rounded-full transition-all duration-500 {{ $storageItem['percentage'] >= 90 ? 'bg-red-500' : ($storageItem['percentage'] >= 70 ? 'bg-amber-500' : 'bg-[#31725e]') }}" 
+                        style="width: {{ min(100, $storageItem['percentage']) }}%"
                     ></div>
                 </div>
                 <div class="flex justify-between items-center text-[10px] text-stone-500 font-semibold pt-1">
-                    <span>Terpakai: {{ $reportItems[0]['percentage'] }}%</span>
-                    <span>Sisa: {{ $reportItems[0]['remaining'] }}</span>
+                    <span>Terpakai: {{ $storageItem['percentage'] }}%</span>
+                    <span>Sisa: {{ $storageItem['remaining'] }}</span>
                 </div>
             </div>
         </div>
@@ -71,44 +79,44 @@
             </div>
             <div class="space-y-1">
                 <div class="flex items-baseline gap-1.5">
-                    <span class="text-2xl font-extrabold text-[#1d3e35]">{{ $reportItems[1]['current'] }}</span>
-                    <span class="text-xs text-stone-400 font-bold">/ {{ $reportItems[1]['limit_formatted'] }}</span>
+                    <span class="text-2xl font-extrabold text-[#1d3e35]">{{ $usersItem['current'] }}</span>
+                    <span class="text-xs text-stone-400 font-bold">/ {{ $usersItem['limit_formatted'] }}</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-stone-100 overflow-hidden mt-2">
                     <div 
-                        class="h-full rounded-full transition-all duration-500 {{ $reportItems[1]['percentage'] >= 90 ? 'bg-red-500' : ($reportItems[1]['percentage'] >= 70 ? 'bg-amber-500' : 'bg-[#31725e]') }}" 
-                        style="width: {{ min(100, $reportItems[1]['percentage']) }}%"
+                        class="h-full rounded-full transition-all duration-500 {{ $usersItem['percentage'] >= 90 ? 'bg-red-500' : ($usersItem['percentage'] >= 70 ? 'bg-amber-500' : 'bg-[#31725e]') }}" 
+                        style="width: {{ min(100, $usersItem['percentage']) }}%"
                     ></div>
                 </div>
                 <div class="flex justify-between items-center text-[10px] text-stone-500 font-semibold pt-1">
-                    <span>Terpakai: {{ $reportItems[1]['percentage'] }}%</span>
-                    <span>Sisa: {{ $reportItems[1]['remaining'] }}</span>
+                    <span>Terpakai: {{ $usersItem['percentage'] }}%</span>
+                    <span>Sisa: {{ $usersItem['remaining'] }}</span>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3: Artikel & Galeri -->
+        <!-- Card 3: Highlight Module (Artikel / Testimoni / Galeri) -->
         <div class="p-5 rounded-3xl bg-white border border-[#99cab7]/30 shadow-2xs relative overflow-hidden">
             <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Artikel SEO</span>
+                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">{{ $highlightItem['name'] }}</span>
                 <div class="w-8 h-8 rounded-xl bg-[#e2f0ea] text-[#31725e] flex items-center justify-center">
-                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <i data-lucide="{{ $highlightItem['icon'] }}" class="w-4 h-4"></i>
                 </div>
             </div>
             <div class="space-y-1">
                 <div class="flex items-baseline gap-1.5">
-                    <span class="text-2xl font-extrabold text-[#1d3e35]">{{ $reportItems[2]['current'] }}</span>
-                    <span class="text-xs text-stone-400 font-bold">/ {{ $reportItems[2]['limit_formatted'] }}</span>
+                    <span class="text-2xl font-extrabold text-[#1d3e35]">{{ $highlightItem['current'] }}</span>
+                    <span class="text-xs text-stone-400 font-bold">/ {{ $highlightItem['limit_formatted'] }}</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-stone-100 overflow-hidden mt-2">
                     <div 
-                        class="h-full rounded-full transition-all duration-500 {{ $reportItems[2]['percentage'] >= 90 ? 'bg-red-500' : ($reportItems[2]['percentage'] >= 70 ? 'bg-amber-500' : 'bg-[#31725e]') }}" 
-                        style="width: {{ min(100, $reportItems[2]['percentage']) }}%"
+                        class="h-full rounded-full transition-all duration-500 {{ $highlightItem['percentage'] >= 90 ? 'bg-red-500' : ($highlightItem['percentage'] >= 70 ? 'bg-amber-500' : 'bg-[#31725e]') }}" 
+                        style="width: {{ min(100, $highlightItem['percentage']) }}%"
                     ></div>
                 </div>
                 <div class="flex justify-between items-center text-[10px] text-stone-500 font-semibold pt-1">
-                    <span>Terpakai: {{ $reportItems[2]['percentage'] }}%</span>
-                    <span>Sisa: {{ $reportItems[2]['remaining'] }}</span>
+                    <span>Terpakai: {{ $highlightItem['percentage'] }}%</span>
+                    <span>Sisa: {{ $highlightItem['remaining'] }}</span>
                 </div>
             </div>
         </div>
