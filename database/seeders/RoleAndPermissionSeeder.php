@@ -160,13 +160,15 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-feedbacks',
         ];
 
-        // 3. Owner: Tidak bisa masuk ke Setting, Kelola Role, Kelola Permission, dan Kelola Menu (Bisa Dashboard, Pengguna, dan Content)
+        // 3. Owner: Bisa Dashboard, Pengguna, Content, dan Profile Business Identity (Tidak bisa Setting Web, Kelola Role, Permission, dan Menu)
         $ownerRole = Role::firstOrCreate(['name' => 'Owner', 'guard_name' => 'web']);
         $ownerRole->syncPermissions(array_merge([
             'view-dashboard',
             'view-users',
             'create-users',
             'edit-users',
+            'view-business-identity',
+            'edit-business-identity',
         ], $contentPermissions));
 
         // 4. Admin: Seperti Owner
