@@ -25,28 +25,6 @@
         </div>
     @endif
 
-    <!-- Cross-Link Info Alert to Profile Business Identity -->
-    <div class="p-4 rounded-3xl bg-amber-50/60 border border-amber-200/70 text-stone-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
-        <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                <i data-lucide="info" class="w-5 h-5"></i>
-            </div>
-            <div class="space-y-0.5">
-                <h4 class="text-xs font-extrabold text-amber-900">Mencari Pengaturan Identitas PT, Rekening, atau Sosial Media Resmi?</h4>
-                <p class="text-[11px] text-amber-800">
-                    Data legalitas PT/CV, nomor rekening bank, akun sosial media resmi, visi-misi, dan lokasi kantor dikelola secara terpusat di menu <strong class="underline font-bold">Profile Business Identity</strong>.
-                </p>
-            </div>
-        </div>
-        <a 
-            href="{{ route('admin.business-identity.edit') }}" 
-            class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-colors whitespace-nowrap self-start sm:self-auto shrink-0 shadow-2xs"
-        >
-            <span>Buka Profile Business Identity</span>
-            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-        </a>
-    </div>
-
     <form 
         method="POST" 
         action="{{ route('admin.settings.update') }}" 
