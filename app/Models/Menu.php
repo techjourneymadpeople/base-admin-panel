@@ -222,6 +222,19 @@ class Menu extends Model
             }
         }
 
+        $isPartnerMenu = (
+            ($this->route && in_array($this->route, ['admin.partners.index'])) ||
+            in_array($this->title, ['Brand / Partner', 'Partner', 'Mitra', 'Brand']) ||
+            ($this->parent && in_array($this->parent->title, ['Brand / Partner', 'Partner', 'Mitra', 'Brand']))
+        );
+
+        if ($isPartnerMenu) {
+            $config = WebConfiguration::current();
+            if (!$config->partner_module_enabled) {
+                return false;
+            }
+        }
+
         // Super Admin can view all remaining active menus
         if ($user->hasRole('Super Admin')) {
             return true;

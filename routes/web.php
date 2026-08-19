@@ -114,9 +114,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('faqs/{faq}/toggle-status', [\App\Http\Controllers\Admin\FaqController::class, 'toggleStatus'])->name('faqs.toggle-status')->middleware('can:edit-faqs');
     Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
 
-    // 13. Brand / Partner Routes
-    Route::post('partners/{partner}/toggle-status', [\App\Http\Controllers\Admin\PartnerController::class, 'toggleStatus'])->name('partners.toggle-status')->middleware('can:edit-partners');
-    Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
+    // 13. Brand / Partner Routes (Guarded by EnsurePartnerModuleEnabled)
+    Route::middleware([\App\Http\Middleware\EnsurePartnerModuleEnabled::class])->group(function () {
+        Route::post('partners/{partner}/toggle-status', [\App\Http\Controllers\Admin\PartnerController::class, 'toggleStatus'])->name('partners.toggle-status')->middleware('can:edit-partners');
+        Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
+    });
 
     // 14. Testimonial Routes (Guarded by EnsureTestimonialModuleEnabled)
     Route::middleware([\App\Http\Middleware\EnsureTestimonialModuleEnabled::class])->group(function () {

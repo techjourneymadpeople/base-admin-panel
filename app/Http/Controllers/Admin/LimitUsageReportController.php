@@ -164,20 +164,22 @@ class LimitUsageReportController extends Controller
             'details' => $activeFaqs . ' Tampil Aktif • ' . $inactiveFaqs . ' Dinonaktifkan',
         ];
 
-        $reportItems[] = [
-            'key' => 'partners',
-            'name' => 'Mitra / Brand Partner',
-            'category' => 'Relasi Bisnis',
-            'icon' => 'handshake',
-            'current' => $totalPartners,
-            'current_formatted' => $totalPartners . ' Mitra',
-            'limit' => $limitPartners,
-            'limit_formatted' => $limitPartners > 0 ? $limitPartners . ' Mitra' : 'Tidak Terbatas',
-            'percentage' => $partnersUsagePercent,
-            'remaining' => $limitPartners > 0 ? max(0, $limitPartners - $totalPartners) . ' Mitra' : '∞',
-            'unit' => 'Mitra',
-            'details' => $activePartners . ' Tampil Aktif • ' . $inactivePartners . ' Disembunyikan',
-        ];
+        if ($config->partner_module_enabled) {
+            $reportItems[] = [
+                'key' => 'partners',
+                'name' => 'Mitra / Brand Partner',
+                'category' => 'Relasi Bisnis',
+                'icon' => 'handshake',
+                'current' => $totalPartners,
+                'current_formatted' => $totalPartners . ' Mitra',
+                'limit' => $limitPartners,
+                'limit_formatted' => $limitPartners > 0 ? $limitPartners . ' Mitra' : 'Tidak Terbatas',
+                'percentage' => $partnersUsagePercent,
+                'remaining' => $limitPartners > 0 ? max(0, $limitPartners - $totalPartners) . ' Mitra' : '∞',
+                'unit' => 'Mitra',
+                'details' => $activePartners . ' Tampil Aktif • ' . $inactivePartners . ' Disembunyikan',
+            ];
+        }
 
         if ($config->testimonial_module_enabled) {
             $reportItems[] = [
