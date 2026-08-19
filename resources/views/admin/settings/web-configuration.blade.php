@@ -77,8 +77,8 @@
                 :class="activeTab === 'system' ? 'bg-[#1d3e35] text-white shadow-xs' : 'text-stone-600 hover:text-[#1d3e35] hover:bg-[#e2f0ea]/50'"
                 class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap inline-flex items-center gap-2 cursor-pointer"
             >
-                <i data-lucide="cpu" class="w-4 h-4"></i>
-                <span>1. Sistem & Operasional</span>
+                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                <span>1. Umum (Sistem & Operasional)</span>
             </button>
 
             <button 
@@ -330,22 +330,55 @@
                         </div>
                     </div>
 
-                    <!-- Teks Copyright & Footer -->
-                    <div class="space-y-2">
-                        <label for="footer_text" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
-                            Teks Hak Cipta Footer (Copyright Notice)
-                        </label>
-                        <input
-                            type="text"
-                            name="footer_text"
-                            id="footer_text"
-                            placeholder="© 2026 Lentera Pasar. All Rights Reserved."
-                            value="{{ old('footer_text', $config->footer_text) }}"
-                            class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white/80 hover:bg-white outline-none font-medium"
-                        />
-                        @error('footer_text')
-                            <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
-                        @enderror
+                    <!-- Informasi Footer & Versi Aplikasi -->
+                    <div class="p-5 rounded-2xl border border-[#99cab7]/40 bg-[#f2f8f5]/40 space-y-4">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="layout-template" class="w-4 h-4 text-[#31725e]"></i>
+                                <h4 class="text-xs font-bold text-[#1d3e35]">Informasi Footer & Versi Aplikasi</h4>
+                            </div>
+                            <p class="text-[11px] text-stone-500">
+                                Kustomisasi teks hak cipta (copyright) dan label rilis edisi versi yang ditampilkan pada bagian footer Admin Panel.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#99cab7]/30">
+                            <!-- Teks Copyright & Footer -->
+                            <div class="space-y-2">
+                                <label for="footer_text" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Teks Hak Cipta Footer (Copyright Notice)
+                                </label>
+                                <input
+                                    type="text"
+                                    name="footer_text"
+                                    id="footer_text"
+                                    placeholder="© 2026 Lentera Pasar. All Rights Reserved."
+                                    value="{{ old('footer_text', $config->footer_text) }}"
+                                    class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white outline-none font-medium"
+                                />
+                                @error('footer_text')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Versi Aplikasi / Edisi -->
+                            <div class="space-y-2">
+                                <label for="app_version" class="block text-xs font-bold uppercase tracking-wider text-[#295c4d]">
+                                    Label Versi Aplikasi (App Version / Edition)
+                                </label>
+                                <input
+                                    type="text"
+                                    name="app_version"
+                                    id="app_version"
+                                    placeholder="v1.0 Viho Edition"
+                                    value="{{ old('app_version', $config->app_version) }}"
+                                    class="w-full rounded-2xl p-3.5 text-xs text-[#1d3e35] transition-all border border-[#99cab7]/50 focus:border-[#31725e] focus:ring-4 focus:ring-[#428e75]/20 bg-white outline-none font-medium"
+                                />
+                                @error('app_version')
+                                    <p class="text-xs text-red-600 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                 </div>
             </x-admin.card>

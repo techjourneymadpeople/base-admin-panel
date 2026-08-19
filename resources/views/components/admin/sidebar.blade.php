@@ -241,7 +241,10 @@
             :class="$store.sidebar.collapsed ? 'hidden' : 'flex'"
         >
             <i data-lucide="leaf" class="w-3.5 h-3.5 text-[#cca06e]"></i>
-            <span>{{ config('app.name', 'Admin Panel') }} v1.0</span>
+            @php
+                $adminWebConfig = \App\Models\WebConfiguration::current();
+            @endphp
+            <span>{{ $adminWebConfig->app_version ?: 'v1.0 Lentera Pasar' }}</span>
         </div>
         <div 
             class="transition-all duration-200 text-center"

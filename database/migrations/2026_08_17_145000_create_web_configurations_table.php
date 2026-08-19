@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('contact_whatsapp')->nullable()->default('+62 812-3456-7890');
             $table->text('contact_address')->nullable();
             $table->string('footer_text')->nullable()->default('© 2026 Lentera Pasar. All Rights Reserved.');
+            $table->string('app_version')->nullable()->default('v1.0 Viho Edition');
             $table->string('meta_keywords')->nullable();
             $table->string('meta_author')->nullable()->default('Lentera Pasar Tech Team');
             $table->string('social_facebook')->nullable();

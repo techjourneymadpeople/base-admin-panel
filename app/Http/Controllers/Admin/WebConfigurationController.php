@@ -62,6 +62,7 @@ class WebConfigurationController extends Controller
             'contact_whatsapp' => ['nullable', 'string', 'max:50'],
             'contact_address' => ['nullable', 'string', 'max:500'],
             'footer_text' => ['nullable', 'string', 'max:255'],
+            'app_version' => ['nullable', 'string', 'max:255'],
             'meta_keywords' => ['nullable', 'string', 'max:500'],
             'meta_author' => ['nullable', 'string', 'max:255'],
             'social_facebook' => ['nullable', 'string', 'max:255'],

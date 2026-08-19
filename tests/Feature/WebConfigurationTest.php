@@ -28,6 +28,8 @@ class WebConfigurationTest extends TestCase
         $updateResponse = $this->actingAs($user)->put(route('admin.settings.update'), [
             'site_name' => 'Lentera Pasar Baru',
             'site_tagline' => 'Platform Digital Terintegrasi',
+            'footer_text' => '© 2026 PT Lentera Pasar. All Rights Reserved.',
+            'app_version' => 'v2.5 Custom Edition',
             'social_instagram' => 'https://instagram.com/lenterapasar',
             'social_tiktok' => 'https://tiktok.com/@lenterapasar',
             'google_analytics_id' => 'G-ABC1234567',
@@ -48,6 +50,8 @@ class WebConfigurationTest extends TestCase
 
         $this->assertDatabaseHas('web_configurations', [
             'site_name' => 'Lentera Pasar Baru',
+            'footer_text' => '© 2026 PT Lentera Pasar. All Rights Reserved.',
+            'app_version' => 'v2.5 Custom Edition',
             'social_tiktok' => 'https://tiktok.com/@lenterapasar',
             'google_analytics_id' => 'G-ABC1234567',
             'maintenance_mode' => 1,
@@ -60,6 +64,11 @@ class WebConfigurationTest extends TestCase
             'limit_partners_count' => 60,
             'limit_testimonials_count' => 45,
         ]);
+
+        // Check footer renders new footer_text and app_version in admin panel
+        $adminDashboardResponse = $this->actingAs($user)->get(route('admin.dashboard'));
+        $adminDashboardResponse->assertSee('© 2026 PT Lentera Pasar. All Rights Reserved.');
+        $adminDashboardResponse->assertSee('v2.5 Custom Edition');
     }
 
     public function test_registration_disabled_redirects_to_login(): void

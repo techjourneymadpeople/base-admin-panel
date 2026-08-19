@@ -58,15 +58,18 @@
             </main>
 
             <!-- Admin Footer -->
+            @php
+                $adminWebConfig = \App\Models\WebConfiguration::current();
+            @endphp
             <footer class="mt-auto py-4 px-6 border-t border-[#99cab7]/30 bg-white/50 text-xs text-stone-500 flex flex-col sm:flex-row items-center justify-between gap-2">
-                <p>&copy; {{ date('Y') }} <span class="font-bold text-[#1d3e35]">{{ config('app.name', 'Admin Panel') }}</span>. All rights reserved.</p>
+                <p>{{ $adminWebConfig->footer_text ?: ('© ' . date('Y') . ' ' . config('app.name', 'Admin Panel') . '. All rights reserved.') }}</p>
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-1 text-[#31725e]">
                         <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
                         Status Sistem: Normal & Aman
                     </span>
                     <span>&bull;</span>
-                    <span class="text-[#784732]">v1.0 Viho Edition</span>
+                    <span class="text-[#784732] font-medium">{{ $adminWebConfig->app_version ?: 'v1.0 Lentera Pasar' }}</span>
                 </div>
             </footer>
         </div>
