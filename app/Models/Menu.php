@@ -195,7 +195,21 @@ class Menu extends Model
             return false;
         }
 
-        // Super Admin can view all menus
+        // 0. Check system-wide module toggles (Web Configuration)
+        $isArticleMenu = (
+            ($this->route && in_array($this->route, ['admin.articles.index', 'admin.article-categories.index', 'admin.article-tags.index'])) ||
+            in_array($this->title, ['Article SEO', 'Article Category', 'Article Tag', 'Article']) ||
+            ($this->parent && in_array($this->parent->title, ['Article SEO']))
+        );
+
+        if ($isArticleMenu) {
+            $config = WebConfiguration::current();
+            if (!$config->article_module_enabled) {
+                return false;
+            }
+        }
+
+        // Super Admin can view all remaining active menus
         if ($user->hasRole('Super Admin')) {
             return true;
         }

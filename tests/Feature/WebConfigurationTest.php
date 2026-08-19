@@ -71,4 +71,56 @@ class WebConfigurationTest extends TestCase
         $response->assertRedirect('/login');
         $response->assertSessionHas('status');
     }
+
+    public function test_article_module_disabled_blocks_access_to_article_routes(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('Super Admin');
+
+        $config = WebConfiguration::current();
+        $config->update(['article_module_enabled' => false]);
+
+        // 1. Articles route should be blocked and redirected
+        $responseArticles = $this->actingAs($admin)->get(route('admin.articles.index'));
+        $responseArticles->assertRedirect(route('admin.dashboard'));
+        $responseArticles->assertSessionHas('error');
+
+        // 2. Article Categories route should be blocked
+        $responseCategories = $this->actingAs($admin)->get(route('admin.article-categories.index'));
+        $responseCategories->assertRedirect(route('admin.dashboard'));
+        $responseCategories->assertSessionHas('error');
+
+        // 3. Article Tags route should be blocked
+        $responseTags = $this->actingAs($admin)->get(route('admin.article-tags.index'));
+        $responseTags->assertRedirect(route('admin.dashboard'));
+        $responseTags->assertSessionHas('error');
+
+        // 4. AJAX request should return 403 JSON
+        $ajaxResponse = $this->actingAs($admin)->getJson(route('admin.articles.index'), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+        $ajaxResponse->assertStatus(403);
+    }
+
+    public function test_article_module_enabled_allows_access_to_article_routes(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('Super Admin');
+
+        $config = WebConfiguration::current();
+        $config->update(['article_module_enabled' => true]);
+
+        $response = $this->actingAs($admin)->get(route('admin.articles.index'));
+        $response->assertStatus(200);
+
+        $responseCategories = $this->actingAs($admin)->get(route('admin.article-categories.index'));
+        $responseCategories->assertStatus(200);
+
+        $responseTags = $this->actingAs($admin)->get(route('admin.article-tags.index'));
+        $responseTags->assertStatus(200);
+    }
 }

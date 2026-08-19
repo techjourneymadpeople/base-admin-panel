@@ -85,23 +85,25 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::put('/menus/{menu}/permissions', [MenuController::class, 'updatePermissions'])->name('menus.permissions.update')->middleware('can:assign-menu-permissions');
     Route::resource('menus', MenuController::class);
 
-    // 10. Article SEO Routes
-    // Sitemap manual regenerate
-    Route::post('/articles/regenerate-sitemap', [ArticleController::class, 'regenerateSitemap'])->name('articles.regenerate-sitemap')->middleware('can:edit-articles');
-    
-    // Article Categories CRUD
-    Route::resource('article-categories', ArticleCategoryController::class, [
-        'names' => 'article-categories',
-    ]);
+    // 10. Article SEO Routes (Guarded by EnsureArticleModuleEnabled)
+    Route::middleware([\App\Http\Middleware\EnsureArticleModuleEnabled::class])->group(function () {
+        // Sitemap manual regenerate
+        Route::post('/articles/regenerate-sitemap', [ArticleController::class, 'regenerateSitemap'])->name('articles.regenerate-sitemap')->middleware('can:edit-articles');
+        
+        // Article Categories CRUD
+        Route::resource('article-categories', ArticleCategoryController::class, [
+            'names' => 'article-categories',
+        ]);
 
-    // Article Tags CRUD
-    Route::resource('article-tags', ArticleTagController::class, [
-        'names' => 'article-tags',
-    ]);
+        // Article Tags CRUD
+        Route::resource('article-tags', ArticleTagController::class, [
+            'names' => 'article-tags',
+        ]);
 
-    // Articles CRUD
-    Route::post('articles/{article}/toggle-featured', [ArticleController::class, 'toggleFeatured'])->name('articles.toggle-featured')->middleware('can:edit-articles');
-    Route::resource('articles', ArticleController::class);
+        // Articles CRUD
+        Route::post('articles/{article}/toggle-featured', [ArticleController::class, 'toggleFeatured'])->name('articles.toggle-featured')->middleware('can:edit-articles');
+        Route::resource('articles', ArticleController::class);
+    });
 
     // 11. Gallery Activity Routes
     Route::resource('gallery-activities', \App\Http\Controllers\Admin\GalleryActivityController::class, [

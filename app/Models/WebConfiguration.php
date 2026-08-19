@@ -51,6 +51,7 @@ class WebConfiguration extends Model
         'cookie_consent_text',
         'maintenance_mode',
         'registration_enabled',
+        'article_module_enabled',
         'limit_media_storage_mb',
         'limit_users_count',
         'limit_articles_count',
@@ -68,6 +69,7 @@ class WebConfiguration extends Model
     protected $casts = [
         'maintenance_mode' => 'boolean',
         'registration_enabled' => 'boolean',
+        'article_module_enabled' => 'boolean',
         'robots_indexing' => 'boolean',
         'cookie_consent_enabled' => 'boolean',
         'limit_media_storage_mb' => 'integer',
@@ -97,6 +99,7 @@ class WebConfiguration extends Model
             'meta_author' => 'Lentera Pasar Tech Team',
             'maintenance_mode' => false,
             'registration_enabled' => true,
+            'article_module_enabled' => true,
             'limit_media_storage_mb' => 1024,
             'limit_users_count' => 50,
             'limit_articles_count' => 100,

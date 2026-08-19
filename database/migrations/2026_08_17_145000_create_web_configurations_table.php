@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('social_youtube')->nullable();
             $table->string('social_linkedin')->nullable();
             $table->boolean('maintenance_mode')->default(false);
+            $table->boolean('article_module_enabled')->default(true);
             $table->timestamps();
         });
     }
