@@ -22,7 +22,7 @@
         </button>
 
         <!-- Search Bar (Viho style) -->
-        <div class="relative hidden sm:block w-64 md:w-80">
+        <!-- <div class="relative hidden sm:block w-64 md:w-80">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#31725e]">
                 <i data-lucide="search" class="w-4 h-4"></i>
             </div>
@@ -31,13 +31,13 @@
                 placeholder="Cari menu, data, atau aksi... (Ctrl+K)"
                 class="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-white border border-[#99cab7]/50 focus:bg-white focus:border-[#31725e] focus:ring-2 focus:ring-[#428e75]/25 text-[#1d3e35] placeholder:text-[#99cab7] transition-all outline-none shadow-2xs"
             />
-        </div>
+        </div> -->
     </div>
 
     <!-- Right Section: Notification, Messages, User Profile -->
     <div class="flex items-center gap-2 sm:gap-3">
         <!-- Notification Dropdown -->
-        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+        <!-- <div class="relative" x-data="{ open: false }" @click.outside="open = false">
             <button 
                 type="button" 
                 @click="open = !open" 
@@ -48,7 +48,7 @@
                 <span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
             </button>
 
-            <!-- Dropdown Notification Menu -->
+            Dropdown Notification Menu
             <div 
                 x-show="open" 
                 x-transition:enter="transition ease-out duration-200"
@@ -95,7 +95,7 @@
                     </a>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- User Profile Dropdown -->
         <div class="relative" x-data="{ open: false }" @click.outside="open = false">
