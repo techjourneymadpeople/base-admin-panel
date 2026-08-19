@@ -19,8 +19,9 @@ class RoleAndPermissionSeeder extends Seeder
 
         // 1. Define only permissions that have active features and menus
         $permissions = [
-            // General / Dashboard
+            // General / Dashboard / Report
             'view-dashboard',
+            'view-limit-usage',
 
             // User Management
             'view-users',
@@ -160,10 +161,11 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-feedbacks',
         ];
 
-        // 3. Owner: Bisa Dashboard, Pengguna, Content, dan Profile Business Identity (Tidak bisa Setting Web, Kelola Role, Permission, dan Menu)
+        // 3. Owner: Bisa Dashboard, Penggunaan Limit, Pengguna, Content, dan Profile Business Identity
         $ownerRole = Role::firstOrCreate(['name' => 'Owner', 'guard_name' => 'web']);
         $ownerRole->syncPermissions(array_merge([
             'view-dashboard',
+            'view-limit-usage',
             'view-users',
             'create-users',
             'edit-users',
@@ -175,21 +177,26 @@ class RoleAndPermissionSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
         $adminRole->syncPermissions(array_merge([
             'view-dashboard',
+            'view-limit-usage',
             'view-users',
             'create-users',
             'edit-users',
+            'view-business-identity',
+            'edit-business-identity',
         ], $contentPermissions));
 
-        // 5. Editor: Hanya bisa yang di Menu Header Content + Dashboard
+        // 5. Editor: Bisa Dashboard, Penggunaan Limit, dan Seluruh Menu Header Content
         $editorRole = Role::firstOrCreate(['name' => 'Editor', 'guard_name' => 'web']);
         $editorRole->syncPermissions(array_merge([
             'view-dashboard',
+            'view-limit-usage',
         ], $contentPermissions));
 
-        // 6. User: Hanya bisa lihat Dashboard saja
+        // 6. User: Bisa Dashboard dan Penggunaan Limit
         $userRole = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
         $userRole->syncPermissions([
             'view-dashboard',
+            'view-limit-usage',
         ]);
     }
 }

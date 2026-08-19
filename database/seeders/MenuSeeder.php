@@ -42,13 +42,27 @@ class MenuSeeder extends Seeder
         ]);
         $dashboardMenu->assignPermissions('view-dashboard');
 
+        // 1.2 Penggunaan Limit (Laporan Kuota & Resource Usage)
+        $limitUsageMenu = Menu::create([
+            'title' => 'Penggunaan Limit',
+            'type' => 'link',
+            'route' => 'admin.limit-usage.index',
+            'icon' => 'gauge',
+            'permission' => 'view-limit-usage',
+            'badge' => 'Laporan',
+            'badge_color' => 'emerald',
+            'order' => 3,
+            'is_active' => true,
+        ]);
+        $limitUsageMenu->assignPermissions('view-limit-usage');
+
         // ==========================================
         // 2. SECTION: Pengguna & Hak Akses
         // ==========================================
         $userHeader = Menu::create([
             'title' => 'Pengguna & Hak Akses',
             'type' => 'header',
-            'order' => 3,
+            'order' => 4,
             'is_active' => true,
         ]);
 
@@ -61,7 +75,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-users',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 4,
+            'order' => 5,
             'is_active' => true,
         ]);
         $userMenu->assignPermissions('view-users');
@@ -75,7 +89,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-roles',
             'badge' => '6 Level',
             'badge_color' => 'amber',
-            'order' => 5,
+            'order' => 6,
             'is_active' => true,
         ]);
         $roleMenu->assignPermissions('view-roles');
@@ -89,7 +103,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-permissions',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 6,
+            'order' => 7,
             'is_active' => true,
         ]);
         $permissionMenu->assignPermissions('view-permissions');
@@ -103,7 +117,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-menus',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 7,
+            'order' => 8,
             'is_active' => true,
         ]);
         $menuManagement->assignPermissions('view-menus');
@@ -114,7 +128,7 @@ class MenuSeeder extends Seeder
         $contentHeader = Menu::create([
             'title' => 'Content',
             'type' => 'header',
-            'order' => 8,
+            'order' => 9,
             'is_active' => true,
         ]);
 
@@ -127,7 +141,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-content',
             'badge' => 'Gudang',
             'badge_color' => 'emerald',
-            'order' => 9,
+            'order' => 10,
             'is_active' => true,
         ]);
         $mediaMenu->assignPermissions('view-content');
@@ -139,7 +153,7 @@ class MenuSeeder extends Seeder
             'icon' => 'newspaper',
             'badge' => 'SEO',
             'badge_color' => 'emerald',
-            'order' => 10,
+            'order' => 11,
             'is_active' => true,
         ]);
 
@@ -182,7 +196,7 @@ class MenuSeeder extends Seeder
         ]);
         $articleMenu->assignPermissions('view-articles');
 
-        // 3.2 Gallery Activity
+        // 3.3 Gallery Activity
         $galleryMenu = Menu::create([
             'title' => 'Gallery Activity',
             'type' => 'link',
@@ -191,12 +205,12 @@ class MenuSeeder extends Seeder
             'permission' => 'view-gallery-activities',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 11,
+            'order' => 12,
             'is_active' => true,
         ]);
         $galleryMenu->assignPermissions('view-gallery-activities');
 
-        // 3.3 FAQ
+        // 3.4 FAQ
         $faqMenu = Menu::create([
             'title' => 'FAQ',
             'type' => 'link',
@@ -205,12 +219,12 @@ class MenuSeeder extends Seeder
             'permission' => 'view-faqs',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 12,
+            'order' => 13,
             'is_active' => true,
         ]);
         $faqMenu->assignPermissions('view-faqs');
 
-        // 3.4 Brand / Partner
+        // 3.5 Brand / Partner
         $partnerMenu = Menu::create([
             'title' => 'Brand / Partner',
             'type' => 'link',
@@ -219,12 +233,12 @@ class MenuSeeder extends Seeder
             'permission' => 'view-partners',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 13,
+            'order' => 14,
             'is_active' => true,
         ]);
         $partnerMenu->assignPermissions('view-partners');
 
-        // 3.5 Testimonial
+        // 3.6 Testimonial
         $testimonialMenu = Menu::create([
             'title' => 'Testimonial',
             'type' => 'link',
@@ -233,12 +247,12 @@ class MenuSeeder extends Seeder
             'permission' => 'view-testimonials',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 14,
+            'order' => 15,
             'is_active' => true,
         ]);
         $testimonialMenu->assignPermissions('view-testimonials');
 
-        // 3.6 Saran & Masukan
+        // 3.7 Saran & Masukan
         $feedbackMenu = Menu::create([
             'title' => 'Saran & Masukan',
             'type' => 'link',
@@ -247,7 +261,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-feedbacks',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 15,
+            'order' => 16,
             'is_active' => true,
         ]);
         $feedbackMenu->assignPermissions('view-feedbacks');
@@ -258,7 +272,7 @@ class MenuSeeder extends Seeder
         $settingsHeader = Menu::create([
             'title' => 'Pengaturan',
             'type' => 'header',
-            'order' => 16,
+            'order' => 17,
             'is_active' => true,
         ]);
 
@@ -271,7 +285,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-business-identity',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 17,
+            'order' => 18,
             'is_active' => true,
         ]);
         $businessIdentityMenu->assignPermissions('view-business-identity');
@@ -285,7 +299,7 @@ class MenuSeeder extends Seeder
             'permission' => 'view-settings',
             'badge' => null,
             'badge_color' => 'emerald',
-            'order' => 18,
+            'order' => 19,
             'is_active' => true,
         ]);
         $webConfigMenu->assignPermissions('view-settings');

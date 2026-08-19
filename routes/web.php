@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ArticleCategoryController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\ArticleTagController;
+use App\Http\Controllers\Admin\LimitUsageReportController;
 use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -22,6 +23,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         $identity = \App\Models\BusinessIdentity::current();
         return view('admin.dashboard', compact('identity'));
     })->name('dashboard');
+
+    // Penggunaan Limit (Laporan Kuota & Resource Usage)
+    Route::get('/limit-usage', [LimitUsageReportController::class, 'index'])->name('limit-usage.index')->middleware('can:view-limit-usage');
 
     // 1. User Profile Management (Profil Saya)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
