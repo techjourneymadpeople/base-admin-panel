@@ -18,6 +18,21 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+Route::get('/robots.txt', function () {
+    $config = \App\Models\WebConfiguration::current();
+    $sitemapUrl = url('sitemap.xml');
+
+    if (!$config->robots_indexing) {
+        $content = "User-agent: *\nDisallow: /\n";
+    } else {
+        $content = "User-agent: *\nDisallow: /admin\nDisallow: /admin/\nAllow: /\n\nSitemap: {$sitemapUrl}\n";
+    }
+
+    return response($content, 200, [
+        'Content-Type' => 'text/plain',
+    ]);
+});
+
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         $identity = \App\Models\BusinessIdentity::current();
