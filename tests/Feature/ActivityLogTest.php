@@ -180,4 +180,38 @@ class ActivityLogTest extends TestCase
             'subject_id' => $user->id,
         ]);
     }
+
+    public function test_activity_log_clean_command_removes_records_older_than_6_months(): void
+    {
+        $this->seed(RoleAndPermissionSeeder::class);
+
+        // 1. Create old activity log record (7 months ago > 180 days)
+        $oldActivity = \App\Models\Activity::create([
+            'log_name' => 'article',
+            'description' => 'Artikel lama 7 bulan lalu',
+            'created_at' => now()->subMonths(7),
+            'updated_at' => now()->subMonths(7),
+        ]);
+
+        // 2. Create recent activity log record (1 month ago < 180 days)
+        $recentActivity = \App\Models\Activity::create([
+            'log_name' => 'article',
+            'description' => 'Artikel baru 1 bulan lalu',
+            'created_at' => now()->subMonths(1),
+            'updated_at' => now()->subMonths(1),
+        ]);
+
+        // 3. Run clean command for 180 days (6 months)
+        $this->artisan('activitylog:clean', ['--days' => 180])
+            ->assertSuccessful();
+
+        // 4. Assert old record is pruned and recent record is preserved
+        $this->assertDatabaseMissing('activity_log', [
+            'id' => $oldActivity->id,
+        ]);
+
+        $this->assertDatabaseHas('activity_log', [
+            'id' => $recentActivity->id,
+        ]);
+    }
 }
