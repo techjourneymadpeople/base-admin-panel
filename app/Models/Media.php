@@ -3,11 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as BaseMedia;
 
 class Media extends BaseMedia
 {
-    use HasUlids;
+    use HasUlids, LogsActivity;
+
+    /**
+     * Activity log options for Media model.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'file_name', 'mime_type', 'disk', 'size', 'collection_name'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->useLogName('media')
+            ->setDescriptionForEvent(fn(string $eventName) => "File Media {$eventName}");
+    }
 
     /**
      * The table associated with the model.

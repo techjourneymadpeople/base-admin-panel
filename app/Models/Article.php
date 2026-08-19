@@ -8,12 +8,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 class Article extends Model
 {
-    use HasFactory, HasUlids, HasSlug;
+    use HasFactory, HasUlids, HasSlug, LogsActivity;
+
+    /**
+     * Activity log options for Article model.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->useLogName('article')
+            ->setDescriptionForEvent(fn(string $eventName) => "Artikel {$eventName}");
+    }
 
     protected $table = 'articles';
 
