@@ -83,6 +83,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     ]);
 
     // Articles CRUD
+    Route::post('articles/{article}/toggle-featured', [ArticleController::class, 'toggleFeatured'])->name('articles.toggle-featured')->middleware('can:edit-articles');
     Route::resource('articles', ArticleController::class);
 
     // 11. Gallery Activity Routes

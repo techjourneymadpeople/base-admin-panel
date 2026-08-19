@@ -30,6 +30,7 @@ return new class extends Migration
             
             // Publishing Status & Metrics
             $table->enum('status', ['draft', 'published', 'archived'])->default('published');
+            $table->boolean('is_featured')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->unsignedBigInteger('views_count')->default(0);
             

@@ -35,6 +35,10 @@ class ArticleController extends Controller
                 $articles->where('status', $request->input('status'));
             }
 
+            if ($request->filled('is_featured')) {
+                $articles->where('is_featured', $request->input('is_featured') === '1');
+            }
+
             return DataTables::of($articles)
                 ->addIndexColumn()
                 ->addColumn('article_info', function (Article $article) {
@@ -69,6 +73,31 @@ class ArticleController extends Controller
                             </div>
                             <span class="text-xs text-stone-700 font-medium truncate">' . e($name) . '</span>
                         </div>
+                    ';
+                })
+                ->addColumn('featured_badge', function (Article $article) {
+                    $toggleUrl = route('admin.articles.toggle-featured', $article->id);
+                    $isFeatured = (bool) $article->is_featured;
+                    $activeClass = $isFeatured 
+                        ? 'bg-amber-100 text-amber-900 border-amber-300 shadow-2xs hover:bg-amber-200' 
+                        : 'bg-stone-50 text-stone-500 border-stone-200 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300';
+                    $starIcon = $isFeatured ? '★' : '☆';
+                    $label = $isFeatured ? 'Featured' : 'Standar';
+
+                    if (!auth()->user()->can('edit-articles')) {
+                        return '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border ' . ($isFeatured ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-stone-50 text-stone-400 border-stone-200') . '"><span class="' . ($isFeatured ? 'text-amber-500' : 'text-stone-400') . '">' . $starIcon . '</span> ' . $label . '</span>';
+                    }
+
+                    return '
+                        <button 
+                            type="button" 
+                            onclick="toggleArticleFeatured(\'' . $toggleUrl . '\', this)" 
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer ' . $activeClass . '"
+                            title="Klik untuk mengubah status Featured Article"
+                        >
+                            <span class="text-sm leading-none ' . ($isFeatured ? 'text-amber-500' : 'text-stone-400') . '">' . $starIcon . '</span>
+                            <span>' . $label . '</span>
+                        </button>
                     ';
                 })
                 ->addColumn('status_badge', function (Article $article) {
@@ -110,7 +139,7 @@ class ArticleController extends Controller
                         </div>
                     ';
                 })
-                ->rawColumns(['article_info', 'author_info', 'status_badge', 'published_date', 'views_info', 'action'])
+                ->rawColumns(['article_info', 'author_info', 'featured_badge', 'status_badge', 'published_date', 'views_info', 'action'])
                 ->toJson();
         }
 
@@ -118,8 +147,26 @@ class ArticleController extends Controller
         $totalArticles = Article::count();
         $publishedArticles = Article::where('status', 'published')->count();
         $draftArticles = Article::where('status', 'draft')->count();
+        $featuredArticles = Article::where('is_featured', true)->count();
 
-        return view('admin.articles.index', compact('categories', 'totalArticles', 'publishedArticles', 'draftArticles'));
+        return view('admin.articles.index', compact('categories', 'totalArticles', 'publishedArticles', 'draftArticles', 'featuredArticles'));
+    }
+
+    /**
+     * Toggle featured status of an article.
+     */
+    public function toggleFeatured(Article $article): JsonResponse
+    {
+        $article->is_featured = !$article->is_featured;
+        $article->save();
+
+        return response()->json([
+            'success' => true,
+            'is_featured' => (bool) $article->is_featured,
+            'message' => $article->is_featured 
+                ? 'Artikel berhasil ditandai sebagai Featured Article.' 
+                : 'Status Featured Article berhasil dinonaktifkan.',
+        ]);
     }
 
     /**

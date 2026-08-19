@@ -31,11 +31,13 @@ class Article extends Model
         'meta_keywords',
         'canonical_url',
         'status',
+        'is_featured',
         'published_at',
         'views_count',
     ];
 
     protected $casts = [
+        'is_featured' => 'boolean',
         'published_at' => 'datetime',
         'views_count' => 'integer',
     ];
@@ -90,6 +92,14 @@ class Article extends Model
         return $query->where('status', 'published')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
+    }
+
+    /**
+     * Scope for featured articles.
+     */
+    public function scopeFeatured(Builder $query): Builder
+    {
+        return $query->where('is_featured', true);
     }
 
     /**
